@@ -24,7 +24,7 @@ Or classic architecture aproach interaction with high performance parts implemen
 As example we can talk about achivements. Our player suddendly met "Game Over" window but game designer wants to give you achivement as reward. Naive people...<br/>
 So *CharacterDeathSystem* just post message that available only for **one frame** via service API and hopes that *AchievementsListenerSystem* will react somehow to this sad news.<br/>
 
-![Achiements happens..](documentation/use_case_achievements.png)
+![Achiements happens..](documentation/use_case_achievement.png)
 
 ## Idea
 In Data Oriented Design we can say that commands and events are enteties with bunch of special components.<br/>
@@ -58,7 +58,7 @@ MessageBroadcaster
 MessageBroadcaster
     .PrepareEvent()
     .WithUnlimitedLifeTime()
-    .Post(new QuestNPCWasKilledData { Tick = 123456789 } );
+    .Post(new QuestNPCWasKilledData { NPC = NPC.TolikMerchant, Tick = 123456789 } );
 ```
 
 ## Editor Debug Tools
