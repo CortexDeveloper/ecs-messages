@@ -1,0 +1,17 @@
+{
+    "name": "com.cortexdeveloper.ecsmessages",
+    "version": "0.0.1",
+    "displayName": "ECS Messages",
+    "author": {
+         "name": "cortexdeveloper", 
+         "url": "https://github.com/CortexDeveloper/"
+    },
+    "unity": "2021.2",
+    "description": "ECS implementation of messaging system.",
+    "keywords": [ 
+        "Dev Kit", 
+        "Game Tools"
+    ],
+    "license": "MIT",
+    "dependencies": {}
+}
