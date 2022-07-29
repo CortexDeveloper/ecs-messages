@@ -168,7 +168,7 @@ namespace CortexDeveloper.Examples.Editor
                                        "If there is no free workers wait.\n" +
                                        "It will be alive until we manually delete it.", EditorStyles.textArea);
 
-            if (GUILayout.Button("Post Command: Quest Completed"))
+            if (GUILayout.Button("Post Command: Dig Gold"))
             {
                 MessageBroadcaster
                     .PrepareCommand()
