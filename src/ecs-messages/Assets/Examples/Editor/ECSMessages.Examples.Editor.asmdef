@@ -1,11 +1,12 @@
 {
-    "name": "CortexDeveloper.Editor.Messages",
-    "rootNamespace": "CortexDeveloper.Messages.Editor",
+    "name": "ECSMessages.Examples.Editor",
+    "rootNamespace": "CortexDeveloper.Examples.Editor",
     "references": [
-        "GUID:734d92eba21c94caba915361bd5ac177",
+        "GUID:527ce226d59d4474ab9b8ef5f5d785a6",
+        "GUID:fee70387a0a31498cac3cfa203ac57f5",
         "GUID:e0cd26848372d4e5c891c569017e11f1",
         "GUID:2665a8d13d1b3f18800f46e256720795",
-        "GUID:fee70387a0a31498cac3cfa203ac57f5"
+        "GUID:734d92eba21c94caba915361bd5ac177"
     ],
     "includePlatforms": [
         "Editor"

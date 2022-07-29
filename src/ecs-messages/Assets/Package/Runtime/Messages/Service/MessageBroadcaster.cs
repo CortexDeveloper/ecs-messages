@@ -64,17 +64,22 @@ namespace CortexDeveloper.Messages.Service
         {
             
         }
-        
+
+        public static void RemoveWithLifetime(MessageLifetime lifetime)
+        {
+            
+        }
+
         public static void Remove<T>()
         {
             
-        } 
+        }
 
         public static void RemoveBuffer<T>()
         {
             
         }
-        
+
         private static void AddContextComponents(MessageBuilder builder, Entity messageEntity)
         {
             switch (builder.Context)
@@ -96,7 +101,7 @@ namespace CortexDeveloper.Messages.Service
                     builder.Ecb.AddComponent(messageEntity, new MessageLifetimeOneFrameTag());
                     break;
                 case MessageLifetime.TimeRange:
-                    builder.Ecb.AddComponent(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = builder.Milliseconds });
+                    builder.Ecb.AddComponent(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = builder.Seconds });
                     break;
                 case MessageLifetime.Unlimited:
                     builder.Ecb.AddComponent(messageEntity, new MessageLifetimeUnlimitedTag());

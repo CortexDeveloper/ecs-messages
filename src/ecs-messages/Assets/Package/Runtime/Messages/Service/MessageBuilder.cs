@@ -6,14 +6,14 @@ namespace CortexDeveloper.Messages.Service
     {
         internal MessageContext Context; 
         internal MessageLifetime Lifetime;
-        internal float Milliseconds;
+        internal float Seconds;
         
         internal EntityCommandBuffer Ecb;
 
-        public MessageBuilder WithLifeTime(float milliseconds)
+        public MessageBuilder WithLifeTime(float seconds)
         {
             Lifetime = MessageLifetime.TimeRange;
-            Milliseconds = milliseconds;
+            Seconds = seconds;
 
             return this;
         }
