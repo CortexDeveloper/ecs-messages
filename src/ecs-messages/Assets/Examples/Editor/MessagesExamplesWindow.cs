@@ -42,7 +42,7 @@ namespace CortexDeveloper.Examples.Editor
                 return;
             }
             
-            _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"OneFrame", "TimeRange", "Unlimited Time"});
+            _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"One Frame", "Time Range", "Unlimited Time"});
             switch (_selectedTab)
             {
                 case 0:

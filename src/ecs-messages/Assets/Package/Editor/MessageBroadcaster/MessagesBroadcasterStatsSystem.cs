@@ -3,6 +3,7 @@ using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Editor
 {
+    [AlwaysUpdateSystem]
     public partial class MessagesBroadcasterStatsSystem : SystemBase
     {
         protected override void OnUpdate()
