@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.Components
+namespace CortexDeveloper.Messages.Examples
 {
     public struct MessageIntData: IComponentData
     {

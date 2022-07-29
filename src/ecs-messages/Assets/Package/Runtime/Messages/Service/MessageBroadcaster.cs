@@ -45,6 +45,19 @@ namespace CortexDeveloper.Messages.Service
             
             builder.Ecb.AddComponent(messageEntity, component);
         }
+        
+        public static void PostBuffer<T>(this MessageBuilder builder, params T[] elements) where T : struct, IBufferElementData
+        {
+            Entity messageEntity = builder.Ecb.CreateEntity();
+
+            AddContextComponents(builder, messageEntity);
+            AddLifetimeComponents(builder, messageEntity);
+            
+            DynamicBuffer<T> buffer = builder.Ecb.AddBuffer<T>(messageEntity);
+            
+            for (int i = 0; i < elements.Length; i++) 
+                buffer.Add(elements[i]);
+        }
 
         private static void AddContextComponents(MessageBuilder builder, Entity messageEntity)
         {

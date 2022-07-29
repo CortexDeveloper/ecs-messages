@@ -7,7 +7,7 @@ It can be used as bridge between MonoBehavior based logic and ECS based logic or
 Key features:
 - Simple API
 - Handling messages lifetime(creation details, auto deleting by according to configured rules, etc)
-- Support of any *IComponentData* as message content
+- Supports of any *IComponentData* as message content
 
 ## Use Cases
 
@@ -33,6 +33,7 @@ Both are messages but with different semantic.<br/>
 The difference between them in reasons why they were sent to world.<br/>
 Event notifies that owner of this event **changed its own state**.<br/>
 Command, despite they also just an entity with some components, **have intention to change someones state**.<br/>
+Practicaly it can be used as filter to separate command and event with same component type. 
 
 ![Everything is message](documentation/data_driven_message.png)
 
@@ -52,14 +53,17 @@ MessageBroadcaster
 MessageBroadcaster
     .PrepareEvent()
     .WithLifeTime(7f)
-    .Post(new StunEffectData());
+    .Post(new StunEffectData(){ Target = stunedEntity });
 
 // Post a message-event that NPC required by quest is killed. It still can be manually deleted and serve as "global flag with some data".
 MessageBroadcaster
     .PrepareEvent()
     .WithUnlimitedLifeTime()
-    .Post(new QuestNPCWasKilledData { NPC = NPC.TolikMerchant, Tick = 123456789 } );
+    .Post(new QuestNPCWasKilledData { NPC = NPC.TolikMerchant, Tick = 1234567890 } );
 ```
+## Feauture Features
+- Singleton messages
+- Messages with multiple components
 
 ## Editor Debug Tools
 *WIP*

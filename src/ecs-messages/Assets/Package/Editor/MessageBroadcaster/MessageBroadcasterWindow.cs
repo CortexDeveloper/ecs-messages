@@ -1,4 +1,4 @@
-using CortexDeveloper.Messages.Components;
+using CortexDeveloper.Messages.Examples;
 using CortexDeveloper.Messages.Service;
 using UnityEditor;
 using UnityEngine;
@@ -58,6 +58,16 @@ namespace CortexDeveloper.Messages.Editor
                     .PrepareEvent()
                     .WithUnlimitedLifeTime()
                     .Post(new MessageIntData { Value = 789 } );
+            }
+
+            if (GUILayout.Button("Send Event(int) with buffer"))
+            {
+                MessageIntData firstValue = new() { Value = 1 };
+                MessageIntData secondValue = new() { Value = 2 };
+                
+                MessageBroadcaster
+                    .PrepareCommand()
+                    .PostBuffer(new MessageIntBuffer { Value = firstValue }, new MessageIntBuffer { Value = secondValue } );
             }
         }
     }
