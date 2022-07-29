@@ -25,6 +25,26 @@ namespace CortexDeveloper.Messages.Service
             return messageBuilder;
         }
 
+        public static void RemoveAll()
+        {
+            
+        }
+
+        public static void RemoveWithLifetime(MessageLifetime lifetime)
+        {
+            
+        }
+
+        public static void Remove<T>()
+        {
+            
+        }
+
+        public static void RemoveBuffer<T>()
+        {
+            
+        }
+        
         private static MessageBuilder CreateMessageBuilder()
         {
             MessageBuilder messageBuilder = new();
@@ -57,27 +77,6 @@ namespace CortexDeveloper.Messages.Service
             
             for (int i = 0; i < elements.Length; i++) 
                 buffer.Add(elements[i]);
-        }
-
-        //TODO implement :D
-        public static void RemoveAll()
-        {
-            
-        }
-
-        public static void RemoveWithLifetime(MessageLifetime lifetime)
-        {
-            
-        }
-
-        public static void Remove<T>()
-        {
-            
-        }
-
-        public static void RemoveBuffer<T>()
-        {
-            
         }
 
         private static void AddContextComponents(MessageBuilder builder, Entity messageEntity)
