@@ -34,7 +34,8 @@ namespace CortexDeveloper.Messages.Service
             {
                 MessageLifetime.OneFrame => new ComponentType(typeof(MessageLifetimeOneFrameTag)),
                 MessageLifetime.TimeRange => new ComponentType(typeof(MessageLifetimeTimeRange)),
-                MessageLifetime.Unlimited => new ComponentType(typeof(MessageLifetimeUnlimitedTag))
+                MessageLifetime.Unlimited => new ComponentType(typeof(MessageLifetimeUnlimitedTag)),
+                _ => throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, "Unsupported Lifetime")
             }});
 
         public static void Remove<T>() where T : struct, IComponentData => 
