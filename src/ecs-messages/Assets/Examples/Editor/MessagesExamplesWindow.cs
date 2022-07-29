@@ -61,7 +61,7 @@ namespace CortexDeveloper.Examples.Editor
         {
             // Case 1
             EditorGUILayout.LabelField("Case: You need to start game by clicking \"Start\" button.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("In this case we need to post message-command that we have intention to launch match of with next settings:\n" +
+            EditorGUILayout.LabelField("In this case we need to post message-command that we have intention to launch match with next settings:\n" +
                                        $"{_difficulty.ToString()} difficulty level, {_matchLenght} lenght and {_enemiesCount} enemies count\n" +
                                        "Message will be alive only for one frame and then would be deleted.", EditorStyles.textArea);
             
@@ -102,7 +102,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareEvent()
-                    .Post(new CharacterDeadData { Tick = 1234567890});
+                    .Post(new CharacterDeadData { Tick = 1234567890 });
             }
         }
 
@@ -140,7 +140,7 @@ namespace CortexDeveloper.Examples.Editor
                 MessageBroadcaster
                     .PrepareEvent()
                     .WithLifeTime(_questAvailabilityTime)
-                    .Post(new QuestAvailabilityData {Quest = _availableQuest});
+                    .Post(new QuestAvailabilityData { Quest = _availableQuest });
             }
         }
 
@@ -158,7 +158,7 @@ namespace CortexDeveloper.Examples.Editor
                 MessageBroadcaster
                     .PrepareEvent()
                     .WithUnlimitedLifeTime()
-                    .Post(new QuestCompletedData{ Value = _completedQuest});
+                    .Post(new QuestCompletedData { Value = _completedQuest });
             }
             
             // Case 2

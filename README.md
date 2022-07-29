@@ -33,6 +33,7 @@ Both are messages but with different semantic.<br/>
 The difference between them in reasons why they were sent to world.<br/>
 Event notifies that owner of this event **changed its own state**.<br/>
 Command, despite they also just an entity with some components, **have intention to change someones state**.<br/>
+In classic OOP paradigm command is a peace of logic that have form of object. But in Data Driven Design we can operate only with data.<br/>
 Practicaly it can be used as filter to separate command and event with same component type. 
 
 ![Everything is message](documentation/data_driven_message.png)
@@ -40,27 +41,75 @@ Practicaly it can be used as filter to separate command and event with same comp
 > Event - entity with bunch of components that notifies world about owner changed state.<br/> 
 > Command - entity with bunch of components that have intetion to change someones state.<br/>
 
-In classic OOP paradigm command is a peace of logic that have form of object. But in Data Driven Design we can operate only with data.<br/>
-
 ## Code Examples
-```csharp
-// Post a message-command to start game with medium difficulty settings. It will be available only for one frame and will be deleted.
+
+### One Frame Messages
+Messages of this type will be alive only for one frame and then would be automatically deleted.<br/>
+Pay attention that dividing messages to "events" and "commands" performed more for semantic and filtering purposes.<br/>
+
+#### Case: You need to start game by clicking "Start" button
+```csharp                     
 MessageBroadcaster
     .PrepareCommand()
-    .Post(new StartMatchData { Value = Difficulty.Medium } );
+    .Post(new StartMatchData
+    {
+        DifficultyLevel = Difficulty.Hard,
+        MatchLength = 300f,
+        EnemiesCount = 25
+    });
+```
+#### Case: You need to pause game via UI button or in-game action
+```csharp
+MessageBroadcaster
+    .PrepareCommand()
+    .Post(new PauseGameData());
+```
 
-// Post a message-event that stun effect is active. It will be existing for next seven seconds and then would be deleted.
+#### Case: You need to notify somebody that character died on this frame
+```csharp
 MessageBroadcaster
     .PrepareEvent()
-    .WithLifeTime(7f)
-    .Post(new StunEffectData(){ Target = stunedEntity });
+    .Post(new CharacterDeadData { Tick = 1234567890 });
+```
 
-// Post a message-event that NPC required by quest is killed. It still can be manually deleted and serve as "global flag with some data".
+### Time Range Messages
+
+#### Case: Informing other non-gameplay related systems that there are two active debuffs
+```csharp
+MessageBroadcaster
+    .PrepareEvent()
+    .WithLifeTime(10f)
+    .PostBuffer(
+        new DebuffData{ Value = Debuffs.Stun },
+        new DebuffData{ Value = Debuffs.Poisoned });
+```
+
+#### Case: Informing that quest available only for 600 seconds(10 minutes)
+```csharp
+MessageBroadcaster
+    .PrepareEvent()
+    .WithLifeTime(600f)
+    .Post(new QuestAvailabilityData { Quest = Quests.SavePrincess });
+```
+
+### Unlimited Lifetime Messages
+
+#### Case: Notify that quest is completed
+```csharp
 MessageBroadcaster
     .PrepareEvent()
     .WithUnlimitedLifeTime()
-    .Post(new QuestNPCWasKilledData { NPC = NPC.TolikMerchant, Tick = 1234567890 } );
+    .Post(new QuestCompletedData{ Value = _completedQuest });
 ```
+
+#### Case: RTS player wants any free worker to start digging gold
+```csharp
+MessageBroadcaster
+    .PrepareCommand()
+    .WithUnlimitedLifeTime()
+    .Post(new DigGoldCommandTag());
+```
+
 ## Feauture Features
 - Singleton messages
 - Messages with multiple components
