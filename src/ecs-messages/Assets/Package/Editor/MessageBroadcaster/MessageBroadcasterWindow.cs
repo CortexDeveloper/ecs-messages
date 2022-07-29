@@ -1,4 +1,3 @@
-using CortexDeveloper.Messages.Examples;
 using CortexDeveloper.Messages.Service;
 using UnityEditor;
 using UnityEngine;
@@ -37,38 +36,38 @@ namespace CortexDeveloper.Messages.Editor
 
         private void DrawButtons()
         {
-            if (GUILayout.Button("Send Command(int)"))
-            {
-                MessageBroadcaster
-                    .PrepareCommand()
-                    .Post(new MessageIntData { Value = 123 } );
-            }
-
-            if (GUILayout.Button("Send Event(int) with 7 seconds life time"))
-            {
-                MessageBroadcaster
-                    .PrepareEvent()
-                    .WithLifeTime(7f)
-                    .Post(new MessageIntData { Value = 456 } );
-            }
-
-            if (GUILayout.Button("Send Event(int) with unlimited life time"))
-            {
-                MessageBroadcaster
-                    .PrepareEvent()
-                    .WithUnlimitedLifeTime()
-                    .Post(new MessageIntData { Value = 789 } );
-            }
-
-            if (GUILayout.Button("Send Event(int) with buffer"))
-            {
-                MessageIntData firstValue = new() { Value = 1 };
-                MessageIntData secondValue = new() { Value = 2 };
-                
-                MessageBroadcaster
-                    .PrepareCommand()
-                    .PostBuffer(new MessageIntBuffer { Value = firstValue }, new MessageIntBuffer { Value = secondValue } );
-            }
+            // if (GUILayout.Button("Send Command(int)"))
+            // {
+            //     MessageBroadcaster
+            //         .PrepareCommand()
+            //         .Post(new MessageIntData { Value = 123 } );
+            // }
+            //
+            // if (GUILayout.Button("Send Event(int) with 7 seconds life time"))
+            // {
+            //     MessageBroadcaster
+            //         .PrepareEvent()
+            //         .WithLifeTime(7f)
+            //         .Post(new MessageIntData { Value = 456 } );
+            // }
+            //
+            // if (GUILayout.Button("Send Event(int) with unlimited life time"))
+            // {
+            //     MessageBroadcaster
+            //         .PrepareEvent()
+            //         .WithUnlimitedLifeTime()
+            //         .Post(new MessageIntData { Value = 789 } );
+            // }
+            //
+            // if (GUILayout.Button("Send Event(int) with buffer"))
+            // {
+            //     MessageIntData firstValue = new() { Value = 1 };
+            //     MessageIntData secondValue = new() { Value = 2 };
+            //     
+            //     MessageBroadcaster
+            //         .PrepareCommand()
+            //         .PostBuffer(new MessageIntBuffer { Value = firstValue }, new MessageIntBuffer { Value = secondValue } );
+            // }
         }
     }
 }

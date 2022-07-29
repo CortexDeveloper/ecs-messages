@@ -59,6 +59,22 @@ namespace CortexDeveloper.Messages.Service
                 buffer.Add(elements[i]);
         }
 
+        //TODO implement :D
+        public static void RemoveAll()
+        {
+            
+        }
+        
+        public static void Remove<T>()
+        {
+            
+        } 
+
+        public static void RemoveBuffer<T>()
+        {
+            
+        }
+        
         private static void AddContextComponents(MessageBuilder builder, Entity messageEntity)
         {
             switch (builder.Context)
