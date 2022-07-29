@@ -158,7 +158,22 @@ namespace CortexDeveloper.Examples.Editor
                 MessageBroadcaster
                     .PrepareEvent()
                     .WithUnlimitedLifeTime()
-                    .Post(new QuestCompletedData{ Value = Quests.SavePrincess});
+                    .Post(new QuestCompletedData{ Value = _completedQuest});
+            }
+            
+            // Case 2
+            EditorGUILayout.LabelField("Case: RTS player wants any free worker to start digging gold.", EditorStyles.helpBox);
+            EditorGUILayout.LabelField("In this case we need to post message-command.\n" +
+                                       "Then listener systems should check is there any free worker.\n" +
+                                       "If there is no free workers wait.\n" +
+                                       "It will be alive until we manually delete it.", EditorStyles.textArea);
+
+            if (GUILayout.Button("Post Command: Quest Completed"))
+            {
+                MessageBroadcaster
+                    .PrepareCommand()
+                    .WithUnlimitedLifeTime()
+                    .Post(new DigGoldCommandTag());
             }
         }
     }

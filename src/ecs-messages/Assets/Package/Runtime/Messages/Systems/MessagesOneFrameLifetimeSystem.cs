@@ -10,6 +10,8 @@ namespace CortexDeveloper.Messages.Systems
         protected override void OnCreate()
         {
             _ecbSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+            
+            RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageLifetimeOneFrameTag>()));
         }
         
         protected override void OnUpdate()
@@ -17,7 +19,7 @@ namespace CortexDeveloper.Messages.Systems
             EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
             
             Entities
-                .ForEach((Entity entity, MessageLifetimeOneFrameTag oneFrameTag) => 
+                .ForEach((Entity entity, in MessageLifetimeOneFrameTag oneFrameTag) => 
                     ecb.DestroyEntity(entity))
                 .Schedule();
             

@@ -37,12 +37,12 @@ namespace CortexDeveloper.Messages.Editor
 
         private void DrawMessagesStats()
         {
-            EditorGUILayout.LabelField($"Active Messages(Events + Commands): {MessagesStats.ActiveMessagesCount}");
-            EditorGUILayout.LabelField($"Active Events: {MessagesStats.ActiveEventsCount}");
-            EditorGUILayout.LabelField($"Active Commands: {MessagesStats.ActiveCommandsCount}");
-            EditorGUILayout.LabelField($"Active OneFrame Messages: {MessagesStats.ActiveOneFrameMessagesCount}");
-            EditorGUILayout.LabelField($"Active TimeRange Messages: {MessagesStats.ActiveTimeRangeMessagesCount}");
-            EditorGUILayout.LabelField($"Active UnlimitedLifetime Messages: {MessagesStats.ActiveUnlimitedLifetimeMessagesCount}");
+            EditorGUILayout.LabelField($"Messages(Events + Commands): {MessagesStats.ActiveMessagesCount}");
+            EditorGUILayout.LabelField($"Events: {MessagesStats.ActiveEventsCount}");
+            EditorGUILayout.LabelField($"Commands: {MessagesStats.ActiveCommandsCount}");
+            EditorGUILayout.LabelField($"OneFrame Messages: {MessagesStats.ActiveOneFrameMessagesCount}");
+            EditorGUILayout.LabelField($"TimeRange Messages: {MessagesStats.ActiveTimeRangeMessagesCount}");
+            EditorGUILayout.LabelField($"UnlimitedLifetime Messages: {MessagesStats.ActiveUnlimitedLifetimeMessagesCount}");
         }
 
         private void DrawRemoveAPI()

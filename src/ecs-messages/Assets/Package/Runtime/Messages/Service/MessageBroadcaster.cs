@@ -1,3 +1,4 @@
+using System;
 using CortexDeveloper.Messages.Components;
 using Unity.Entities;
 
@@ -25,26 +26,23 @@ namespace CortexDeveloper.Messages.Service
             return messageBuilder;
         }
 
-        public static void RemoveAll()
-        {
-            
-        }
+        public static void RemoveAll() => 
+            PrepareCommand().Post(new RemoveAllMessagesCommand());
 
-        public static void RemoveWithLifetime(MessageLifetime lifetime)
-        {
-            
-        }
+        public static void RemoveWithLifetime(MessageLifetime lifetime) =>
+            PrepareCommand().Post(new RemoveMessagesByComponentCommand{ ComponentType = lifetime switch
+            {
+                MessageLifetime.OneFrame => new ComponentType(typeof(MessageLifetimeOneFrameTag)),
+                MessageLifetime.TimeRange => new ComponentType(typeof(MessageLifetimeTimeRange)),
+                MessageLifetime.Unlimited => new ComponentType(typeof(MessageLifetimeUnlimitedTag))
+            }});
 
-        public static void Remove<T>()
-        {
-            
-        }
+        public static void Remove<T>() where T : struct, IComponentData => 
+            PrepareCommand().Post(new RemoveMessagesByComponentCommand{ ComponentType = new ComponentType(typeof(T)) });
 
-        public static void RemoveBuffer<T>()
-        {
-            
-        }
-        
+        public static void RemoveBuffer<T>() where T : struct, IBufferElementData => 
+            PrepareCommand().Post(new RemoveMessagesByComponentCommand{ ComponentType = new ComponentType(typeof(DynamicBuffer<T>)) });
+
         private static MessageBuilder CreateMessageBuilder()
         {
             MessageBuilder messageBuilder = new();
