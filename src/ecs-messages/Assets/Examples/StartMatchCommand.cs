@@ -4,7 +4,7 @@ using Unity.Entities;
 namespace CortexDeveloper.Examples
 {
     [Serializable]
-    public struct StartMatchData : IComponentData
+    public struct StartMatchCommand : IComponentData
     {
         public Difficulty DifficultyLevel;
         public float MatchLength;

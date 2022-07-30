@@ -4,8 +4,5 @@ using Unity.Entities;
 namespace CortexDeveloper.Examples
 {
     [Serializable]
-    public struct QuestCompletedData: IComponentData
-    {
-        public Quests Value;
-    }
+    public struct PauseGameCommand : IComponentData { }
 }

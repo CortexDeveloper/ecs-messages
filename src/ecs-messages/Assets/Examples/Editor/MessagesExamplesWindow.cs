@@ -73,7 +73,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareCommand()
-                    .Post(new StartMatchData
+                    .Post(new StartMatchCommand
                     {
                         DifficultyLevel = _difficulty,
                         MatchLength = _matchLenght,
@@ -90,7 +90,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareCommand()
-                    .Post(new PauseGameData());
+                    .Post(new PauseGameCommand());
             }
             
             // Case 3
@@ -102,7 +102,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareEvent()
-                    .Post(new CharacterDeadData { Tick = 1234567890 });
+                    .Post(new CharacterDeadEvent { Tick = 1234567890 });
             }
         }
 
@@ -158,7 +158,7 @@ namespace CortexDeveloper.Examples.Editor
                 MessageBroadcaster
                     .PrepareEvent()
                     .WithUnlimitedLifeTime()
-                    .Post(new QuestCompletedData { Value = _completedQuest });
+                    .Post(new QuestCompletedEvent { Value = _completedQuest });
             }
             
             // Case 2
@@ -173,7 +173,7 @@ namespace CortexDeveloper.Examples.Editor
                 MessageBroadcaster
                     .PrepareCommand()
                     .WithUnlimitedLifeTime()
-                    .Post(new DigGoldCommandTag());
+                    .Post(new DigGoldCommand());
             }
         }
     }

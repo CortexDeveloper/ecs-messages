@@ -29,14 +29,23 @@ namespace CortexDeveloper.Messages.Service
         public static void RemoveAll() => 
             PrepareCommand().Post(new RemoveAllMessagesCommand());
 
-        public static void RemoveWithLifetime(MessageLifetime lifetime) =>
-            PrepareCommand().Post(new RemoveMessagesByComponentCommand{ ComponentType = lifetime switch
+        public static void RemoveWithLifetime(MessageLifetime lifetime)
+        {
+            switch (lifetime)
             {
-                MessageLifetime.OneFrame => new ComponentType(typeof(MessageLifetimeOneFrameTag)),
-                MessageLifetime.TimeRange => new ComponentType(typeof(MessageLifetimeTimeRange)),
-                MessageLifetime.Unlimited => new ComponentType(typeof(MessageLifetimeUnlimitedTag)),
-                _ => throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, "Unsupported Lifetime")
-            }});
+                case MessageLifetime.OneFrame:
+                    Remove<MessageLifetimeOneFrameTag>();
+                    break;
+                case MessageLifetime.TimeRange:
+                    Remove<MessageLifetimeTimeRange>();
+                    break;
+                case MessageLifetime.Unlimited:
+                    Remove<MessageLifetimeUnlimitedTag>();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, "Unsupported Lifetime type");
+            }
+        }
 
         public static void Remove<T>() where T : struct, IComponentData => 
             PrepareCommand().Post(new RemoveMessagesByComponentCommand{ ComponentType = new ComponentType(typeof(T)) });
