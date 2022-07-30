@@ -8,11 +8,7 @@ namespace CortexDeveloper.Messages.Editor
     {
         protected override void OnUpdate()
         {
-            EntityQuery allMessagesQuery = GetEntityQuery(new EntityQueryDesc
-            {
-                Any = new ComponentType[] { typeof(MessageContextEventTag), typeof(MessageContextCommandTag) }
-            });
-
+            EntityQuery allMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageTag)));
             EntityQuery allEventsQuery = GetEntityQuery(new ComponentType(typeof(MessageContextEventTag)));
             EntityQuery allCommandsQuery = GetEntityQuery(new ComponentType(typeof(MessageContextCommandTag)));
             EntityQuery allOneFrameMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageLifetimeOneFrameTag)));

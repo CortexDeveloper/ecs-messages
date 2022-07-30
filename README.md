@@ -194,6 +194,12 @@ This one is TimeRange type, so we can track how much time left to deletion.<br/>
 This one is OneFrame type, so it would be deleted on next frame.<br/>
 *StartMatchCommand* is common ECS component attached to command as content.<br/>
 
+### Examples Editor Window(only for source code)
+
+You can also explore examples *Tools/Messages Examples* if you download source code of package.<br/>
+
+![Source Code Examples](documentation/images/editor_source_code_examples_window.png)
+
 ## Next Versions Roadmap
 
 - Unique messages(only one instance of type can be active)

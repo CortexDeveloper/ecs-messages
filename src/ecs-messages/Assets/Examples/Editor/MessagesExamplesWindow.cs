@@ -111,7 +111,7 @@ namespace CortexDeveloper.Examples.Editor
             // Case 1 
             EditorGUILayout.LabelField("Case: Informing other non-gameplay related systems that there are two active debuffs.", EditorStyles.helpBox);
             EditorGUILayout.LabelField("In this case we need to post message-event with TimeRange Lifetime type. \n" +
-                                       "Message will be alive for 10 seconds and then would be deleted.", EditorStyles.textArea);
+                                       "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
 
             _firstDebuff = (Debuffs)EditorGUILayout.EnumPopup("First Debuff: ", _firstDebuff);
             _secondDebuff = (Debuffs)EditorGUILayout.EnumPopup("Second Debuff: ", _secondDebuff);

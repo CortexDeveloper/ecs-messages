@@ -89,6 +89,8 @@ namespace CortexDeveloper.Messages.Service
 
         private static void AddContextComponents(MessageBuilder builder, Entity messageEntity)
         {
+            builder.Ecb.AddComponent(messageEntity, new MessageTag());
+            
             switch (builder.Context)
             {
                 case MessageContext.Event:
