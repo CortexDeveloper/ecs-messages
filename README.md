@@ -20,7 +20,7 @@ There are a lot of reasons to implement UI logic via *Object Oriented Design*.<b
 So we need somehow connect our ECS gameplay parts and interface elements.<br/>
 For example communication between UI layer(buttons, swipe gesture) and ECS gameplay logic(start match by click, pause game).<br/>
 
-![UI magic](documentation/use_case_ui.png)
+![UI magic](documentation/images/use_case_ui.png)
 
 ### ECS Gameplay logic with Non-Gameplay logic 
 
@@ -29,7 +29,7 @@ Or classic architecture aproach interaction with high performance parts implemen
 As example we can talk about achivements. Our player suddendly met "Game Over" window but game designer wants to give you achivement as reward. Naive people...<br/>
 So, *CharacterDeathSystem* just post message that available only for **one frame** via service API and hopes that *AchievementsListenerSystem* will react somehow to this sad news.<br/>
 
-![Achiements happens..](documentation/use_case_achievement.png)
+![Achiements happens..](documentation/images/use_case_achievement.png)
 
 ## Idea
 
@@ -42,7 +42,7 @@ Command, despite they also just an entity with some components, **have intention
 In classic OOP paradigm command is a peace of logic that have form of object. But in Data Driven Design we can operate only with data.<br/>
 Practicaly it can be used as filter to separate commands and events with same components. 
 
-![Everything is message](documentation/data_driven_message.png)
+![Everything is message](documentation/images/data_driven_message.png)
 
 > Event - entity with bunch of components that notifies world about owner changed state.<br/> 
 > Command - entity with bunch of components that have intetion to change someones state.<br/>
@@ -150,7 +150,7 @@ MessageBroadcaster
 ### Remove API
 
 There are examples of API to remove active messages.<br/>
->> ! Current package version doesn't have a filters to remove only commands or events separetely.<br>
+> **_NOTE:_** Current package version doesn't have filters to remove commands or events separetely.<br>
 
 ```csharp
 // Remove all messages of TimeRange lifetime type 
@@ -168,7 +168,31 @@ MessageBroadcaster.RemoveAll();
 
 ## Editor Features
 
-*WIP*
+### Stats Window 
+Stats window can be accessed by *Tools/Message Broadcaster Stats*.<br/>
+It shows count of active messages by type and provide few API calls to remove messages via editor.<br/>
+
+![Stats Window](documentation/images/editor_stats_window.png)
+
+### Structure of message entity
+
+Lets discover few enteties from examples.<br/>
+
+#### DynamicBuffer as message content example
+
+![Buffer Inspector](documentation/images/editor_message_entity_buffer.png)
+
+*MessageContextEventTag* - internal stuff to mark entity as "message-event".<br/>
+This one is TimeRange type, so we can track how much time left to deletion.<br/>
+*DebuffData* is just a *DynamicBuffer* that attached to this event as content.<br/>
+
+#### IComponentData as message content example
+
+![Component Inspector](documentation/images/editor_message_entity_component.png)
+
+*MessageContextCommandTag* - internal stuff to mark entity as "message-command".<br/>
+This one is OneFrame type, so it would be deleted on next frame.<br/>
+*StartmatchCommand* is common ECS component attached to command as content.<br/>
 
 ## Next Versions Roadmap
 
