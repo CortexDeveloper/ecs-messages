@@ -192,7 +192,7 @@ This one is TimeRange type, so we can track how much time left to deletion.<br/>
 
 *MessageContextCommandTag* - internal stuff to mark entity as "message-command".<br/>
 This one is OneFrame type, so it would be deleted on next frame.<br/>
-*StartmatchCommand* is common ECS component attached to command as content.<br/>
+*StartMatchCommand* is common ECS component attached to command as content.<br/>
 
 ## Next Versions Roadmap
 
