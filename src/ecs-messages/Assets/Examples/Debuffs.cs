@@ -6,8 +6,8 @@ namespace CortexDeveloper.Examples
     public enum Debuffs
     {
         Undefined,
-        Stunned,
-        Poisoned,
+        Stun,
+        Poison,
         Roots
     }
 }
