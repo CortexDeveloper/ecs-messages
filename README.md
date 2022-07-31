@@ -2,6 +2,34 @@
 Simple way of communication between MonoBehaviours and ECS world.<br/>
 ...and a little bit of other cool features :D
 
+- [ecs-messages](#ecs-messages)
+  - [Overview](#overview)
+  - [Use Cases](#use-cases)
+    - [UI and ECS](#ui-and-ecs)
+    - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
+  - [Idea](#idea)
+  - [Code Examples](#code-examples)
+    - [Post API](#post-api)
+      - [One Frame Messages](#one-frame-messages)
+        - [Case: You need to start game by clicking Start button](#case-you-need-to-start-game-by-clicking-start-button)
+        - [Case: You need to pause game via UI button or in-game action](#case-you-need-to-pause-game-via-ui-button-or-in-game-action)
+        - [Case: You need to notify somebody that character died on this frame](#case-you-need-to-notify-somebody-that-character-died-on-this-frame)
+      - [Time Range Messages](#time-range-messages)
+        - [Case: Informing other non-gameplay related systems that there are two active debuffs](#case-informing-other-non-gameplay-related-systems-that-there-are-two-active-debuffs)
+        - [Case: Informing that quest available only for 600 seconds(10 minutes)](#case-informing-that-quest-available-only-for-600-seconds10-minutes)
+      - [Unlimited Lifetime Messages](#unlimited-lifetime-messages)
+        - [Case: Notify that quest is completed](#case-notify-that-quest-is-completed)
+        - [Case: RTS player wants any free worker to start digging gold](#case-rts-player-wants-any-free-worker-to-start-digging-gold)
+    - [Remove API](#remove-api)
+  - [Editor Features](#editor-features)
+    - [Stats Window](#stats-window)
+    - [Structure of message entity](#structure-of-message-entity)
+      - [IComponentData as message content example](#icomponentdata-as-message-content-example)
+      - [DynamicBuffer as message content example](#dynamicbuffer-as-message-content-example)
+    - [Examples Editor Window(only for source code)](#examples-editor-windowonly-for-source-code)
+  - [Next Versions Roadmap](#next-versions-roadmap)
+  - [Contacts](#contacts)
+
 ## Overview
 
 This messaging system for DOTS implementation of ECS solves some problems of messaging.<br/>
@@ -18,16 +46,17 @@ Key features:
 
 There are a lot of reasons to implement UI logic via *Object Oriented Design*.<br/>
 So we need somehow connect our ECS gameplay parts and interface elements.<br/>
-For example communication between UI layer(buttons, swipe gesture) and ECS gameplay logic(start match by click, pause game).<br/>
+For example start match by clicking button or react somehow when swiping up on mobile phone.<br/>
 
 ![UI magic](documentation/images/use_case_ui.png)
 
-### ECS Gameplay logic with Non-Gameplay logic 
+### Gameplay and Non-Gameplay/Meta Game
 
 It also OK for communication between ECS Systems without carying about entities-messages creation and deleting.<br/>
-Or classic architecture aproach interaction with high performance parts implemented with ECS pattern.<br/>
-As example we can talk about achivements. Our player suddendly met "Game Over" window but game designer wants to give you achivement as reward. Naive people...<br/>
+As example we can talk about achivements. Player lost match but game designer wants to give him achivement as reward. Naive people...<br/>
 So, *CharacterDeathSystem* just post message that available only for **one frame** via service API and hopes that *AchievementsListenerSystem* will react somehow to this sad news.<br/>
+
+Another good example is analytics. Tracking mechanisms can be built with messaging system.<br/>
 
 ![Achiements happens..](documentation/images/use_case_achievement.png)
 
@@ -56,13 +85,13 @@ Practicaly it can be used as filter to separate commands and events with same co
 Messages of this type will be alive only for one frame and then would be automatically deleted.<br/>
 Pay attention that dividing messages to "events" and "commands" performed more for semantic and filtering purposes.<br/>
 
-##### Case: You need to start game by clicking "Start" button
+##### Case: You need to start game by clicking Start button
 
 ```csharp             
 // Broadcast service API looks like:        
 MessageBroadcaster
     .PrepareCommand()
-    .Post(new StartMatchData
+    .Post(new StartMatchCommand
     {
         DifficultyLevel = Difficulty.Hard,
         MatchLength = 300f,
@@ -124,7 +153,7 @@ MessageBroadcaster
     .Post(new QuestAvailabilityData { Quest = Quests.SavePrincess });
 ```
 
-### Unlimited Lifetime Messages
+#### Unlimited Lifetime Messages
 
 Special messages that might be useful for cases when you dont know exactly the lifetime.<bt/>
 In this case you should manualy deal with it removing from world after usage.<br/>
@@ -178,14 +207,6 @@ It shows count of active messages by type and provide few API calls to remove me
 
 Lets discover few enteties from examples.<br/>
 
-#### DynamicBuffer as message content example
-
-![Buffer Inspector](documentation/images/editor_message_entity_buffer.png)
-
-*MessageContextEventTag* - internal stuff to mark entity as "message-event".<br/>
-This one is TimeRange type, so we can track how much time left to deletion.<br/>
-*DebuffData* is just a *DynamicBuffer* that attached to this event as content.<br/>
-
 #### IComponentData as message content example
 
 ![Component Inspector](documentation/images/editor_message_entity_component.png)
@@ -194,9 +215,17 @@ This one is TimeRange type, so we can track how much time left to deletion.<br/>
 This one is OneFrame type, so it would be deleted on next frame.<br/>
 *StartMatchCommand* is common ECS component attached to command as content.<br/>
 
+#### DynamicBuffer as message content example
+
+![Buffer Inspector](documentation/images/editor_message_entity_buffer.png)
+
+*MessageContextEventTag* - internal stuff to mark entity as "message-event".<br/>
+This one is TimeRange type, so we can track how much time left to deletion.<br/>
+*DebuffData* is just a *DynamicBuffer* that attached to this event as content.<br/>
+
 ### Examples Editor Window(only for source code)
 
-You can also explore examples *Tools/Messages Examples* if you download source code of package.<br/>
+You can also explore examples *Tools/Messages Examples* if you download package source code.<br/>
 
 ![Source Code Examples](documentation/images/editor_source_code_examples_window.png)
 
