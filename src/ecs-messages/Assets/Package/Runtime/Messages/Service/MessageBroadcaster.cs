@@ -48,12 +48,7 @@ namespace CortexDeveloper.Messages.Service
         public static void Post<T>(this MessageBuilder builder, T component) where T : struct, IComponentData
         {
             if (UniqueAttachmentAlreadyExist<T>(builder))
-            {
-#if UNITY_EDITOR
-                Debug.LogWarning($"Cannot post unique message {typeof(T)}. Active instance already exist.");
-#endif
                 return;
-            }
 
             EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
             Entity messageEntity = ecb.CreateEntity();
@@ -66,13 +61,8 @@ namespace CortexDeveloper.Messages.Service
         public static void PostBuffer<T>(this MessageBuilder builder, params T[] elements) where T : struct, IBufferElementData
         {
             if (UniqueAttachmentAlreadyExist<T>(builder))
-            {
-#if UNITY_EDITOR
-                Debug.LogWarning($"Cannot post unique message {typeof(T)}. Active instance already exist.");
-#endif
                 return;
-            }
-            
+
             EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
             Entity messageEntity = ecb.CreateEntity();
 
@@ -98,6 +88,11 @@ namespace CortexDeveloper.Messages.Service
             bool alreadyExist = query.CalculateEntityCount() > 0;
             
             descBuilder.Dispose();
+            
+#if UNITY_EDITOR
+            if (alreadyExist)
+                Debug.LogWarning($"Cannot post unique message {typeof(T)}. Active instance already exist.");
+#endif
             
             return alreadyExist;
         }
