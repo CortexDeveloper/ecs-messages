@@ -1,6 +1,8 @@
 ecs-messages
 ============
 
+![License bage](https://img.shields.io/badge/license-MIT-green)
+
 Simple way of communication between MonoBehaviours and ECS world.<br/>
 ...and a little bit of other cool features :D
 
