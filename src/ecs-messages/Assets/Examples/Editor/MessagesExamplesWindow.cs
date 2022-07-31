@@ -60,28 +60,6 @@ namespace CortexDeveloper.Examples.Editor
         private void DrawOneFrameExamples()
         {
             // Case 1
-            EditorGUILayout.LabelField("Case: You need to start game by clicking \"Start\" button.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("In this case we need to post message-command that we have intention to launch match with next settings:\n" +
-                                       $"{_difficulty.ToString()} difficulty level, {_matchLenght} lenght and {_enemiesCount} enemies count\n" +
-                                       "Message will be alive only for one frame and then would be deleted.", EditorStyles.textArea);
-            
-            _difficulty = (Difficulty)EditorGUILayout.EnumPopup("Difficulty: ", _difficulty);
-            _matchLenght = EditorGUILayout.FloatField("Match Length: ", _matchLenght);
-            _enemiesCount = EditorGUILayout.IntField("Enemies Count: ", _enemiesCount);
-            
-            if (GUILayout.Button("Post Command: Start Game"))
-            {
-                MessageBroadcaster
-                    .PrepareCommand()
-                    .Post(new StartMatchCommand
-                    {
-                        DifficultyLevel = _difficulty,
-                        MatchLength = _matchLenght,
-                        EnemiesCount = _enemiesCount
-                    });
-            }
-            
-            // Case 2
             EditorGUILayout.LabelField("Case: You need to pause game via UI button or in-game action.", EditorStyles.helpBox);
             EditorGUILayout.LabelField("In this case we need to post message-command that we have intention to pause game.\n" +
                                        "Message will be alive only for one frame and then would be deleted.", EditorStyles.textArea);
@@ -93,6 +71,29 @@ namespace CortexDeveloper.Examples.Editor
                     .Post(new PauseGameCommand());
             }
             
+            // Case 2
+            EditorGUILayout.LabelField("Case: You need to start game by clicking \"Start\" button.", EditorStyles.helpBox);
+            EditorGUILayout.LabelField("In this case we need to post message-command that we have intention to launch match with next settings:\n" +
+                                       $"{_difficulty.ToString()} difficulty level, {_matchLenght} lenght and {_enemiesCount} enemies count\n" +
+                                       "Message will be alive only for one frame and then would be deleted.", EditorStyles.textArea);
+            
+            _difficulty = (Difficulty)EditorGUILayout.EnumPopup("Difficulty: ", _difficulty);
+            _matchLenght = EditorGUILayout.FloatField("Match Length: ", _matchLenght);
+            _enemiesCount = EditorGUILayout.IntField("Enemies Count: ", _enemiesCount);
+            
+            if (GUILayout.Button("Post Unique Command: Start Game"))
+            {
+                MessageBroadcaster
+                    .PrepareCommand()
+                    .AsUnique()
+                    .Post(new StartMatchCommand
+                    {
+                        DifficultyLevel = _difficulty,
+                        MatchLength = _matchLenght,
+                        EnemiesCount = _enemiesCount
+                    });
+            }
+
             // Case 3
             EditorGUILayout.LabelField("Case: You need to notify somebody that character died on this frame.", EditorStyles.helpBox);
             EditorGUILayout.LabelField("In this case we need to post message-event that character died.\n" +

@@ -1,4 +1,6 @@
-# ecs-messages
+ecs-messages
+============
+
 Simple way of communication between MonoBehaviours and ECS world.<br/>
 ...and a little bit of other cool features :D
 
@@ -8,24 +10,15 @@ Simple way of communication between MonoBehaviours and ECS world.<br/>
     - [UI and ECS](#ui-and-ecs)
     - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
   - [Idea](#idea)
+  - [Features](#features)
+    - [Lifetime Types](#lifetime-types)
+    - [Unique Messages](#unique-messages)
   - [Code Examples](#code-examples)
     - [Post API](#post-api)
-      - [One Frame Messages](#one-frame-messages)
-        - [Case: You need to start game by clicking Start button](#case-you-need-to-start-game-by-clicking-start-button)
-        - [Case: You need to pause game via UI button or in-game action](#case-you-need-to-pause-game-via-ui-button-or-in-game-action)
-        - [Case: You need to notify somebody that character died on this frame](#case-you-need-to-notify-somebody-that-character-died-on-this-frame)
-      - [Time Range Messages](#time-range-messages)
-        - [Case: Informing other non-gameplay related systems that there are two active debuffs](#case-informing-other-non-gameplay-related-systems-that-there-are-two-active-debuffs)
-        - [Case: Informing that quest available only for 600 seconds(10 minutes)](#case-informing-that-quest-available-only-for-600-seconds10-minutes)
-      - [Unlimited Lifetime Messages](#unlimited-lifetime-messages)
-        - [Case: Notify that quest is completed](#case-notify-that-quest-is-completed)
-        - [Case: RTS player wants any free worker to start digging gold](#case-rts-player-wants-any-free-worker-to-start-digging-gold)
     - [Remove API](#remove-api)
   - [Editor Features](#editor-features)
     - [Stats Window](#stats-window)
     - [Structure of message entity](#structure-of-message-entity)
-      - [IComponentData as message content example](#icomponentdata-as-message-content-example)
-      - [DynamicBuffer as message content example](#dynamicbuffer-as-message-content-example)
     - [Examples Editor Window(only for source code)](#examples-editor-windowonly-for-source-code)
   - [Next Versions Roadmap](#next-versions-roadmap)
   - [Contacts](#contacts)
@@ -36,9 +29,9 @@ This messaging system for DOTS implementation of ECS solves some problems of mes
 It can be used as bridge between MonoBehavior based logic and ECS based logic or interaction service for ECS systems.<br/>
 
 Key features:
-- Simple API
+- Simple API that ease to read
 - Handling messages lifetime(creation details, auto deleting according to configured rules, etc)
-- Supports any *IComponentData* or *IBufferElementData* as message content
+- Supports *IComponentData* or *IBufferElementData* as message content
 
 ## Use Cases
 
@@ -76,6 +69,33 @@ Practicaly it can be used as filter to separate commands and events with same co
 > Event - entity with bunch of components that notifies world about owner changed state.<br/> 
 > Command - entity with bunch of components that have intetion to change someones state.<br/>
 
+## Features
+
+### Lifetime Types
+
+Message can be one of three types:
+ - OneFrame
+ - TimeRange
+ - Unlimited
+
+*OneFrame* - message will live only one frame and then would be deleted.<br/> 
+Removing handled by service.
+
+*TimeRange* - message will live amount of time that was configured on message creation.<br/> 
+Messages with limited lifetime bound to real time.<br/>
+Auto deleting still managed by broadcaster service.<br/>
+
+*Unlimited* - unmanaged by service type.<br/> 
+Special messages that might be useful for cases when you don't know exactly the lifetime.<bt/>
+In this case you should manually deal with it removing from world after usage.<br/>
+
+### Unique Messages
+
+Message can be marked as ***unique***. In this case you cannot post another one message if same type already active.<br/>
+This feature might be useful for different cases. Lets say, you want to inform player that magic portal is opened now.<br/>
+Gameplay systems can try to post this message more than once for . But message-command marked as ***unique*** won't be posted twice in row. 
+Check code examples to discover more detailed explanation how it works.<br/>
+
 ## Code Examples
 
 ### Post API
@@ -85,12 +105,26 @@ Practicaly it can be used as filter to separate commands and events with same co
 Messages of this type will be alive only for one frame and then would be automatically deleted.<br/>
 Pay attention that dividing messages to "events" and "commands" performed more for semantic and filtering purposes.<br/>
 
+##### Case: You need to pause game via UI button or in-game action
+
+```csharp
+// Just start from method PrepareCommand() in static class MessageBroadcaster and then call Post(...).
+MessageBroadcaster
+    .PrepareCommand()
+    .Post(new PauseGameCommand());
+
+// Command is just a component
+public struct PauseGameCommand : IComponentData { }
+```
+
 ##### Case: You need to start game by clicking Start button
 
 ```csharp             
-// Broadcast service API looks like:        
+// Very similar situation as previous but here used AsUnique() configuration.
+// This means that message wont be posted if there is already an active message of this type.      
 MessageBroadcaster
     .PrepareCommand()
+    .AsUnique()
     .Post(new StartMatchCommand
     {
         DifficultyLevel = Difficulty.Hard,
@@ -98,24 +132,12 @@ MessageBroadcaster
         EnemiesCount = 25
     });
 
-// Where command just a common struct with implemented IComponentData interface
 public struct StartMatchCommand : IComponentData
 {
     public Difficulty DifficultyLevel;
     public float MatchLength;
     public int EnemiesCount;
 }
-```
-##### Case: You need to pause game via UI button or in-game action
-
-```csharp
-// Same flow goes here too
-MessageBroadcaster
-    .PrepareCommand()
-    .Post(new PauseGameCommand());
-
-// Component without any fields
-public struct PauseGameCommand : IComponentData { }
 ```
 
 ##### Case: You need to notify somebody that character died on this frame
@@ -127,21 +149,20 @@ MessageBroadcaster
 
 #### Time Range Messages
 
-Messages with limited lifetime bound to real time.<br/>
-Auto deleting still managed by broadcaster service.<br/>
-
 ##### Case: Informing other non-gameplay related systems that there are two active debuffs
 
 ```csharp
-// Here we add additional params to mark message as TimeRange type
-// It will be automatically deleted after 10 seconds
-// Also we used API that work with IBufferElementData interface to attach multiple elements to message
+// Here we add additional configuration WithLifeTime(...) to mark message as TimeRange type.
+// It wont be posted if there is already an active message of this type.
+// It will be automatically deleted after 10 seconds.
+// Also we used API that work with IBufferElementData interface to attach multiple elements to message.
 MessageBroadcaster
     .PrepareEvent()
+    .AsUnique()
     .WithLifeTime(10f)
     .PostBuffer(
         new DebuffData { Value = Debuffs.Stun },
-        new DebuffData { Value = Debuffs.Poisoned });
+        new DebuffData { Value = Debuffs.Poison });
 ```
 
 ##### Case: Informing that quest available only for 600 seconds(10 minutes)
@@ -154,9 +175,6 @@ MessageBroadcaster
 ```
 
 #### Unlimited Lifetime Messages
-
-Special messages that might be useful for cases when you dont know exactly the lifetime.<bt/>
-In this case you should manualy deal with it removing from world after usage.<br/>
 
 ##### Case: Notify that quest is completed
 
