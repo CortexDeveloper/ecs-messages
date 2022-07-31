@@ -36,7 +36,7 @@ namespace CortexDeveloper.Messages.Service
             PrepareCommand().Post(new RemoveMessagesByComponentCommand{ ComponentType = new ComponentType(typeof(T)) });
 
         public static void RemoveBuffer<T>() where T : struct, IBufferElementData => 
-            PrepareCommand().Post(new RemoveMessagesByComponentCommand{ ComponentType = new ComponentType(typeof(DynamicBuffer<T>)) });
+            PrepareCommand().Post(new RemoveMessagesByComponentCommand{ ComponentType = new ComponentType(typeof(T)) });
     }
 
     public static class MessageBuilderExtensions
@@ -65,9 +65,13 @@ namespace CortexDeveloper.Messages.Service
 
         public static void PostBuffer<T>(this MessageBuilder builder, params T[] elements) where T : struct, IBufferElementData
         {
-            // TODO something went wrong, dont work with DynamicBuffer. Fix this little shit :D
-            if (UniqueAttachmentAlreadyExist<DynamicBuffer<T>>(builder))
+            if (UniqueAttachmentAlreadyExist<T>(builder))
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning($"Cannot post unique message {typeof(T)}. Active instance already exist.");
+#endif
                 return;
+            }
             
             EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
             Entity messageEntity = ecb.CreateEntity();
