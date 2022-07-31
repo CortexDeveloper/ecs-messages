@@ -1,5 +1,3 @@
-using Unity.Entities;
-
 namespace CortexDeveloper.Messages.Service
 {
     public struct MessageBuilder
@@ -9,8 +7,6 @@ namespace CortexDeveloper.Messages.Service
         internal float Seconds;
         internal bool IsUnique;
         
-        internal EntityCommandBuffer Ecb;
-
         public MessageBuilder WithLifeTime(float seconds)
         {
             Lifetime = MessageLifetime.TimeRange;

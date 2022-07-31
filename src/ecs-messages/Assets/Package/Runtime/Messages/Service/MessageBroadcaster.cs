@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using CortexDeveloper.Messages.Components;
 using Unity.Collections;
 using Unity.Entities;
@@ -9,15 +7,11 @@ namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBroadcaster
     {
-        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
-        private static EndSimulationEntityCommandBufferSystem EcbSystem => 
-            _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-        
         public static MessageBuilder PrepareEvent() => 
-            CreateMessageBuilder(MessageContext.Event);
+            new() {Context = MessageContext.Event};
 
         public static MessageBuilder PrepareCommand() => 
-            CreateMessageBuilder(MessageContext.Command);
+            new() {Context = MessageContext.Command};
 
         public static void RemoveAll() => 
             PrepareCommand().Post(new RemoveAllMessagesCommand());
@@ -43,20 +37,14 @@ namespace CortexDeveloper.Messages.Service
 
         public static void RemoveBuffer<T>() where T : struct, IBufferElementData => 
             PrepareCommand().Post(new RemoveMessagesByComponentCommand{ ComponentType = new ComponentType(typeof(DynamicBuffer<T>)) });
-
-        private static MessageBuilder CreateMessageBuilder(MessageContext context)
-        {
-            MessageBuilder messageBuilder = new();
-            
-            messageBuilder.Ecb = EcbSystem.CreateCommandBuffer();
-            messageBuilder.Context = context;
-            
-            return messageBuilder;
-        }
     }
 
-    public static class MessageBuilderExtension
+    public static class MessageBuilderExtensions
     {
+        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
+        private static EndSimulationEntityCommandBufferSystem EcbSystem => 
+            _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        
         public static void Post<T>(this MessageBuilder builder, T component) where T : struct, IComponentData
         {
             if (UniqueAttachmentAlreadyExist<T>(builder))
@@ -67,11 +55,12 @@ namespace CortexDeveloper.Messages.Service
                 return;
             }
 
-            Entity messageEntity = builder.Ecb.CreateEntity();
+            EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
+            Entity messageEntity = ecb.CreateEntity();
 
-            AddInternalComponents(builder, messageEntity);
+            AddInternalComponents(builder, messageEntity, ecb);
 
-            builder.Ecb.AddComponent(messageEntity, component);
+            ecb.AddComponent(messageEntity, component);
         }
 
         public static void PostBuffer<T>(this MessageBuilder builder, params T[] elements) where T : struct, IBufferElementData
@@ -80,11 +69,12 @@ namespace CortexDeveloper.Messages.Service
             if (UniqueAttachmentAlreadyExist<DynamicBuffer<T>>(builder))
                 return;
             
-            Entity messageEntity = builder.Ecb.CreateEntity();
+            EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
+            Entity messageEntity = ecb.CreateEntity();
 
-            AddInternalComponents(builder, messageEntity);
+            AddInternalComponents(builder, messageEntity, ecb);
             
-            DynamicBuffer<T> buffer = builder.Ecb.AddBuffer<T>(messageEntity);
+            DynamicBuffer<T> buffer = ecb.AddBuffer<T>(messageEntity);
             
             for (int i = 0; i < elements.Length; i++) 
                 buffer.Add(elements[i]);
@@ -108,42 +98,42 @@ namespace CortexDeveloper.Messages.Service
             return alreadyExist;
         }
 
-        private static void AddInternalComponents(MessageBuilder builder, Entity messageEntity)
+        private static void AddInternalComponents(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
         {
             if (builder.IsUnique)
-                builder.Ecb.AddComponent<MessageUniqueTag>(messageEntity);
+                ecb.AddComponent<MessageUniqueTag>(messageEntity);
 
-            AddContextComponents(builder, messageEntity);
-            AddLifetimeComponents(builder, messageEntity);
+            AddContextComponents(builder, messageEntity, ecb);
+            AddLifetimeComponents(builder, messageEntity, ecb);
         }
 
-        private static void AddContextComponents(MessageBuilder builder, Entity messageEntity)
+        private static void AddContextComponents(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
         {
-            builder.Ecb.AddComponent(messageEntity, new MessageTag());
+            ecb.AddComponent(messageEntity, new MessageTag());
             
             switch (builder.Context)
             {
                 case MessageContext.Event:
-                    builder.Ecb.AddComponent(messageEntity, new MessageContextEventTag());
+                    ecb.AddComponent(messageEntity, new MessageContextEventTag());
                     break;
                 case MessageContext.Command:
-                    builder.Ecb.AddComponent(messageEntity, new MessageContextCommandTag());
+                    ecb.AddComponent(messageEntity, new MessageContextCommandTag());
                     break;
             }
         }
 
-        private static void AddLifetimeComponents(MessageBuilder builder, Entity messageEntity)
+        private static void AddLifetimeComponents(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
         {
             switch (builder.Lifetime)
             {
                 case MessageLifetime.OneFrame:
-                    builder.Ecb.AddComponent(messageEntity, new MessageLifetimeOneFrameTag());
+                    ecb.AddComponent(messageEntity, new MessageLifetimeOneFrameTag());
                     break;
                 case MessageLifetime.TimeRange:
-                    builder.Ecb.AddComponent(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = builder.Seconds });
+                    ecb.AddComponent(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = builder.Seconds });
                     break;
                 case MessageLifetime.Unlimited:
-                    builder.Ecb.AddComponent(messageEntity, new MessageLifetimeUnlimitedTag());
+                    ecb.AddComponent(messageEntity, new MessageLifetimeUnlimitedTag());
                     break;
             }
         }
