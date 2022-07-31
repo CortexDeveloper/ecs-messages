@@ -60,28 +60,6 @@ namespace CortexDeveloper.Examples.Editor
         private void DrawOneFrameExamples()
         {
             // Case 1
-            EditorGUILayout.LabelField("Case: You need to start game by clicking \"Start\" button.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("In this case we need to post message-command that we have intention to launch match with next settings:\n" +
-                                       $"{_difficulty.ToString()} difficulty level, {_matchLenght} lenght and {_enemiesCount} enemies count\n" +
-                                       "Message will be alive only for one frame and then would be deleted.", EditorStyles.textArea);
-            
-            _difficulty = (Difficulty)EditorGUILayout.EnumPopup("Difficulty: ", _difficulty);
-            _matchLenght = EditorGUILayout.FloatField("Match Length: ", _matchLenght);
-            _enemiesCount = EditorGUILayout.IntField("Enemies Count: ", _enemiesCount);
-            
-            if (GUILayout.Button("Post Command: Start Game"))
-            {
-                MessageBroadcaster
-                    .PrepareCommand()
-                    .Post(new StartMatchCommand
-                    {
-                        DifficultyLevel = _difficulty,
-                        MatchLength = _matchLenght,
-                        EnemiesCount = _enemiesCount
-                    });
-            }
-            
-            // Case 2
             EditorGUILayout.LabelField("Case: You need to pause game via UI button or in-game action.", EditorStyles.helpBox);
             EditorGUILayout.LabelField("In this case we need to post message-command that we have intention to pause game.\n" +
                                        "Message will be alive only for one frame and then would be deleted.", EditorStyles.textArea);
@@ -93,6 +71,29 @@ namespace CortexDeveloper.Examples.Editor
                     .Post(new PauseGameCommand());
             }
             
+            // Case 2
+            EditorGUILayout.LabelField("Case: You need to start game by clicking \"Start\" button.", EditorStyles.helpBox);
+            EditorGUILayout.LabelField("In this case we need to post message-command that we have intention to launch match with next settings:\n" +
+                                       $"{_difficulty.ToString()} difficulty level, {_matchLenght} lenght and {_enemiesCount} enemies count\n" +
+                                       "Message will be alive only for one frame and then would be deleted.", EditorStyles.textArea);
+            
+            _difficulty = (Difficulty)EditorGUILayout.EnumPopup("Difficulty: ", _difficulty);
+            _matchLenght = EditorGUILayout.FloatField("Match Length: ", _matchLenght);
+            _enemiesCount = EditorGUILayout.IntField("Enemies Count: ", _enemiesCount);
+            
+            if (GUILayout.Button("Post Unique Command: Start Game"))
+            {
+                MessageBroadcaster
+                    .PrepareCommand()
+                    .AsUnique()
+                    .Post(new StartMatchCommand
+                    {
+                        DifficultyLevel = _difficulty,
+                        MatchLength = _matchLenght,
+                        EnemiesCount = _enemiesCount
+                    });
+            }
+
             // Case 3
             EditorGUILayout.LabelField("Case: You need to notify somebody that character died on this frame.", EditorStyles.helpBox);
             EditorGUILayout.LabelField("In this case we need to post message-event that character died.\n" +
@@ -127,7 +128,30 @@ namespace CortexDeveloper.Examples.Editor
                         new DebuffData{ Value = _secondDebuff });
             }
             
-            // Case 2
+            if (GUILayout.Button("Remove Event: Debuffs State")) 
+                MessageBroadcaster.RemoveBuffer<DebuffData>();
+
+            // Case 2 
+            EditorGUILayout.LabelField("Case: Informing other non-gameplay related systems that there are two active debuffs.", EditorStyles.helpBox);
+            EditorGUILayout.LabelField("Same as previous but message is unique. \n" +
+                                       "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
+
+            _firstDebuff = (Debuffs)EditorGUILayout.EnumPopup("First Debuff: ", _firstDebuff);
+            _secondDebuff = (Debuffs)EditorGUILayout.EnumPopup("Second Debuff: ", _secondDebuff);
+            _debuffDuration = EditorGUILayout.FloatField("Debuff Duration: ", _debuffDuration);
+
+            if (GUILayout.Button("Post Unique Event: Debuffs State"))
+            {
+                MessageBroadcaster
+                    .PrepareEvent()
+                    .AsUnique()
+                    .WithLifeTime(_debuffDuration)
+                    .PostBuffer(
+                        new DebuffData{ Value = _firstDebuff },
+                        new DebuffData{ Value = _secondDebuff });
+            }
+            
+            // Case 3
             EditorGUILayout.LabelField("Case: Informing that quest available only for N seconds.", EditorStyles.helpBox);
             EditorGUILayout.LabelField("In this case we need to post message-event with TimeRange Lifetime type.\n" +
                                        "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
@@ -172,6 +196,24 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareCommand()
+                    .WithUnlimitedLifeTime()
+                    .Post(new DigGoldCommand());
+            }
+            
+            if (GUILayout.Button("Remove Command: Dig Gold")) 
+                MessageBroadcaster.Remove<DigGoldCommand>();
+            
+            // Case 3
+            EditorGUILayout.LabelField("Case: RTS player wants any free worker to start digging gold.", EditorStyles.helpBox);
+            EditorGUILayout.LabelField("Same situation but we want to have only one active instance of this command.\n" +
+                                       "So, after command posting there would restriction to post one more until first is alive.\n" +
+                                       "It will be alive until we manually delete it.", EditorStyles.textArea);
+
+            if (GUILayout.Button("Post Unique Command: Dig Gold"))
+            {
+                MessageBroadcaster
+                    .PrepareCommand()
+                    .AsUnique()
                     .WithUnlimitedLifeTime()
                     .Post(new DigGoldCommand());
             }

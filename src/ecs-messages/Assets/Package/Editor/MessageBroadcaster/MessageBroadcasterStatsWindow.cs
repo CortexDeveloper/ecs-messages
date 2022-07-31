@@ -40,6 +40,8 @@ namespace CortexDeveloper.Messages.Editor
             EditorGUILayout.LabelField($"Messages(Events + Commands): {MessagesStats.ActiveMessagesCount}");
             EditorGUILayout.LabelField($"Events: {MessagesStats.ActiveEventsCount}");
             EditorGUILayout.LabelField($"Commands: {MessagesStats.ActiveCommandsCount}");
+            EditorGUILayout.LabelField($"Unique Messages: {MessagesStats.ActiveUniqueCount}");
+            
             EditorGUILayout.LabelField($"OneFrame Messages: {MessagesStats.ActiveOneFrameMessagesCount}");
             EditorGUILayout.LabelField($"TimeRange Messages: {MessagesStats.ActiveTimeRangeMessagesCount}");
             EditorGUILayout.LabelField($"UnlimitedLifetime Messages: {MessagesStats.ActiveUnlimitedLifetimeMessagesCount}");
