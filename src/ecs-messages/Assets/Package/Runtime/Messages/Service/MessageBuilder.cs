@@ -7,6 +7,7 @@ namespace CortexDeveloper.Messages.Service
         internal MessageContext Context; 
         internal MessageLifetime Lifetime;
         internal float Seconds;
+        internal bool IsUnique;
         
         internal EntityCommandBuffer Ecb;
 
@@ -21,6 +22,13 @@ namespace CortexDeveloper.Messages.Service
         public MessageBuilder WithUnlimitedLifeTime()
         {
             Lifetime = MessageLifetime.Unlimited;
+
+            return this;
+        }
+
+        public MessageBuilder AsUnique()
+        {
+            IsUnique = true;
 
             return this;
         }

@@ -5,6 +5,7 @@ namespace CortexDeveloper.Messages.Editor
         public static int ActiveMessagesCount;
         public static int ActiveEventsCount;
         public static int ActiveCommandsCount;
+        public static int ActiveUniqueCount;
         
         public static int ActiveOneFrameMessagesCount;
         public static int ActiveTimeRangeMessagesCount;
