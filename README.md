@@ -4,24 +4,23 @@ ecs-messages
 Simple way of communication between MonoBehaviours and ECS world.<br/>
 ...and a little bit of other cool features :D
 
-- [ecs-messages](#ecs-messages)
-  - [Overview](#overview)
-  - [Use Cases](#use-cases)
-    - [UI and ECS](#ui-and-ecs)
-    - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
-  - [Idea](#idea)
-  - [Features](#features)
-    - [Lifetime Types](#lifetime-types)
-    - [Unique Messages](#unique-messages)
-  - [Code Examples](#code-examples)
-    - [Post API](#post-api)
-    - [Remove API](#remove-api)
-  - [Editor Features](#editor-features)
-    - [Stats Window](#stats-window)
-    - [Structure of message entity](#structure-of-message-entity)
-    - [Examples Editor Window(only for source code)](#examples-editor-windowonly-for-source-code)
-  - [Next Versions Roadmap](#next-versions-roadmap)
-  - [Contacts](#contacts)
+- [Overview](#overview)
+- [Use Cases](#use-cases)
+  - [UI and ECS](#ui-and-ecs)
+  - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
+- [Idea](#idea)
+- [Features](#features)
+  - [Lifetime Types](#lifetime-types)
+  - [Unique Messages](#unique-messages)
+- [Code Examples](#code-examples)
+  - [Post API](#post-api)
+  - [Remove API](#remove-api)
+- [Editor Features](#editor-features)
+  - [Stats Window](#stats-window)
+  - [Structure of message entity](#structure-of-message-entity)
+  - [Examples Editor Window(only for source code)](#examples-editor-windowonly-for-source-code)
+- [Next Versions Roadmap](#next-versions-roadmap)
+- [Contacts](#contacts)
 
 ## Overview
 
@@ -49,7 +48,7 @@ It also OK for communication between ECS Systems without carying about entities-
 As example we can talk about achivements. Player lost match but game designer wants to give him achivement as reward. Naive people...<br/>
 So, *CharacterDeathSystem* just post message that available only for **one frame** via service API and hopes that *AchievementsListenerSystem* will react somehow to this sad news.<br/>
 
-Another good example is analytics. Tracking mechanisms can be built with messaging system.<br/>
+Another good example is analytics. Tracking mechanisms can be built with messaging system too.<br/>
 
 ![Achiements happens..](documentation/images/use_case_achievement.png)
 
@@ -92,8 +91,9 @@ In this case you should manually deal with it removing from world after usage.<b
 ### Unique Messages
 
 Message can be marked as ***unique***. In this case you cannot post another one message if same type already active.<br/>
-This feature might be useful for different cases. Lets say, you want to inform player that magic portal is opened now.<br/>
-Gameplay systems can try to post this message more than once for . But message-command marked as ***unique*** won't be posted twice in row. 
+This feature might be useful for different cases. Let's say, you want to inform your teamate that magic portal is opened for 30 seconds.<br/>
+You post event by clicking some buttom. What will happen if start spamming it? A lot of duplicates of event would be posted.<br/>
+Event marked as ***unique*** won't be posted twice in row and prevents this kind of situtations.<br/> 
 Check code examples to discover more detailed explanation how it works.<br/>
 
 ## Code Examples
@@ -153,7 +153,7 @@ MessageBroadcaster
 
 ```csharp
 // Here we add additional configuration WithLifeTime(...) to mark message as TimeRange type.
-// It wont be posted if there is already an active message of this type.
+// It won't be posted if there is already an active message of this type.
 // It will be automatically deleted after 10 seconds.
 // Also we used API that work with IBufferElementData interface to attach multiple elements to message.
 MessageBroadcaster
