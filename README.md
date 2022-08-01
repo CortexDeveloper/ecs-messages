@@ -1,3 +1,5 @@
+![Logo](documentation/images/title_logo.png)
+
 ecs-messages
 ============
 
@@ -7,6 +9,7 @@ Simple way of communication between MonoBehaviours and ECS world.<br/>
 ...and a little bit of other cool features :D
 
 - [Overview](#overview)
+- [Installation](#installation)
 - [Use Cases](#use-cases)
   - [UI and ECS](#ui-and-ecs)
   - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
@@ -33,6 +36,15 @@ Key features:
 - Simple API that ease to read
 - Handling messages lifetime(creation details, auto deleting according to configured rules, etc)
 - Supports *IComponentData* or *IBufferElementData* as message content
+
+## Installation
+
+There are two ways to install the package.<br/>
+Add package via Package Manager -> Add package from git URL.<br/>
+Path shoud looks like:<br/> 
+https://github.com/CortexDeveloper/ecs-messages.git?path=src/ecs-messages/Assets/Package#x.x.x"
+
+Clone repository into your project
 
 ## Use Cases
 
@@ -123,7 +135,7 @@ public struct PauseGameCommand : IComponentData { }
 
 ```csharp             
 // Very similar situation as previous but here used AsUnique() configuration.
-// This means that message wont be posted if there is already an active message of this type.      
+// This means that message won't be posted if there is already an active message of this type.      
 MessageBroadcaster
     .PrepareCommand()
     .AsUnique()
