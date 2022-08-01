@@ -38,6 +38,8 @@ Key features:
 - Handling messages lifetime(creation details, auto deleting according to configured rules, etc)
 - Supports *IComponentData* or *IBufferElementData* as message content
 
+> Tested with Unity DOTS ECS v0.51.0-preview.32 and Unity 2021.3.6f1
+
 ## Installation
 
 Add package via Package Manager -> Add package from git URL.<br/>
