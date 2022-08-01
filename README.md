@@ -3,7 +3,8 @@
 ecs-messages
 ============
 
-![License bage](https://img.shields.io/badge/license-MIT-green)
+![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.1.1-blue)
+
 
 Simple way of communication between MonoBehaviours and ECS world.<br/>
 ...and a little bit of other cool features :D
@@ -39,12 +40,14 @@ Key features:
 
 ## Installation
 
-There are two ways to install the package.<br/>
 Add package via Package Manager -> Add package from git URL.<br/>
-Path shoud looks like:<br/> 
-https://github.com/CortexDeveloper/ecs-messages.git?path=src/ecs-messages/Assets/Package#x.x.x"
+Package path in "manifest.json" shoud looks like:<br/> 
+https://github.com/CortexDeveloper/ecs-messages.git?path=src/ecs-messages/Assets/Package#x.x.x"<br/>
+Where "x.x.x" is version of package. Also pay attention that package code located in "Assets/Package".<br/>
 
-Clone repository into your project
+Or simply clone repository into your project.
+
+> Later versions will be added to OpenUPM too
 
 ## Use Cases
 
