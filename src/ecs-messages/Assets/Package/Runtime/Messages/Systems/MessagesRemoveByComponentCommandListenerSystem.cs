@@ -1,9 +1,11 @@
 using CortexDeveloper.Messages.Components;
+using CortexDeveloper.Messages.SystemGroups;
 using Unity.Collections;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
+    [UpdateInGroup(typeof(MessagesSystemGroup))]
     public partial class MessagesRemoveByLifetimeCommandListenerSystem : SystemBase
     {
         private EntityCommandBufferSystem _ecbSystem;

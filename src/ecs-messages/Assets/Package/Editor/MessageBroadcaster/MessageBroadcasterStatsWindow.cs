@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using CortexDeveloper.Messages.Service;
+using Unity.Entities;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,6 +16,20 @@ namespace CortexDeveloper.Messages.Editor
         private int _logsEnabled;
         
         private MessageLifetime _messageLifetimeFilter;
+
+        public int PostRequestsCount
+        {
+            get
+            {
+                FieldInfo postRequestsFieldInfo = typeof(MessageBroadcaster).GetField(
+                    "PostRequests", 
+                    BindingFlags.NonPublic | BindingFlags.Static);
+
+                HashSet<ComponentType> value = postRequestsFieldInfo.GetValue(null) as HashSet<ComponentType>;
+                    
+                return value.Count;
+            }
+        }
 
         [MenuItem("Tools/Message Broadcaster")]
         public static void Init()
@@ -56,7 +74,7 @@ namespace CortexDeveloper.Messages.Editor
 
         private void DrawSettings()
         {
-            EditorGUILayout.LabelField($"Broadcaster Logs Enables: {PlayerPrefs.GetInt(LogsEnabledKey, 1)}");
+            EditorGUILayout.LabelField($"Broadcaster Logs Enabled: {Convert.ToBoolean(PlayerPrefs.GetInt(LogsEnabledKey, 1))}");
             EditorGUILayout.Space(25f);
 
             if (GUILayout.Button("Enable Debug Logs")) 
@@ -71,13 +89,17 @@ namespace CortexDeveloper.Messages.Editor
             EditorGUILayout.LabelField($"Messages(Events + Commands): {MessagesStats.ActiveMessagesCount}");
             EditorGUILayout.LabelField($"Events: {MessagesStats.ActiveEventsCount}");
             EditorGUILayout.LabelField($"Commands: {MessagesStats.ActiveCommandsCount}");
-            EditorGUILayout.LabelField($"Unique Messages: {MessagesStats.ActiveUniqueCount}");
-            
-            EditorGUILayout.LabelField($"OneFrame Messages: {MessagesStats.ActiveOneFrameMessagesCount}");
-            EditorGUILayout.LabelField($"TimeRange Messages: {MessagesStats.ActiveTimeRangeMessagesCount}");
-            EditorGUILayout.LabelField($"UnlimitedLifetime Messages: {MessagesStats.ActiveUnlimitedLifetimeMessagesCount}");
-        }
+            EditorGUILayout.Space(10f);
 
+            EditorGUILayout.LabelField($"Unique: {MessagesStats.ActiveUniqueCount}");
+            EditorGUILayout.LabelField($"Post Requests: {PostRequestsCount}");
+            EditorGUILayout.Space(10f);
+
+            EditorGUILayout.LabelField($"OneFrame: {MessagesStats.ActiveOneFrameMessagesCount}");
+            EditorGUILayout.LabelField($"TimeRange: {MessagesStats.ActiveTimeRangeMessagesCount}");
+            EditorGUILayout.LabelField($"Unlimited: {MessagesStats.ActiveUnlimitedLifetimeMessagesCount}");
+        }
+        
         private void DrawRemoveAPI()
         {
             _messageLifetimeFilter = (MessageLifetime)EditorGUILayout.EnumPopup("Lifetime Filter: ", _messageLifetimeFilter);

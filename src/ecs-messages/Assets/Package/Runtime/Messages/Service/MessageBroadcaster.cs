@@ -9,7 +9,7 @@ namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBroadcaster
     {
-        internal static readonly HashSet<ComponentType> CreationRequests = new();
+        internal static readonly HashSet<ComponentType> PostRequests = new();
 
         public static MessageBuilder PrepareEvent() =>
             new() { Context = MessageContext.Event };
@@ -45,7 +45,7 @@ namespace CortexDeveloper.Messages.Service
                 { ComponentType = new ComponentType(typeof(T)) });
 
         internal static void ClearRequests() =>
-            CreationRequests.Clear();
+            PostRequests.Clear();
     }
 
     public static class MessageBuilderExtensions
@@ -153,21 +153,22 @@ namespace CortexDeveloper.Messages.Service
 
             descBuilder.Dispose();
 
-            LogWarning($"Cannot post unique message {typeof(T)}. Active instance already exist.");
+            if (alreadyExist)
+                LogWarning($"Cannot post unique message {typeof(T)}. Active instance already exist.");
 
             return alreadyExist;
         }
 
         private static bool UniqueAlreadyRequestedAtThisFrame<T>()
         {
-            if (MessageBroadcaster.CreationRequests.Contains(new ComponentType(typeof(T))))
+            if (MessageBroadcaster.PostRequests.Contains(new ComponentType(typeof(T))))
             {
                 LogWarning($"Cannot post unique message {typeof(T)}. Message already requested at this frame.");
 
                 return true;
             }
 
-            MessageBroadcaster.CreationRequests.Add(new ComponentType(typeof(T)));
+            MessageBroadcaster.PostRequests.Add(new ComponentType(typeof(T)));
 
             return false;
         }

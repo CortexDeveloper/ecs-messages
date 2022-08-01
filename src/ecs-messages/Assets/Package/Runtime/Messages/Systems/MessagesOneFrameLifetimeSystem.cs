@@ -1,8 +1,10 @@
 using CortexDeveloper.Messages.Components;
+using CortexDeveloper.Messages.SystemGroups;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
+    [UpdateInGroup(typeof(MessagesSystemGroup))]
     public partial class MessagesOneFrameLifetimeSystem : SystemBase
     {
         private EntityCommandBufferSystem _ecbSystem;
