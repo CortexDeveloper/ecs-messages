@@ -6,20 +6,41 @@ namespace CortexDeveloper.Messages.Editor
 {
     public class MessageBroadcasterStatsWindow : EditorWindow
     {
+        private const string LogsEnabledKey = "ECS_MESSAGES_LOGS_ENABLED";
+        
+        private int _selectedTab;
+        private int _logsEnabled;
+        
         private MessageLifetime _messageLifetimeFilter;
 
-        [MenuItem("Tools/Message Broadcaster Stats")]
+        [MenuItem("Tools/Message Broadcaster")]
         public static void Init()
         {
             MessageBroadcasterStatsWindow statsWindow = (MessageBroadcasterStatsWindow)GetWindow(
                 typeof(MessageBroadcasterStatsWindow), 
                 false, 
-                "Message Broadcaster Stats");
+                "Message Broadcaster");
             
             statsWindow.Show();
         }
 
         public void OnGUI()
+        {
+            _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"Stats", "Settings"});
+            switch (_selectedTab)
+            {
+                case 0:
+                    DrawStats();
+                    break;
+                case 1:
+                    DrawSettings();
+                    break;
+            }
+
+            Repaint();
+        }
+
+        private void DrawStats()
         {
             if (!Application.isPlaying)
             {
@@ -27,12 +48,22 @@ namespace CortexDeveloper.Messages.Editor
                 
                 return;
             }
-
+            
             DrawMessagesStats();
             EditorGUILayout.Space(25f);
             DrawRemoveAPI();
+        }
 
-            Repaint();
+        private void DrawSettings()
+        {
+            EditorGUILayout.LabelField($"Broadcaster Logs Enables: {PlayerPrefs.GetInt(LogsEnabledKey, 1)}");
+            EditorGUILayout.Space(25f);
+
+            if (GUILayout.Button("Enable Debug Logs")) 
+                PlayerPrefs.SetInt(LogsEnabledKey, 1);
+
+            if (GUILayout.Button("Disable Debug Logs")) 
+                PlayerPrefs.SetInt(LogsEnabledKey, 0);
         }
 
         private void DrawMessagesStats()
