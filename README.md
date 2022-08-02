@@ -101,7 +101,7 @@ Removing handled by service.
 
 *TimeRange* - message will live amount of time that was configured on message creation.<br/> 
 Messages with limited lifetime bound to real time.<br/>
-Auto deleting still managed by broadcaster service.<br/>
+Auto deleting still managed by service.<br/>
 
 *Unlimited* - unmanaged by service type.<br/> 
 Special messages that might be useful for cases when you don't know exactly the lifetime.<bt/>
@@ -111,7 +111,7 @@ In this case you should manually deal with it removing from world after usage.<b
 
 Message can be marked as ***unique***. In this case you cannot post another one message if same type already active.<br/>
 This feature might be useful for different cases. Let's say, you want to inform your teamate that magic portal is opened for 30 seconds.<br/>
-You post event by clicking some buttom. What will happen if start spamming it? A lot of duplicates of event would be posted.<br/>
+You post event by clicking some buttom. What will happen if you start spamming it? A lot of duplicates of event would be posted.<br/>
 Event marked as ***unique*** won't be posted twice in row and prevents this kind of situtations.<br/> 
 Check code examples to discover more detailed explanation how it works.<br/>
 
@@ -163,7 +163,7 @@ public struct StartMatchCommand : IComponentData
 ```csharp
 MessageBroadcaster
     .PrepareEvent()
-    .Post(new CharacterDeadEvent { Tick = 1234567890 });
+    .Post(new CharacterDeadEvent { Tick = 1234567890 } );
 ```
 
 #### Time Range Messages
@@ -201,7 +201,7 @@ MessageBroadcaster
 MessageBroadcaster
     .PrepareEvent()
     .WithUnlimitedLifeTime()
-    .Post(new QuestCompletedEvent { Value = _completedQuest });
+    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
 ```
 
 ##### Case: RTS player wants any free worker to start digging gold
