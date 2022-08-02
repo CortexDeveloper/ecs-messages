@@ -1,8 +1,10 @@
 using CortexDeveloper.Messages.Components;
+using CortexDeveloper.Messages.SystemGroups;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Editor
 {
+    [UpdateInGroup(typeof(MessagesSystemGroup))]
     [AlwaysUpdateSystem]
     public partial class MessagesBroadcasterStatsSystem : SystemBase
     {

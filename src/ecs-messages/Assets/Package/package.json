@@ -8,7 +8,9 @@
     },
     "unity": "2021.2",
     "description": "ECS implementation of messaging system.",
-    "keywords": [ 
+    "keywords": [
+        "Messages",
+        "Events",
         "Dev Kit", 
         "Game Tools"
     ],
