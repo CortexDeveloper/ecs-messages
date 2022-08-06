@@ -238,8 +238,8 @@ namespace CortexDeveloper.Examples.Editor
                 
                 MessageBroadcaster
                     .PrepareEvent()
-                    .AsAttachedTo(entity)
-                    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo});
+                    .AttachedTo(entity)
+                    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
             }
             
             // Case 2
@@ -256,8 +256,8 @@ namespace CortexDeveloper.Examples.Editor
                 MessageBroadcaster
                     .PrepareEvent()
                     .AsUnique()
-                    .AsAttachedTo(entity)
-                    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo});
+                    .AttachedTo(entity)
+                    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
             }
         }
     }

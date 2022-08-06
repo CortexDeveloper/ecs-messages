@@ -29,8 +29,6 @@ namespace CortexDeveloper.Messages.Systems
                     RemoveMessageComponents(entity, ecb, EntityManager);
                 })
                 .Run();
-            
-            _ecbSystem.AddJobHandleForProducer(Dependency);
         }
 
         private static void RemoveMessageComponents(Entity entity, EntityCommandBuffer ecb, EntityManager entityManager)
