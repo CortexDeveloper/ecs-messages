@@ -12,6 +12,8 @@ namespace CortexDeveloper.Messages.Systems
         protected override void OnCreate()
         {
             _ecbSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+            
+            RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), typeof(MessageLifetimeTimeRange)));
         }
         
         protected override void OnUpdate()
@@ -20,7 +22,7 @@ namespace CortexDeveloper.Messages.Systems
             float deltaTime = Time.DeltaTime;
             
             Entities
-                .ForEach((Entity entity, ref MessageLifetimeTimeRange timeRange) =>
+                .ForEach((Entity entity, ref MessageLifetimeTimeRange timeRange, in MessageTag messageTag) =>
                 {
                     MessageLifetimeTimeRange messageTimeRange = timeRange;
                     messageTimeRange.LifetimeLeft -= deltaTime;

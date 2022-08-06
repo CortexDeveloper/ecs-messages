@@ -1,4 +1,5 @@
 using CortexDeveloper.Messages.Service;
+using Unity.Entities;
 using UnityEditor;
 using UnityEngine;
 
@@ -42,7 +43,7 @@ namespace CortexDeveloper.Examples.Editor
                 return;
             }
             
-            _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"One Frame", "Time Range", "Unlimited Time"});
+            _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"One Frame", "Time Range", "Unlimited Time", "Attached"});
             switch (_selectedTab)
             {
                 case 0:
@@ -53,6 +54,9 @@ namespace CortexDeveloper.Examples.Editor
                     break;
                 case 2:
                     DrawUnlimitedLifetimeExamples();
+                    break;
+                case 3:
+                    DrawAttachedToEntityExamples();
                     break;
             }
         }
@@ -216,6 +220,26 @@ namespace CortexDeveloper.Examples.Editor
                     .AsUnique()
                     .WithUnlimitedLifeTime()
                     .Post(new DigGoldCommand());
+            }
+        }
+
+        private void DrawAttachedToEntityExamples()
+        {
+            // Case 1
+            if (GUILayout.Button("Post Attached Message"))
+            {
+                EndSimulationEntityCommandBufferSystem ecbSystem = World.DefaultGameObjectInjectionWorld
+                    .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+
+                EntityManager entityManager = ecbSystem.EntityManager;
+
+                Entity entity = entityManager.CreateEntity();
+                entityManager.AddComponent<PauseGameCommand>(entity);
+                
+                MessageBroadcaster
+                    .PrepareEvent()
+                    .AsAttachedTo(entity)
+                    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo});
             }
         }
     }

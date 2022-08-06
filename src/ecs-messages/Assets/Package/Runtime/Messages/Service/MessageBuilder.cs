@@ -1,3 +1,5 @@
+using Unity.Entities;
+
 namespace CortexDeveloper.Messages.Service
 {
     public struct MessageBuilder
@@ -6,6 +8,7 @@ namespace CortexDeveloper.Messages.Service
         internal MessageLifetime Lifetime;
         internal float Seconds;
         internal bool IsUnique;
+        internal Entity Entity;
         
         public MessageBuilder WithLifeTime(float seconds)
         {
@@ -25,6 +28,13 @@ namespace CortexDeveloper.Messages.Service
         public MessageBuilder AsUnique()
         {
             IsUnique = true;
+
+            return this;
+        }
+        
+        public MessageBuilder AsAttachedTo(Entity entity)
+        {
+            Entity = entity;
 
             return this;
         }

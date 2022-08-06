@@ -13,6 +13,7 @@ namespace CortexDeveloper.Messages.Systems
         protected override void OnCreate()
         {
             _ecbSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+            
             RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<RemoveMessagesByComponentCommand>()));
         }
 

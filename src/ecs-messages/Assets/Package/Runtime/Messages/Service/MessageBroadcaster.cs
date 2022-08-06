@@ -68,15 +68,16 @@ namespace CortexDeveloper.Messages.Service
             }
 
             EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
-            Entity messageEntity = ecb.CreateEntity();
+            Entity messageEntity = builder.Entity == Entity.Null
+                ? ecb.CreateEntity()
+                : builder.Entity;
 
-            AddInternalComponents(builder, messageEntity, ecb);
+            AddInternalComponents<T>(builder, messageEntity, ecb);
 
             ecb.AddComponent(messageEntity, component);
         }
 
-        public static void PostBuffer<T>(this MessageBuilder builder, params T[] elements)
-            where T : struct, IBufferElementData
+        public static void PostBuffer<T>(this MessageBuilder builder, params T[] elements) where T : struct, IBufferElementData
         {
             if (builder.IsUnique)
             {
@@ -90,7 +91,7 @@ namespace CortexDeveloper.Messages.Service
             EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
             Entity messageEntity = ecb.CreateEntity();
 
-            AddInternalComponents(builder, messageEntity, ecb);
+            AddInternalComponents<T>(builder, messageEntity, ecb);
 
             DynamicBuffer<T> buffer = ecb.AddBuffer<T>(messageEntity);
 
@@ -98,18 +99,21 @@ namespace CortexDeveloper.Messages.Service
                 buffer.Add(elements[i]);
         }
 
-        private static void AddInternalComponents(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
+        private static void AddInternalComponents<T>(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
         {
             if (builder.IsUnique)
                 ecb.AddComponent<MessageUniqueTag>(messageEntity);
 
-            AddContextComponents(builder, messageEntity, ecb);
+            AddContextComponents<T>(builder, messageEntity, ecb);
             AddLifetimeComponents(builder, messageEntity, ecb);
         }
 
-        private static void AddContextComponents(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
+        private static void AddContextComponents<T>(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
         {
-            ecb.AddComponent(messageEntity, new MessageTag());
+            if (builder.Entity == Entity.Null)
+                ecb.AddComponent(messageEntity, new MessageTag());
+            else
+                ecb.AddComponent(messageEntity, new AttachedMessage { ComponentType = new ComponentType(typeof(T))});
 
             switch (builder.Context)
             {
