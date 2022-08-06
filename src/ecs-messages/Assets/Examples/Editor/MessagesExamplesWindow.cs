@@ -241,6 +241,24 @@ namespace CortexDeveloper.Examples.Editor
                     .AsAttachedTo(entity)
                     .Post(new QuestCompletedEvent { Value = Quests.KillDiablo});
             }
+            
+            // Case 2
+            if (GUILayout.Button("Post Unique Attached Message"))
+            {
+                EndSimulationEntityCommandBufferSystem ecbSystem = World.DefaultGameObjectInjectionWorld
+                    .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+
+                EntityManager entityManager = ecbSystem.EntityManager;
+
+                Entity entity = entityManager.CreateEntity();
+                entityManager.AddComponent<PauseGameCommand>(entity);
+                
+                MessageBroadcaster
+                    .PrepareEvent()
+                    .AsUnique()
+                    .AsAttachedTo(entity)
+                    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo});
+            }
         }
     }
 }

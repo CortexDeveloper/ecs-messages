@@ -58,14 +58,8 @@ namespace CortexDeveloper.Messages.Service
 
         public static void Post<T>(this MessageBuilder builder, T component) where T : struct, IComponentData
         {
-            if (builder.IsUnique)
-            {
-                if (UniqueAttachmentAlreadyExist<T>(builder))
-                    return;
-
-                if (UniqueAlreadyRequestedAtThisFrame<T>())
-                    return;
-            }
+            if (UniqueContentAlreadyExist<T>(builder) || UniqueAlreadyRequestedAtThisFrame<T>(builder))
+                return;
 
             EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
             Entity messageEntity = builder.Entity == Entity.Null
@@ -79,14 +73,8 @@ namespace CortexDeveloper.Messages.Service
 
         public static void PostBuffer<T>(this MessageBuilder builder, params T[] elements) where T : struct, IBufferElementData
         {
-            if (builder.IsUnique)
-            {
-                if (UniqueAttachmentAlreadyExist<T>(builder))
-                    return;
-
-                if (UniqueAlreadyRequestedAtThisFrame<T>())
-                    return;
-            }
+            if (UniqueContentAlreadyExist<T>(builder) || UniqueAlreadyRequestedAtThisFrame<T>(builder))
+                return;
 
             EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
             Entity messageEntity = ecb.CreateEntity();
@@ -142,7 +130,7 @@ namespace CortexDeveloper.Messages.Service
             }
         }
 
-        private static bool UniqueAttachmentAlreadyExist<T>(MessageBuilder builder) where T : struct
+        private static bool UniqueContentAlreadyExist<T>(MessageBuilder builder) where T : struct
         {
             if (!builder.IsUnique)
                 return false;
@@ -163,8 +151,11 @@ namespace CortexDeveloper.Messages.Service
             return alreadyExist;
         }
 
-        private static bool UniqueAlreadyRequestedAtThisFrame<T>()
+        private static bool UniqueAlreadyRequestedAtThisFrame<T>(MessageBuilder builder)
         {
+            if (!builder.IsUnique)
+                return false;
+            
             if (MessageBroadcaster.PostRequests.Contains(new ComponentType(typeof(T))))
             {
                 LogWarning($"Cannot post unique message {typeof(T)}. Message already requested at this frame.");
