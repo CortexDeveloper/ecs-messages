@@ -25,10 +25,7 @@ namespace CortexDeveloper.Messages.Systems
                 return;
             
             EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
-            EntityQuery allMessages = GetEntityQuery(new EntityQueryDesc
-            {
-                Any = new ComponentType[] { typeof(MessageContextEventTag), typeof(MessageContextCommandTag) }
-            });
+            EntityQuery allMessages = GetEntityQuery(ComponentType.ReadOnly<MessageTag>());
 
             ecb.DestroyEntitiesForEntityQuery(allMessages);
         }

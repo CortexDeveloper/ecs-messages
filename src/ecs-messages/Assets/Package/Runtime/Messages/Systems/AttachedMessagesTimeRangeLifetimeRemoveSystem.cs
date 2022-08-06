@@ -1,4 +1,5 @@
 using CortexDeveloper.Messages.Components;
+using CortexDeveloper.Messages.Service;
 using CortexDeveloper.Messages.SystemGroups;
 using Unity.Entities;
 
@@ -28,24 +29,10 @@ namespace CortexDeveloper.Messages.Systems
                     {
                         ecb.RemoveComponent(entity, attachedMessage.ComponentType);
                         
-                        RemoveMessageComponents(entity, ecb, EntityManager);
+                        MessageUtils.RemoveMessageComponents(entity, ecb, EntityManager);
                     }
                 })
                 .Run();
-        }
-        
-        private static void RemoveMessageComponents(Entity entity, EntityCommandBuffer ecb, EntityManager entityManager)
-        {
-            ecb.RemoveComponent<AttachedMessage>(entity);
-            ecb.RemoveComponent<MessageLifetimeTimeRange>(entity);
-
-            if (entityManager.HasComponent<MessageContextCommandTag>(entity))
-                ecb.RemoveComponent<MessageContextCommandTag>(entity);
-            else if (entityManager.HasComponent<MessageContextEventTag>(entity))
-                ecb.RemoveComponent<MessageContextEventTag>(entity);
-
-            if (entityManager.HasComponent<MessageUniqueTag>(entity))
-                ecb.RemoveComponent<MessageUniqueTag>(entity);
         }
     }
 }
