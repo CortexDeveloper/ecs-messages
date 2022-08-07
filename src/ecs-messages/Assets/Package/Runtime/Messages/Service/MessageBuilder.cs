@@ -10,14 +10,14 @@ namespace CortexDeveloper.Messages.Service
         internal bool IsUnique;
         internal Entity Entity;
         
-        public MessageBuilder WithOneFrameLifeTime()
+        public MessageBuilder AliveForOneFrame()
         {
             Lifetime = MessageLifetime.OneFrame;
 
             return this;
         }
         
-        public MessageBuilder WithLifeTime(float seconds)
+        public MessageBuilder AliveForTime(float seconds)
         {
             Lifetime = MessageLifetime.TimeRange;
             Seconds = seconds;
@@ -25,7 +25,7 @@ namespace CortexDeveloper.Messages.Service
             return this;
         }
         
-        public MessageBuilder WithUnlimitedLifeTime()
+        public MessageBuilder AliveForUnlimitedTime()
         {
             Lifetime = MessageLifetime.Unlimited;
 

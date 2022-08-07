@@ -72,6 +72,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareCommand()
+                    .AliveForOneFrame()
                     .Post(new PauseGameCommand());
             }
             
@@ -89,6 +90,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareCommand()
+                    .AliveForOneFrame()
                     .AsUnique()
                     .Post(new StartMatchCommand
                     {
@@ -107,6 +109,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareEvent()
+                    .AliveForOneFrame()
                     .Post(new CharacterDeadEvent { Tick = 1234567890 });
             }
         }
@@ -126,7 +129,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareEvent()
-                    .WithLifeTime(_debuffDuration)
+                    .AliveForTime(_debuffDuration)
                     .PostBuffer(
                         new DebuffData{ Value = _firstDebuff },
                         new DebuffData{ Value = _secondDebuff });
@@ -149,7 +152,7 @@ namespace CortexDeveloper.Examples.Editor
                 MessageBroadcaster
                     .PrepareEvent()
                     .AsUnique()
-                    .WithLifeTime(_debuffDuration)
+                    .AliveForTime(_debuffDuration)
                     .PostBuffer(
                         new DebuffData{ Value = _firstDebuff },
                         new DebuffData{ Value = _secondDebuff });
@@ -167,7 +170,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareEvent()
-                    .WithLifeTime(_questAvailabilityTime)
+                    .AliveForTime(_questAvailabilityTime)
                     .Post(new QuestAvailabilityData { Quest = _availableQuest });
             }
         }
@@ -185,7 +188,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareEvent()
-                    .WithUnlimitedLifeTime()
+                    .AliveForUnlimitedTime()
                     .Post(new QuestCompletedEvent { Value = _completedQuest });
             }
             
@@ -200,7 +203,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareCommand()
-                    .WithUnlimitedLifeTime()
+                    .AliveForUnlimitedTime()
                     .Post(new DigGoldCommand());
             }
             
@@ -218,7 +221,7 @@ namespace CortexDeveloper.Examples.Editor
                 MessageBroadcaster
                     .PrepareCommand()
                     .AsUnique()
-                    .WithUnlimitedLifeTime()
+                    .AliveForUnlimitedTime()
                     .Post(new DigGoldCommand());
             }
         }
@@ -273,7 +276,7 @@ namespace CortexDeveloper.Examples.Editor
                 
                 MessageBroadcaster
                     .PrepareEvent()
-                    .WithLifeTime(10f)
+                    .AliveForTime(10f)
                     .AttachedTo(entity)
                     .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
             }

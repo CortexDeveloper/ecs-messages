@@ -17,16 +17,14 @@ namespace CortexDeveloper.Messages.Service
         public static MessageBuilder PrepareCommand() =>
             new() { Context = MessageContext.Command };
 
-        public static void RemoveFrom(Entity entity)
-        {
-            
-        }
-        
+        public static void RemoveFrom(Entity entity) => 
+            MessageUtils.RemoveFrom(entity);
+
         public static void RemoveAllCommon() =>
-            PrepareCommand().Post(new RemoveAllMessagesCommand());
+            PrepareCommand().AliveForOneFrame().Post(new RemoveAllMessagesCommand());
         
         public static void RemoveAllAttached() =>
-            PrepareCommand().Post(new RemoveAllAttachedMessagesCommand());
+            PrepareCommand().AliveForOneFrame().Post(new RemoveAllAttachedMessagesCommand());
 
         public static void RemoveAll()
         {
@@ -49,9 +47,29 @@ namespace CortexDeveloper.Messages.Service
                     break;
             }
         }
+        
+        public static void RemoveAttachedWithLifetime(MessageLifetime lifetime)
+        {
+            switch (lifetime)
+            {
+                case MessageLifetime.OneFrame:
+                    RemoveAttached<MessageLifetimeOneFrameTag>();
+                    break;
+                case MessageLifetime.TimeRange:
+                    RemoveAttached<MessageLifetimeTimeRange>();
+                    break;
+                case MessageLifetime.Unlimited:
+                    RemoveAttached<MessageLifetimeUnlimitedTag>();
+                    break;
+            }
+        }
 
         public static void Remove<T>() where T : struct, IComponentData =>
-            PrepareCommand().Post(new RemoveMessagesByComponentCommand
+            PrepareCommand().AliveForOneFrame().Post(new RemoveMessagesByComponentCommand
+                { ComponentType = new ComponentType(typeof(T)) });
+        
+        public static void RemoveAttached<T>() where T : struct, IComponentData =>
+            PrepareCommand().AliveForOneFrame().Post(new RemoveAttachedMessagesByComponentCommand
                 { ComponentType = new ComponentType(typeof(T)) });
 
         public static void RemoveBuffer<T>() where T : struct, IBufferElementData =>
