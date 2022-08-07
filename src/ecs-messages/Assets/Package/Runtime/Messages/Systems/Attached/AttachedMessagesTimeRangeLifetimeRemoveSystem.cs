@@ -29,7 +29,7 @@ namespace CortexDeveloper.Messages.Systems
                     {
                         ecb.RemoveComponent(entity, attachedMessage.ComponentType);
                         
-                        MessageUtils.RemoveMessageComponents(entity, ecb, EntityManager);
+                        MessageUtils.RemoveMessageMetaComponents(entity, ecb, EntityManager);
                     }
                 })
                 .Run();

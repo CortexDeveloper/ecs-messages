@@ -17,10 +17,13 @@ namespace CortexDeveloper.Messages.Service
         public static MessageBuilder PrepareCommand() =>
             new() { Context = MessageContext.Command };
 
-        public static void RemoveAll() =>
+        public static void RemoveAllCommon() =>
             PrepareCommand().Post(new RemoveAllMessagesCommand());
+        
+        public static void RemoveAllAttached() =>
+            PrepareCommand().Post(new RemoveAllAttachedMessagesCommand());
 
-        public static void RemoveWithLifetime(MessageLifetime lifetime)
+        public static void RemoveCommonWithLifetime(MessageLifetime lifetime)
         {
             switch (lifetime)
             {
@@ -178,7 +181,7 @@ namespace CortexDeveloper.Messages.Service
 
     internal static class MessageUtils
     {
-        internal static void RemoveMessageComponents(Entity entity, EntityCommandBuffer ecb, EntityManager entityManager)
+        internal static void RemoveMessageMetaComponents(Entity entity, EntityCommandBuffer ecb, EntityManager entityManager)
         {
             RemoveMarkers(entity, ecb, entityManager);
             RemoveLifeTime(entity, ecb, entityManager);
