@@ -1,12 +1,16 @@
+![Logo](documentation/images/title_logo.png)
+
 ecs-messages
 ============
 
-![License bage](https://img.shields.io/badge/license-MIT-green)
+![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.1.1-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen)
+
 
 Simple way of communication between MonoBehaviours and ECS world.<br/>
 ...and a little bit of other cool features :D
 
 - [Overview](#overview)
+- [Installation](#installation)
 - [Use Cases](#use-cases)
   - [UI and ECS](#ui-and-ecs)
   - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
@@ -33,6 +37,19 @@ Key features:
 - Simple API that ease to read
 - Handling messages lifetime(creation details, auto deleting according to configured rules, etc)
 - Supports *IComponentData* or *IBufferElementData* as message content
+
+> Tested with Unity DOTS ECS v0.51.0-preview.32 and Unity 2021.3.6f1
+
+## Installation
+
+Add package via Package Manager -> Add package from git URL.<br/>
+Package path in "manifest.json" should looks like:<br/> 
+https://github.com/CortexDeveloper/ecs-messages.git?path=src/ecs-messages/Assets/Package#x.x.x"<br/>
+Where "x.x.x" is version of package. Also pay attention that package code located in "src/ecs-messages/Assets/Package".<br/>
+
+Or simply clone repository into your project.
+
+> Later versions will be added to OpenUPM too
 
 ## Use Cases
 
@@ -84,7 +101,7 @@ Removing handled by service.
 
 *TimeRange* - message will live amount of time that was configured on message creation.<br/> 
 Messages with limited lifetime bound to real time.<br/>
-Auto deleting still managed by broadcaster service.<br/>
+Auto deleting still managed by service.<br/>
 
 *Unlimited* - unmanaged by service type.<br/> 
 Special messages that might be useful for cases when you don't know exactly the lifetime.<bt/>
@@ -94,7 +111,7 @@ In this case you should manually deal with it removing from world after usage.<b
 
 Message can be marked as ***unique***. In this case you cannot post another one message if same type already active.<br/>
 This feature might be useful for different cases. Let's say, you want to inform your teamate that magic portal is opened for 30 seconds.<br/>
-You post event by clicking some buttom. What will happen if start spamming it? A lot of duplicates of event would be posted.<br/>
+You post event by clicking some buttom. What will happen if you start spamming it? A lot of duplicates of event would be posted.<br/>
 Event marked as ***unique*** won't be posted twice in row and prevents this kind of situtations.<br/> 
 Check code examples to discover more detailed explanation how it works.<br/>
 
@@ -123,7 +140,7 @@ public struct PauseGameCommand : IComponentData { }
 
 ```csharp             
 // Very similar situation as previous but here used AsUnique() configuration.
-// This means that message wont be posted if there is already an active message of this type.      
+// This means that message won't be posted if there is already an active message of this type.      
 MessageBroadcaster
     .PrepareCommand()
     .AsUnique()
@@ -146,7 +163,7 @@ public struct StartMatchCommand : IComponentData
 ```csharp
 MessageBroadcaster
     .PrepareEvent()
-    .Post(new CharacterDeadEvent { Tick = 1234567890 });
+    .Post(new CharacterDeadEvent { Tick = 1234567890 } );
 ```
 
 #### Time Range Messages
@@ -184,7 +201,7 @@ MessageBroadcaster
 MessageBroadcaster
     .PrepareEvent()
     .WithUnlimitedLifeTime()
-    .Post(new QuestCompletedEvent { Value = _completedQuest });
+    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
 ```
 
 ##### Case: RTS player wants any free worker to start digging gold
