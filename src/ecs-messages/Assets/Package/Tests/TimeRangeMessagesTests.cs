@@ -12,10 +12,11 @@ namespace CortexDeveloper.Tests
     public class TimeRangeMessagesTests
     {
         [UnityTest]
-        public IEnumerator PostOneSecondEvent_CheckForExisting_WaitOneSecond_CheckForAutoRemove()
+        public IEnumerator PostOneSecondEvent_WaitFrame_CheckForExisting_WaitOneSecond_CheckForAutoRemove()
         {
             // Act
             MessageBroadcaster.PrepareEvent().WithLifeTime(1f).Post(new TestContentData{ Value = 123 });
+            
             yield return null;
 
             // Assert
