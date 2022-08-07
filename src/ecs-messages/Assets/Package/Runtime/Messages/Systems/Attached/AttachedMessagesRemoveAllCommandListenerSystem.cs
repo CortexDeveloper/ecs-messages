@@ -32,10 +32,7 @@ namespace CortexDeveloper.Messages.Systems
 
             foreach (Entity entity in entities)
             {
-                AttachedMessage attachedMessage = EntityManager.GetComponentData<AttachedMessage>(entity);
-                ecb.RemoveComponent(entity, attachedMessage.ComponentType);
-                
-                MessageUtils.RemoveMessageMetaComponents(entity, ecb, EntityManager);
+                MessageUtils.RemoveMessageComponents(entity, ecb, EntityManager);
             }
 
             entities.Dispose();

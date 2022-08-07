@@ -27,9 +27,7 @@ namespace CortexDeveloper.Messages.Systems
                 {
                     if (timeRange.LifetimeLeft <= 0f)
                     {
-                        ecb.RemoveComponent(entity, attachedMessage.ComponentType);
-                        
-                        MessageUtils.RemoveMessageMetaComponents(entity, ecb, EntityManager);
+                        MessageUtils.RemoveMessageComponents(entity, ecb, EntityManager);
                     }
                 })
                 .Run();

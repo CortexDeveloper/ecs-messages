@@ -25,9 +25,7 @@ namespace CortexDeveloper.Messages.Systems
                 .WithoutBurst()
                 .ForEach((Entity entity, in AttachedMessage attachedMessageTag, in MessageLifetimeOneFrameTag oneFrameTag) =>
                 {
-                    ecb.RemoveComponent(entity, attachedMessageTag.ComponentType);
-                    
-                    MessageUtils.RemoveMessageMetaComponents(entity, ecb, EntityManager);
+                    MessageUtils.RemoveMessageComponents(entity, ecb, EntityManager);
                 })
                 .Run();
         }
