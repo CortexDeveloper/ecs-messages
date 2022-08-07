@@ -86,7 +86,8 @@ namespace CortexDeveloper.Messages.Editor
 
         private void DrawMessagesStats()
         {
-            EditorGUILayout.LabelField($"Messages(Events + Commands): {MessagesStats.ActiveMessagesCount}");
+            EditorGUILayout.LabelField($"Messages: {MessagesStats.ActiveMessagesCount}");
+            EditorGUILayout.LabelField($"Attached Messages: {MessagesStats.ActiveAttachedMessagesCount}");
             EditorGUILayout.LabelField($"Events: {MessagesStats.ActiveEventsCount}");
             EditorGUILayout.LabelField($"Commands: {MessagesStats.ActiveCommandsCount}");
             EditorGUILayout.Space(10f);
