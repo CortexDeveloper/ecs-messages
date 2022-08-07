@@ -136,7 +136,7 @@ namespace CortexDeveloper.Examples.Editor
             }
             
             if (GUILayout.Button("Remove Event: Debuffs State")) 
-                MessageBroadcaster.RemoveBuffer<DebuffData>();
+                MessageBroadcaster.RemoveBufferWith<DebuffData>();
 
             // Case 2 
             EditorGUILayout.LabelField("Case: Informing other non-gameplay related systems that there are two active debuffs.", EditorStyles.helpBox);
@@ -208,7 +208,7 @@ namespace CortexDeveloper.Examples.Editor
             }
             
             if (GUILayout.Button("Remove Command: Dig Gold")) 
-                MessageBroadcaster.Remove<DigGoldCommand>();
+                MessageBroadcaster.RemoveWith<DigGoldCommand>();
             
             // Case 3
             EditorGUILayout.LabelField("Case: RTS player wants any free worker to start digging gold.", EditorStyles.helpBox);

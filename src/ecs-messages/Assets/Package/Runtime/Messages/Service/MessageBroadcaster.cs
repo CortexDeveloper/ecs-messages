@@ -37,13 +37,13 @@ namespace CortexDeveloper.Messages.Service
             switch (lifetime)
             {
                 case MessageLifetime.OneFrame:
-                    Remove<MessageLifetimeOneFrameTag>();
+                    RemoveWith<MessageLifetimeOneFrameTag>();
                     break;
                 case MessageLifetime.TimeRange:
-                    Remove<MessageLifetimeTimeRange>();
+                    RemoveWith<MessageLifetimeTimeRange>();
                     break;
                 case MessageLifetime.Unlimited:
-                    Remove<MessageLifetimeUnlimitedTag>();
+                    RemoveWith<MessageLifetimeUnlimitedTag>();
                     break;
             }
         }
@@ -53,27 +53,27 @@ namespace CortexDeveloper.Messages.Service
             switch (lifetime)
             {
                 case MessageLifetime.OneFrame:
-                    RemoveAttached<MessageLifetimeOneFrameTag>();
+                    RemoveAttachedWith<MessageLifetimeOneFrameTag>();
                     break;
                 case MessageLifetime.TimeRange:
-                    RemoveAttached<MessageLifetimeTimeRange>();
+                    RemoveAttachedWith<MessageLifetimeTimeRange>();
                     break;
                 case MessageLifetime.Unlimited:
-                    RemoveAttached<MessageLifetimeUnlimitedTag>();
+                    RemoveAttachedWith<MessageLifetimeUnlimitedTag>();
                     break;
             }
         }
 
-        public static void Remove<T>() where T : struct, IComponentData =>
+        public static void RemoveWith<T>() where T : struct, IComponentData =>
             PrepareCommand().AliveForOneFrame().Post(new RemoveMessagesByComponentCommand
                 { ComponentType = new ComponentType(typeof(T)) });
         
-        public static void RemoveAttached<T>() where T : struct, IComponentData =>
+        public static void RemoveAttachedWith<T>() where T : struct, IComponentData =>
             PrepareCommand().AliveForOneFrame().Post(new RemoveAttachedMessagesByComponentCommand
                 { ComponentType = new ComponentType(typeof(T)) });
 
-        public static void RemoveBuffer<T>() where T : struct, IBufferElementData =>
-            PrepareCommand().Post(new RemoveMessagesByComponentCommand
+        public static void RemoveBufferWith<T>() where T : struct, IBufferElementData =>
+            PrepareCommand().AliveForOneFrame().Post(new RemoveMessagesByComponentCommand
                 { ComponentType = new ComponentType(typeof(T)) });
 
         internal static void ClearRequests() =>
@@ -98,7 +98,7 @@ namespace CortexDeveloper.Messages.Service
                 ? ecb.CreateEntity()
                 : builder.Entity;
 
-            AddInternalComponents<T>(builder, messageEntity, ecb);
+            AddMetaComponents<T>(builder, messageEntity, ecb);
 
             ecb.AddComponent(messageEntity, component);
         }
@@ -109,9 +109,11 @@ namespace CortexDeveloper.Messages.Service
                 return;
 
             EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
-            Entity messageEntity = ecb.CreateEntity();
+            Entity messageEntity = builder.Entity == Entity.Null
+                ? ecb.CreateEntity()
+                : builder.Entity;
 
-            AddInternalComponents<T>(builder, messageEntity, ecb);
+            AddMetaComponents<T>(builder, messageEntity, ecb);
 
             DynamicBuffer<T> buffer = ecb.AddBuffer<T>(messageEntity);
 
@@ -119,7 +121,7 @@ namespace CortexDeveloper.Messages.Service
                 buffer.Add(elements[i]);
         }
 
-        private static void AddInternalComponents<T>(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
+        private static void AddMetaComponents<T>(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
         {
             if (builder.IsUnique)
                 ecb.AddComponent<MessageUniqueTag>(messageEntity);

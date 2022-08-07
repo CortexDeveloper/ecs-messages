@@ -115,6 +115,9 @@ namespace CortexDeveloper.Messages.Editor
             
             if (GUILayout.Button("Remove All Attached Messages")) 
                 MessageBroadcaster.RemoveAllAttached();
+            
+            if (GUILayout.Button("Remove All")) 
+                MessageBroadcaster.RemoveAll();
         }
     }
 }
