@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace CortexDeveloper.Tests
+namespace CortexDeveloper.Tests.Components
 {
     public struct TestContentBufferData : IBufferElementData
     {
