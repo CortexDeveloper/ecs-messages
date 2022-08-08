@@ -1,4 +1,5 @@
 using CortexDeveloper.Messages.Components;
+using CortexDeveloper.Messages.Components.Meta;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -52,7 +53,7 @@ namespace CortexDeveloper.Messages.Service
         private static void AddMetaComponents<T>(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
         {
             if (builder.IsUnique)
-                ecb.AddComponent<MessageUniqueTag>(messageEntity);
+                ecb.AddComponent<UniqueMessageTag>(messageEntity);
 
             AddContextComponents<T>(builder, messageEntity, ecb);
             AddLifetimeComponents(builder, messageEntity, ecb);
