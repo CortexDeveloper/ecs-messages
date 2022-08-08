@@ -237,10 +237,12 @@ namespace CortexDeveloper.Examples.Editor
                 EntityManager entityManager = ecbSystem.EntityManager;
 
                 Entity entity = entityManager.CreateEntity();
+                entityManager.SetName(entity, "MessageHolder");
                 entityManager.AddComponent<PauseGameCommand>(entity);
                 
                 MessageBroadcaster
                     .PrepareEvent()
+                    .AliveForOneFrame()
                     .AttachedTo(entity)
                     .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
             }
@@ -254,10 +256,12 @@ namespace CortexDeveloper.Examples.Editor
                 EntityManager entityManager = ecbSystem.EntityManager;
 
                 Entity entity = entityManager.CreateEntity();
+                entityManager.SetName(entity, "MessageHolder");
                 entityManager.AddComponent<PauseGameCommand>(entity);
                 
                 MessageBroadcaster
                     .PrepareEvent()
+                    .AliveForOneFrame()
                     .AsUnique()
                     .AttachedTo(entity)
                     .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
@@ -272,6 +276,7 @@ namespace CortexDeveloper.Examples.Editor
                 EntityManager entityManager = ecbSystem.EntityManager;
 
                 Entity entity = entityManager.CreateEntity();
+                entityManager.SetName(entity, "MessageHolder");
                 entityManager.AddComponent<PauseGameCommand>(entity);
                 
                 MessageBroadcaster

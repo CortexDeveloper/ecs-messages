@@ -34,7 +34,7 @@ namespace CortexDeveloper.Messages.Service
             {
                 AttachedMessage attachedMessage = entityManager.GetComponentData<AttachedMessage>(entity); 
                 
-                ecb.RemoveComponent(entity, attachedMessage.ComponentType);
+                ecb.RemoveComponent(attachedMessage.TargetEntity, attachedMessage.ComponentType);
                 ecb.RemoveComponent<AttachedMessage>(entity);
             }
         }

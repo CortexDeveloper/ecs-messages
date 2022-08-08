@@ -20,13 +20,15 @@ namespace CortexDeveloper.Messages.Service
                 return;
 
             EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
-            Entity messageEntity = builder.Entity == Entity.Null
-                ? ecb.CreateEntity()
+
+            Entity messageEntity = ecb.CreateEntity();
+            Entity contentTargetEntity = builder.Entity == Entity.Null 
+                ? messageEntity 
                 : builder.Entity;
 
             AddMetaComponents<T>(builder, messageEntity, ecb);
-
-            ecb.AddComponent(messageEntity, component);
+            
+            ecb.AddComponent(contentTargetEntity, component);
         }
 
         public static void PostBuffer<T>(this MessageBuilder builder, params T[] elements) where T : struct, IBufferElementData
@@ -35,13 +37,15 @@ namespace CortexDeveloper.Messages.Service
                 return;
 
             EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
-            Entity messageEntity = builder.Entity == Entity.Null
-                ? ecb.CreateEntity()
+
+            Entity messageEntity = ecb.CreateEntity();
+            Entity contentTargetEntity = builder.Entity == Entity.Null 
+                ? messageEntity 
                 : builder.Entity;
 
             AddMetaComponents<T>(builder, messageEntity, ecb);
 
-            DynamicBuffer<T> buffer = ecb.AddBuffer<T>(messageEntity);
+            DynamicBuffer<T> buffer = ecb.AddBuffer<T>(contentTargetEntity);
 
             for (int i = 0; i < elements.Length; i++)
                 buffer.Add(elements[i]);
@@ -61,7 +65,11 @@ namespace CortexDeveloper.Messages.Service
             if (builder.Entity == Entity.Null)
                 ecb.AddComponent(messageEntity, new MessageTag());
             else
-                ecb.AddComponent(messageEntity, new AttachedMessage { ComponentType = new ComponentType(typeof(T))});
+                ecb.AddComponent(messageEntity, new AttachedMessage
+                {
+                    ComponentType = new ComponentType(typeof(T)),
+                    TargetEntity = builder.Entity
+                });
 
             switch (builder.Context)
             {

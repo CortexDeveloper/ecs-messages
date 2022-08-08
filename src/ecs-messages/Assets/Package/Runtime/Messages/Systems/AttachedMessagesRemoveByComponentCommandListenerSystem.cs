@@ -29,8 +29,13 @@ namespace CortexDeveloper.Messages.Systems
                 EntityQuery destroyQuery = GetEntityQuery(ComponentType.ReadOnly<AttachedMessage>(), command.ComponentType);
                 NativeArray<Entity> entities = destroyQuery.ToEntityArray(Allocator.Temp);
 
-                foreach (Entity entity in entities) 
-                    MessageUtils.RemoveFrom(entity);
+                foreach (Entity entity in entities)
+                {
+                    AttachedMessage attachedMessage = EntityManager.GetComponentData<AttachedMessage>(entity);
+
+                    ecb.RemoveComponent(attachedMessage.TargetEntity, attachedMessage.ComponentType);
+                    ecb.DestroyEntity(entity);
+                }
 
                 entities.Dispose();
             }
