@@ -14,20 +14,12 @@ namespace CortexDeveloper.Messages.Service
         public static MessageBuilder PrepareCommand() =>
             new() { Context = MessageContext.Command };
 
-        public static void RemoveFrom(Entity entity) => 
-            MessageUtils.RemoveFrom(entity);
-
-        public static void RemoveAllCommon() =>
+        public static void RemoveAll() =>
             PrepareCommand().AliveForOneFrame().Post(new RemoveAllMessagesCommand());
-        
-        public static void RemoveAllAttached() =>
-            PrepareCommand().AliveForOneFrame().Post(new RemoveAllAttachedMessagesCommand());
 
-        public static void RemoveAll()
-        {
-            RemoveAllCommon();
-            RemoveAllAttached();
-        }
+        public static void RemoveWith<T>() where T : struct, IComponentData =>
+            PrepareCommand().AliveForOneFrame().Post(new RemoveMessagesByComponentCommand
+                { ComponentType = new ComponentType(typeof(T)) });
 
         public static void RemoveCommonWithLifetime(MessageLifetime lifetime)
         {
@@ -44,34 +36,6 @@ namespace CortexDeveloper.Messages.Service
                     break;
             }
         }
-        
-        public static void RemoveAttachedAliveForTime(MessageLifetime lifetime)
-        {
-            switch (lifetime)
-            {
-                case MessageLifetime.OneFrame:
-                    RemoveAttachedWith<MessageLifetimeOneFrameTag>();
-                    break;
-                case MessageLifetime.TimeRange:
-                    RemoveAttachedWith<MessageLifetimeTimeRange>();
-                    break;
-                case MessageLifetime.Unlimited:
-                    RemoveAttachedWith<MessageLifetimeUnlimitedTag>();
-                    break;
-            }
-        }
-
-        public static void RemoveWith<T>() where T : struct, IComponentData =>
-            PrepareCommand().AliveForOneFrame().Post(new RemoveMessagesByComponentCommand
-                { ComponentType = new ComponentType(typeof(T)) });
-        
-        public static void RemoveAttachedWith<T>() where T : struct, IComponentData =>
-            PrepareCommand().AliveForOneFrame().Post(new RemoveAttachedMessagesByComponentCommand
-                { ComponentType = new ComponentType(typeof(T)) });
-
-        public static void RemoveBufferWith<T>() where T : struct, IBufferElementData =>
-            PrepareCommand().AliveForOneFrame().Post(new RemoveMessagesByComponentCommand
-                { ComponentType = new ComponentType(typeof(T)) });
 
         internal static void ClearRequests() =>
             PostRequests.Clear();

@@ -1,4 +1,5 @@
 using CortexDeveloper.Messages.Components;
+using CortexDeveloper.Messages.Service;
 using CortexDeveloper.Messages.SystemGroups;
 using Unity.Collections;
 using Unity.Entities;
@@ -26,8 +27,12 @@ namespace CortexDeveloper.Messages.Systems
             foreach (RemoveMessagesByComponentCommand command in commands)
             {
                 EntityQuery destroyQuery = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), command.ComponentType);
+                NativeArray<Entity> messageEntities = destroyQuery.ToEntityArray(Allocator.Temp);
 
-                ecb.DestroyEntitiesForEntityQuery(destroyQuery);
+                foreach (Entity messageEntity in messageEntities)
+                    MessageUtils.Destroy(messageEntity, ecb, EntityManager);
+
+                messageEntities.Dispose();
             }
             
             commands.Dispose();

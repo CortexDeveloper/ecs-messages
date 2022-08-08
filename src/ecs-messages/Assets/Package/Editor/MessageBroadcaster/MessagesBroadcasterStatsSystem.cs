@@ -11,7 +11,7 @@ namespace CortexDeveloper.Messages.Editor
         protected override void OnUpdate()
         {
             EntityQuery allMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageTag)));
-            EntityQuery allAttachedMessagesQuery = GetEntityQuery(new ComponentType(typeof(AttachedMessage)));
+            EntityQuery allAttachedMessagesQuery = GetEntityQuery(new ComponentType(typeof(AttachedMessageContent)));
             EntityQuery allEventsQuery = GetEntityQuery(new ComponentType(typeof(MessageContextEventTag)));
             EntityQuery allCommandsQuery = GetEntityQuery(new ComponentType(typeof(MessageContextCommandTag)));
             EntityQuery allUniqueQuery = GetEntityQuery(new ComponentType(typeof(MessageUniqueTag)));

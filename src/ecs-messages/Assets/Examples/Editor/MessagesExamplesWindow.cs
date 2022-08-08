@@ -134,9 +134,6 @@ namespace CortexDeveloper.Examples.Editor
                         new DebuffData{ Value = _firstDebuff },
                         new DebuffData{ Value = _secondDebuff });
             }
-            
-            if (GUILayout.Button("Remove Event: Debuffs State")) 
-                MessageBroadcaster.RemoveBufferWith<DebuffData>();
 
             // Case 2 
             EditorGUILayout.LabelField("Case: Informing other non-gameplay related systems that there are two active debuffs.", EditorStyles.helpBox);

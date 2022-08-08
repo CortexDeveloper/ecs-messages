@@ -1,8 +1,6 @@
-using System.Diagnostics;
 using CortexDeveloper.Messages.Components;
 using Unity.Collections;
 using Unity.Entities;
-using Debug = UnityEngine.Debug;
 
 namespace CortexDeveloper.Messages.Service
 {
@@ -22,9 +20,9 @@ namespace CortexDeveloper.Messages.Service
             EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
 
             Entity messageEntity = ecb.CreateEntity();
-            Entity contentTargetEntity = builder.Entity == Entity.Null 
-                ? messageEntity 
-                : builder.Entity;
+            Entity contentTargetEntity = builder.Entity != Entity.Null 
+                ? builder.Entity
+                : messageEntity;
 
             AddMetaComponents<T>(builder, messageEntity, ecb);
             
@@ -62,10 +60,10 @@ namespace CortexDeveloper.Messages.Service
 
         private static void AddContextComponents<T>(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
         {
-            if (builder.Entity == Entity.Null)
-                ecb.AddComponent(messageEntity, new MessageTag());
-            else
-                ecb.AddComponent(messageEntity, new AttachedMessage
+            ecb.AddComponent(messageEntity, new MessageTag());
+
+            if (builder.Entity != Entity.Null)
+                ecb.AddComponent(messageEntity, new AttachedMessageContent
                 {
                     ComponentType = new ComponentType(typeof(T)),
                     TargetEntity = builder.Entity
@@ -114,7 +112,7 @@ namespace CortexDeveloper.Messages.Service
             descBuilder.Dispose();
 
             if (alreadyExist)
-                LogWarning($"Cannot post unique message {typeof(T)}. Active instance already exist.");
+                MessagesLogger.LogWarning($"Cannot post unique message {typeof(T)}. Active instance already exist.");
 
             return alreadyExist;
         }
@@ -126,7 +124,7 @@ namespace CortexDeveloper.Messages.Service
             
             if (MessageBroadcaster.PostRequests.Contains(new ComponentType(typeof(T))))
             {
-                LogWarning($"Cannot post unique message {typeof(T)}. Message already requested at this frame.");
+                MessagesLogger.LogWarning($"Cannot post unique message {typeof(T)}. Message already requested at this frame.");
 
                 return true;
             }
@@ -136,11 +134,6 @@ namespace CortexDeveloper.Messages.Service
             return false;
         }
 
-        [Conditional("UNITY_EDITOR")]
-        private static void LogWarning(string message)
-        {
-            if (MessageBroadcasterSettings.LogsEnabled)
-                Debug.LogWarning(message);
-        }
+        
     }
 }

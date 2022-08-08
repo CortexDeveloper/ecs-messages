@@ -5,62 +5,30 @@ namespace CortexDeveloper.Messages.Service
 {
     internal static class MessageUtils
     {
-        internal static void RemoveFrom(Entity entity)
-        {
-            EndSimulationEntityCommandBufferSystem ecbSystem = World.DefaultGameObjectInjectionWorld
-                .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-                
-            EntityCommandBuffer ecb = ecbSystem.CreateCommandBuffer();
-            EntityManager entityManager = ecbSystem.EntityManager;
-            
-            RemoveMessageComponents(entity, ecb, entityManager);
-        }
-        
-        internal static void RemoveMessageComponents(Entity entity, EntityCommandBuffer ecb, EntityManager entityManager)
-        {
-            RemoveMarkers(entity, ecb, entityManager);
-            RemoveLifeTime(entity, ecb, entityManager);
-            RemoveContext(entity, ecb, entityManager);
-            RemoveUnique(entity, ecb, entityManager);
-        }
+        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
 
-        private static void RemoveMarkers(Entity entity, EntityCommandBuffer ecb, EntityManager entityManager)
+        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
+            _ecbSystem ??= World.DefaultGameObjectInjectionWorld
+                .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        
+        internal static void Destroy(Entity messageEntity, EntityCommandBuffer ecb, EntityManager entityManager)
         {
-            if (entityManager.HasComponent<MessageTag>(entity))
+            if (entityManager.HasComponent<MessageTag>(messageEntity))
             {
-                ecb.RemoveComponent<MessageTag>(entity);
-            }
-            else if (entityManager.HasComponent<AttachedMessage>(entity))
-            {
-                AttachedMessage attachedMessage = entityManager.GetComponentData<AttachedMessage>(entity); 
+                if (entityManager.HasComponent<AttachedMessageContent>(messageEntity))
+                {
+                    AttachedMessageContent attachedMessageContent = entityManager.GetComponentData<AttachedMessageContent>(messageEntity);
                 
-                ecb.RemoveComponent(attachedMessage.TargetEntity, attachedMessage.ComponentType);
-                ecb.RemoveComponent<AttachedMessage>(entity);
+                    ecb.RemoveComponent(attachedMessageContent.TargetEntity, attachedMessageContent.ComponentType);
+                    ecb.DestroyEntity(messageEntity);
+                }
+                
+                ecb.DestroyEntity(messageEntity);
             }
-        }
-        
-        private static void RemoveLifeTime(Entity entity, EntityCommandBuffer ecb, EntityManager entityManager)
-        {
-            if (entityManager.HasComponent<MessageLifetimeOneFrameTag>(entity))
-                ecb.RemoveComponent<MessageLifetimeOneFrameTag>(entity);
-            else if (entityManager.HasComponent<MessageLifetimeTimeRange>(entity))
-                ecb.RemoveComponent<MessageLifetimeTimeRange>(entity);
-            else if (entityManager.HasComponent<MessageLifetimeUnlimitedTag>(entity))
-                ecb.RemoveComponent<MessageLifetimeUnlimitedTag>(entity);
-        }
-        
-        private static void RemoveContext(Entity entity, EntityCommandBuffer ecb, EntityManager entityManager)
-        {
-            if (entityManager.HasComponent<MessageContextCommandTag>(entity))
-                ecb.RemoveComponent<MessageContextCommandTag>(entity);
-            else if (entityManager.HasComponent<MessageContextEventTag>(entity))
-                ecb.RemoveComponent<MessageContextEventTag>(entity);
-        }
-        
-        private static void RemoveUnique(Entity entity, EntityCommandBuffer ecb, EntityManager entityManager)
-        {
-            if (entityManager.HasComponent<MessageUniqueTag>(entity))
-                ecb.RemoveComponent<MessageUniqueTag>(entity);
+            else
+            {
+                MessagesLogger.LogWarning($"Cannot destroy message. Entity ({messageEntity}) doesn't contain message meta components.");
+            }
         }
     }
 }

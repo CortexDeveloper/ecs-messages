@@ -1,4 +1,5 @@
 using CortexDeveloper.Messages.Components;
+using CortexDeveloper.Messages.Service;
 using CortexDeveloper.Messages.SystemGroups;
 using Unity.Entities;
 
@@ -21,13 +22,12 @@ namespace CortexDeveloper.Messages.Systems
             EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
             
             Entities
+                .WithoutBurst()
                 .ForEach((Entity entity, in MessageTag messageTag, in MessageLifetimeOneFrameTag oneFrameTag) =>
                 {
-                    ecb.DestroyEntity(entity);
+                    MessageUtils.Destroy(entity, ecb, EntityManager);
                 })
-                .Schedule();
-            
-            _ecbSystem.AddJobHandleForProducer(Dependency);
+                .Run();
         }
     }
 }
