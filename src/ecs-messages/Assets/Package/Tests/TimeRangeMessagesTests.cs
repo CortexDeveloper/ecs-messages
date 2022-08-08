@@ -15,7 +15,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostOneSecondEvent_WaitFrame_CheckForExisting_WaitOneSecond_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareEvent().WithLifeTime(1f).Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster.PrepareEvent().AliveForTime(1f).Post(new TestContentData{ Value = 123 });
             
             yield return null;
 
@@ -39,7 +39,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostTwoSecondsCommand_WaitOneSecond_CheckForExisting_WaitOneSecond_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand().WithLifeTime(2f).Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster.PrepareCommand().AliveForTime(2f).Post(new TestContentData{ Value = 123 });
             yield return null;
 
             // Assert
@@ -66,7 +66,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostBufferCommand_CheckForExisting_WaitOneSecond_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand().WithLifeTime(1f).PostBuffer(
+            MessageBroadcaster.PrepareCommand().AliveForTime(1f).PostBuffer(
                 new TestContentBufferData { Value = 123 },
                 new TestContentBufferData { Value = 456 },
                 new TestContentBufferData { Value = 789 });

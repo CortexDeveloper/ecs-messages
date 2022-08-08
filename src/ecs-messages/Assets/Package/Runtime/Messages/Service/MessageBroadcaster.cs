@@ -45,7 +45,7 @@ namespace CortexDeveloper.Messages.Service
             }
         }
         
-        public static void RemoveAttachedWithLifetime(MessageLifetime lifetime)
+        public static void RemoveAttachedAliveForTime(MessageLifetime lifetime)
         {
             switch (lifetime)
             {

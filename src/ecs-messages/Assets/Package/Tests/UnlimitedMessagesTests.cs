@@ -14,7 +14,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostUnlimitedEvent_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
         {
             // Act
-            MessageBroadcaster.PrepareEvent().WithUnlimitedLifeTime().Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster.PrepareEvent().AliveForUnlimitedTime().Post(new TestContentData{ Value = 123 });
             yield return null;
 
             // Assert
@@ -26,7 +26,7 @@ namespace CortexDeveloper.Tests
                                    TestsUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                                    component.Value == 123;
 
-            MessageBroadcaster.RemoveWithLifetime(MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveCommonWithLifetime(MessageLifetime.Unlimited);
             
             yield return null;
             yield return null;
@@ -40,7 +40,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostUnlimitedBufferCommand_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand().WithUnlimitedLifeTime().PostBuffer(
+            MessageBroadcaster.PrepareCommand().AliveForUnlimitedTime().PostBuffer(
                 new TestContentBufferData { Value = 123 },
                 new TestContentBufferData { Value = 456 },
                 new TestContentBufferData { Value = 789 });
@@ -58,7 +58,7 @@ namespace CortexDeveloper.Tests
                              buffer[1].Value == 456 &&
                              buffer[2].Value == 789;
 
-            MessageBroadcaster.RemoveWithLifetime(MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveCommonWithLifetime(MessageLifetime.Unlimited);
             
             yield return null;
             yield return null;

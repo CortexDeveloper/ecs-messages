@@ -109,7 +109,7 @@ namespace CortexDeveloper.Messages.Editor
                 MessageBroadcaster.RemoveCommonWithLifetime(_messageLifetimeFilter);
             
             if (GUILayout.Button("Remove Attached Messages by Lifetime Filter"))
-                MessageBroadcaster.RemoveAttachedWithLifetime(_messageLifetimeFilter);
+                MessageBroadcaster.RemoveAttachedAliveForTime(_messageLifetimeFilter);
 
             if (GUILayout.Button("Remove All Common Messages")) 
                 MessageBroadcaster.RemoveAllCommon();
