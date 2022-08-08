@@ -14,7 +14,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostEvent_WaitFrame_CheckForExisting_WaitFrame_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareEvent().Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster.PrepareEvent().AliveForOneFrame().Post(new TestContentData{ Value = 123 });
             yield return null;
 
             // Assert
@@ -37,7 +37,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostBufferCommand_WaitFrame_CheckForExisting_WaitFrame_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand().PostBuffer(
+            MessageBroadcaster.PrepareCommand().AliveForOneFrame().PostBuffer(
                 new TestContentBufferData { Value = 123 },
                 new TestContentBufferData { Value = 456 },
                 new TestContentBufferData { Value = 789 });
