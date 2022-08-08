@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CortexDeveloper.Examples.Editor
 {
-    public class MessageBroadcasterWindow : EditorWindow
+    public class MessagesExamplesWindow : EditorWindow
     {
         private int _selectedTab;
 
@@ -29,7 +29,7 @@ namespace CortexDeveloper.Examples.Editor
         [MenuItem("Tools/Messages Examples")]
         public static void Init()
         {
-            MessageBroadcasterWindow window = (MessageBroadcasterWindow)GetWindow(typeof(MessageBroadcasterWindow), false, "Messages Use Case Examples");
+            MessagesExamplesWindow window = (MessagesExamplesWindow)GetWindow(typeof(MessagesExamplesWindow), false, "Messages Use Case Examples");
             
             window.Show();
         }
