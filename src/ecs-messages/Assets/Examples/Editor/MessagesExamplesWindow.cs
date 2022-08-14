@@ -137,18 +137,24 @@ namespace CortexDeveloper.Examples.Editor
 
             // Case 2 
             EditorGUILayout.LabelField("Case: Informing other non-gameplay related systems that there are two active debuffs.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("Same as previous but message is unique. \n" +
+            EditorGUILayout.LabelField("Same as previous but message is unique and attached to already existing entity. \n" +
                                        "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
 
             _firstDebuff = (Debuffs)EditorGUILayout.EnumPopup("First Debuff: ", _firstDebuff);
             _secondDebuff = (Debuffs)EditorGUILayout.EnumPopup("Second Debuff: ", _secondDebuff);
             _debuffDuration = EditorGUILayout.FloatField("Debuff Duration: ", _debuffDuration);
 
-            if (GUILayout.Button("Post Unique Event: Debuffs State"))
+            if (GUILayout.Button("Post Unique Attached Event: Debuffs State"))
             {
+                Entity entity = World.DefaultGameObjectInjectionWorld
+                    .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>()
+                    .EntityManager
+                    .CreateEntity();
+
                 MessageBroadcaster
                     .PrepareEvent()
                     .AsUnique()
+                    .AttachedTo(entity)
                     .AliveForTime(_debuffDuration)
                     .PostBuffer(
                         new DebuffData{ Value = _firstDebuff },

@@ -163,7 +163,7 @@ public struct StartMatchCommand : IComponentData
 ```csharp
 MessageBroadcaster
     .PrepareEvent()
-    .Post(new CharacterDeadEvent { Tick = 1234567890 } );
+    .Post(new CharacterDeadEvent { Tick = 1234567890 });
 ```
 
 #### Time Range Messages
