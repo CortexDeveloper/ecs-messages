@@ -5,12 +5,6 @@ namespace CortexDeveloper.Messages.Service
 {
     internal static class MessageUtils
     {
-        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
-
-        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
-            _ecbSystem ??= World.DefaultGameObjectInjectionWorld
-                .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-        
         internal static void Destroy(Entity messageEntity, EntityCommandBuffer ecb, EntityManager entityManager)
         {
             if (entityManager.HasComponent<MessageTag>(messageEntity))

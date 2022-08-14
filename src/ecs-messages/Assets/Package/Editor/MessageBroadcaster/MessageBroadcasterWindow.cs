@@ -44,17 +44,7 @@ namespace CortexDeveloper.Messages.Editor
 
         public void OnGUI()
         {
-            _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"Stats", "Settings"});
-            switch (_selectedTab)
-            {
-                case 0:
-                    DrawStats();
-                    break;
-                case 1:
-                    DrawSettings();
-                    break;
-            }
-
+            DrawStats();
             Repaint();
         }
 
@@ -70,18 +60,6 @@ namespace CortexDeveloper.Messages.Editor
             DrawMessagesStats();
             EditorGUILayout.Space(25f);
             DrawRemoveAPI();
-        }
-
-        private void DrawSettings()
-        {
-            EditorGUILayout.LabelField($"Broadcaster Logs Enabled: {Convert.ToBoolean(PlayerPrefs.GetInt(LogsEnabledKey, 1))}");
-            EditorGUILayout.Space(25f);
-
-            if (GUILayout.Button("Enable Debug Logs")) 
-                PlayerPrefs.SetInt(LogsEnabledKey, 1);
-
-            if (GUILayout.Button("Disable Debug Logs")) 
-                PlayerPrefs.SetInt(LogsEnabledKey, 0);
         }
 
         private void DrawMessagesStats()
