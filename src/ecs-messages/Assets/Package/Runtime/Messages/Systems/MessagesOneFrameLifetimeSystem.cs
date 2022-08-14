@@ -28,6 +28,8 @@ namespace CortexDeveloper.Messages.Systems
                     MessageUtils.Destroy(entity, ecb, entityManager);
                 })
                 .Schedule();
+            
+            CompleteDependency();
         }
     }
 }
