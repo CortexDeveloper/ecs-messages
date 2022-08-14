@@ -1,4 +1,3 @@
-using CortexDeveloper.Messages.Components;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Service;
 using CortexDeveloper.Messages.SystemGroups;
@@ -10,25 +9,25 @@ namespace CortexDeveloper.Messages.Systems
     public partial class MessagesOneFrameLifetimeSystem : SystemBase
     {
         private EntityCommandBufferSystem _ecbSystem;
-        
+
         protected override void OnCreate()
         {
             _ecbSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-            
+
             RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<MessageLifetimeOneFrameTag>()));
         }
         
         protected override void OnUpdate()
         {
             EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
+            EntityManager entityManager = EntityManager;
             
             Entities
-                .WithoutBurst()
                 .ForEach((Entity entity, in MessageTag messageTag, in MessageLifetimeOneFrameTag oneFrameTag) =>
                 {
-                    MessageUtils.Destroy(entity, ecb, EntityManager);
+                    MessageUtils.Destroy(entity, ecb, entityManager);
                 })
-                .Run();
+                .Schedule();
         }
     }
 }

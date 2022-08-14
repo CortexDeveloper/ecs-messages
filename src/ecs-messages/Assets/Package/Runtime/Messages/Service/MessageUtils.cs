@@ -1,4 +1,3 @@
-using CortexDeveloper.Messages.Components;
 using CortexDeveloper.Messages.Components.Meta;
 using Unity.Entities;
 
@@ -25,10 +24,6 @@ namespace CortexDeveloper.Messages.Service
                 }
                 
                 ecb.DestroyEntity(messageEntity);
-            }
-            else
-            {
-                MessagesLogger.LogWarning($"Cannot destroy message. Entity ({messageEntity}) doesn't contain message meta components.");
             }
         }
     }

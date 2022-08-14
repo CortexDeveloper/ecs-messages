@@ -1,4 +1,3 @@
-using CortexDeveloper.Messages.Components;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
 using CortexDeveloper.Messages.Service;
@@ -31,9 +30,10 @@ namespace CortexDeveloper.Messages.Systems
             EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
             EntityQuery allMessages = GetEntityQuery(ComponentType.ReadOnly<MessageTag>());
             NativeArray<Entity> messageEntities = allMessages.ToEntityArray(Allocator.Temp);
+            EntityManager entityManager = EntityManager;
 
             foreach (Entity messageEntity in messageEntities)
-                MessageUtils.Destroy(messageEntity, ecb, EntityManager);
+                MessageUtils.Destroy(messageEntity, ecb, entityManager);
         }
     }
 }

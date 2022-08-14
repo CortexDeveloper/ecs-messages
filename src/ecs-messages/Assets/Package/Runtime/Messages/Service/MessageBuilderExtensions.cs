@@ -112,9 +112,6 @@ namespace CortexDeveloper.Messages.Service
 
             descBuilder.Dispose();
 
-            if (alreadyExist)
-                MessagesLogger.LogWarning($"Cannot post unique message {typeof(T)}. Active instance already exist.");
-
             return alreadyExist;
         }
 
@@ -124,11 +121,7 @@ namespace CortexDeveloper.Messages.Service
                 return false;
             
             if (MessageBroadcaster.PostRequests.Contains(new ComponentType(typeof(T))))
-            {
-                MessagesLogger.LogWarning($"Cannot post unique message {typeof(T)}. Message already requested at this frame.");
-
                 return true;
-            }
 
             MessageBroadcaster.PostRequests.Add(new ComponentType(typeof(T)));
 

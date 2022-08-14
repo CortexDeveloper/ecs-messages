@@ -1,4 +1,3 @@
-using CortexDeveloper.Messages.Components;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Service;
 using CortexDeveloper.Messages.SystemGroups;
@@ -21,15 +20,15 @@ namespace CortexDeveloper.Messages.Systems
         protected override void OnUpdate()
         {
             EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
+            EntityManager entityManager = EntityManager;
 
             Entities
-                .WithoutBurst()
                 .ForEach((Entity entity, in MessageTag messageTag, in MessageLifetimeTimeRange timeRange) =>
                 {
                     if (timeRange.LifetimeLeft <= 0f)
-                        MessageUtils.Destroy(entity, ecb, EntityManager);
+                        MessageUtils.Destroy(entity, ecb, entityManager);
                 })
-                .Run();
+                .Schedule();
         }
     }
 }
