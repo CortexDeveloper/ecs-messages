@@ -20,7 +20,7 @@ namespace CortexDeveloper.Tests
             // Assert
             EntityQuery query = TestsUtils.GetQuery<TestContentData>();
             TestContentData component = TestsUtils.GetComponentFromFirst<TestContentData>(query);
-            bool wasPosted = query.CalculateEntityCount() > 0 &&
+            bool wasPosted = query.CalculateEntityCount() == 1 &&
                                    TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
                                    TestsUtils.FirstEntityHasComponent<MessageContextEventTag>(query) &&
                                    TestsUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
@@ -50,7 +50,7 @@ namespace CortexDeveloper.Tests
             // Assert
             EntityQuery query = TestsUtils.GetBufferQuery<TestContentBufferData>();
             DynamicBuffer<TestContentBufferData> buffer = TestsUtils.GetBufferFromFirst<TestContentBufferData>(query);
-            bool wasPosted = query.CalculateEntityCount() > 0 &&
+            bool wasPosted = query.CalculateEntityCount() == 1 &&
                              TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
                              TestsUtils.FirstEntityHasComponent<MessageContextCommandTag>(query) &&
                              TestsUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&

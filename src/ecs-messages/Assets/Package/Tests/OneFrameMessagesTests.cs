@@ -20,7 +20,7 @@ namespace CortexDeveloper.Tests
             // Assert
             EntityQuery query = TestsUtils.GetQuery<TestContentData>();
             TestContentData component = TestsUtils.GetComponentFromFirst<TestContentData>(query);
-            bool wasPosted = query.CalculateEntityCount() > 0 &&
+            bool wasPosted = query.CalculateEntityCount() == 1 &&
                                    TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
                                    TestsUtils.FirstEntityHasComponent<MessageContextEventTag>(query) &&
                                    TestsUtils.FirstEntityHasComponent<MessageLifetimeOneFrameTag>(query) &&
@@ -47,13 +47,38 @@ namespace CortexDeveloper.Tests
             // Assert
             EntityQuery query = TestsUtils.GetBufferQuery<TestContentBufferData>();
             DynamicBuffer<TestContentBufferData> buffer = TestsUtils.GetBufferFromFirst<TestContentBufferData>(query);
-            bool wasPosted = query.CalculateEntityCount() > 0 &&
+            bool wasPosted = query.CalculateEntityCount() == 1 &&
                              TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
                              TestsUtils.FirstEntityHasComponent<MessageContextCommandTag>(query) &&
                              TestsUtils.FirstEntityHasComponent<MessageLifetimeOneFrameTag>(query) &&
                              buffer[0].Value == 123 &&
                              buffer[1].Value == 456 &&
                              buffer[2].Value == 789;
+
+            yield return null;
+
+            bool wasAutoRemoved = !TestsUtils.IsBufferExist<TestContentBufferData>();
+            
+            Assert.IsTrue(wasPosted && wasAutoRemoved);
+        }
+
+        [UnityTest]
+        public IEnumerator PostCommandAsUnique_PostCommandAsUnique_WaitFrame_CheckOnlyOneExist_WaitFrame_CheckForAutoRemove()
+        {
+            // Act
+            MessageBroadcaster.PrepareCommand().AsUnique().AliveForOneFrame().Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareCommand().AsUnique().AliveForOneFrame().Post(new TestContentData { Value = 123 });
+            
+            yield return null;
+
+            // Assert
+            EntityQuery query = TestsUtils.GetQuery<TestContentData>();
+            TestContentData component = TestsUtils.GetComponentFromFirst<TestContentData>(query);
+            bool wasPosted = query.CalculateEntityCount() == 1 &&
+                             TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
+                             TestsUtils.FirstEntityHasComponent<MessageContextCommandTag>(query) &&
+                             TestsUtils.FirstEntityHasComponent<MessageLifetimeOneFrameTag>(query) &&
+                             component.Value == 123;
 
             yield return null;
 
