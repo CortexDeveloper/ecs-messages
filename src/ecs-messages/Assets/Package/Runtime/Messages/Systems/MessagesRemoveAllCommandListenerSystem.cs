@@ -1,5 +1,8 @@
-using CortexDeveloper.Messages.Components;
+using CortexDeveloper.Messages.Components.Meta;
+using CortexDeveloper.Messages.Components.RemoveCommands;
+using CortexDeveloper.Messages.Service;
 using CortexDeveloper.Messages.SystemGroups;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
@@ -25,12 +28,12 @@ namespace CortexDeveloper.Messages.Systems
                 return;
             
             EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
-            EntityQuery allMessages = GetEntityQuery(new EntityQueryDesc
-            {
-                Any = new ComponentType[] { typeof(MessageContextEventTag), typeof(MessageContextCommandTag) }
-            });
+            EntityQuery allMessages = GetEntityQuery(ComponentType.ReadOnly<MessageTag>());
+            NativeArray<Entity> messageEntities = allMessages.ToEntityArray(Allocator.Temp);
+            EntityManager entityManager = EntityManager;
 
-            ecb.DestroyEntitiesForEntityQuery(allMessages);
+            foreach (Entity messageEntity in messageEntities)
+                MessageUtils.Destroy(messageEntity, ecb, entityManager);
         }
     }
 }

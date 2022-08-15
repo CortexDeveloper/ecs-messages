@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace CortexDeveloper.Messages.Editor
 {
-    public class MessageBroadcasterStatsWindow : EditorWindow
+    public class MessageBroadcasterWindow : EditorWindow
     {
         private const string LogsEnabledKey = "ECS_MESSAGES_LOGS_ENABLED";
         
@@ -34,27 +34,17 @@ namespace CortexDeveloper.Messages.Editor
         [MenuItem("Tools/Message Broadcaster")]
         public static void Init()
         {
-            MessageBroadcasterStatsWindow statsWindow = (MessageBroadcasterStatsWindow)GetWindow(
-                typeof(MessageBroadcasterStatsWindow), 
+            MessageBroadcasterWindow window = (MessageBroadcasterWindow)GetWindow(
+                typeof(MessageBroadcasterWindow), 
                 false, 
                 "Message Broadcaster");
             
-            statsWindow.Show();
+            window.Show();
         }
 
         public void OnGUI()
         {
-            _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"Stats", "Settings"});
-            switch (_selectedTab)
-            {
-                case 0:
-                    DrawStats();
-                    break;
-                case 1:
-                    DrawSettings();
-                    break;
-            }
-
+            DrawStats();
             Repaint();
         }
 
@@ -72,21 +62,10 @@ namespace CortexDeveloper.Messages.Editor
             DrawRemoveAPI();
         }
 
-        private void DrawSettings()
-        {
-            EditorGUILayout.LabelField($"Broadcaster Logs Enabled: {Convert.ToBoolean(PlayerPrefs.GetInt(LogsEnabledKey, 1))}");
-            EditorGUILayout.Space(25f);
-
-            if (GUILayout.Button("Enable Debug Logs")) 
-                PlayerPrefs.SetInt(LogsEnabledKey, 1);
-
-            if (GUILayout.Button("Disable Debug Logs")) 
-                PlayerPrefs.SetInt(LogsEnabledKey, 0);
-        }
-
         private void DrawMessagesStats()
         {
-            EditorGUILayout.LabelField($"Messages(Events + Commands): {MessagesStats.ActiveMessagesCount}");
+            EditorGUILayout.LabelField($"Messages: {MessagesStats.ActiveMessagesCount}");
+            EditorGUILayout.LabelField($"Attached Messages: {MessagesStats.ActiveAttachedMessagesCount}");
             EditorGUILayout.LabelField($"Events: {MessagesStats.ActiveEventsCount}");
             EditorGUILayout.LabelField($"Commands: {MessagesStats.ActiveCommandsCount}");
             EditorGUILayout.Space(10f);
@@ -105,9 +84,9 @@ namespace CortexDeveloper.Messages.Editor
             _messageLifetimeFilter = (MessageLifetime)EditorGUILayout.EnumPopup("Lifetime Filter: ", _messageLifetimeFilter);
 
             if (GUILayout.Button("Remove Messages by Lifetime Filter"))
-                MessageBroadcaster.RemoveWithLifetime(_messageLifetimeFilter);
+                MessageBroadcaster.RemoveCommonWithLifetime(_messageLifetimeFilter);
 
-            if (GUILayout.Button("Remove All Messages")) 
+            if (GUILayout.Button("Remove All")) 
                 MessageBroadcaster.RemoveAll();
         }
     }

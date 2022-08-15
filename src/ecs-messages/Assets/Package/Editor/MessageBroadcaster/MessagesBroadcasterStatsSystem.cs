@@ -1,4 +1,5 @@
 using CortexDeveloper.Messages.Components;
+using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.SystemGroups;
 using Unity.Entities;
 
@@ -11,15 +12,17 @@ namespace CortexDeveloper.Messages.Editor
         protected override void OnUpdate()
         {
             EntityQuery allMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageTag)));
+            EntityQuery allAttachedMessagesQuery = GetEntityQuery(new ComponentType(typeof(AttachedMessageContent)));
             EntityQuery allEventsQuery = GetEntityQuery(new ComponentType(typeof(MessageContextEventTag)));
             EntityQuery allCommandsQuery = GetEntityQuery(new ComponentType(typeof(MessageContextCommandTag)));
-            EntityQuery allUniqueQuery = GetEntityQuery(new ComponentType(typeof(MessageUniqueTag)));
+            EntityQuery allUniqueQuery = GetEntityQuery(new ComponentType(typeof(UniqueMessageTag)));
             
             EntityQuery allOneFrameMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageLifetimeOneFrameTag)));
             EntityQuery allTimeRangeMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageLifetimeTimeRange)));
             EntityQuery allUnlimitedLifetimeMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageLifetimeUnlimitedTag)));
 
             MessagesStats.ActiveMessagesCount = allMessagesQuery.CalculateEntityCount();
+            MessagesStats.ActiveAttachedMessagesCount = allAttachedMessagesQuery.CalculateEntityCount();
             MessagesStats.ActiveEventsCount = allEventsQuery.CalculateEntityCount();
             MessagesStats.ActiveCommandsCount = allCommandsQuery.CalculateEntityCount();
             MessagesStats.ActiveUniqueCount = allUniqueQuery.CalculateEntityCount();

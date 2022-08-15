@@ -163,7 +163,7 @@ public struct StartMatchCommand : IComponentData
 ```csharp
 MessageBroadcaster
     .PrepareEvent()
-    .Post(new CharacterDeadEvent { Tick = 1234567890 } );
+    .Post(new CharacterDeadEvent { Tick = 1234567890 });
 ```
 
 #### Time Range Messages
@@ -268,15 +268,11 @@ You can also explore examples *Tools/Messages Examples* if you download package 
 
 ## Next Versions Roadmap
 
-- Unique messages(only one instance of type can be active)
-- Messages with multiple components(without DynamicBuffer)
 - Remove API with more filters
-- Bursted version of *MessagesRemoveByComponentCommandListenerSystem*
 - More examples
-- Additional features for Editor Stats window
+- Additional features for Editor Tools
 - Performance optimization
 - Performance benchmark
-- Unit tests
 
 ## Contacts
 

@@ -1,3 +1,5 @@
+using Unity.Entities;
+
 namespace CortexDeveloper.Messages.Service
 {
     public struct MessageBuilder
@@ -6,8 +8,16 @@ namespace CortexDeveloper.Messages.Service
         internal MessageLifetime Lifetime;
         internal float Seconds;
         internal bool IsUnique;
+        internal Entity Entity;
         
-        public MessageBuilder WithLifeTime(float seconds)
+        public MessageBuilder AliveForOneFrame()
+        {
+            Lifetime = MessageLifetime.OneFrame;
+
+            return this;
+        }
+        
+        public MessageBuilder AliveForTime(float seconds)
         {
             Lifetime = MessageLifetime.TimeRange;
             Seconds = seconds;
@@ -15,7 +25,7 @@ namespace CortexDeveloper.Messages.Service
             return this;
         }
         
-        public MessageBuilder WithUnlimitedLifeTime()
+        public MessageBuilder AliveForUnlimitedTime()
         {
             Lifetime = MessageLifetime.Unlimited;
 
@@ -25,6 +35,13 @@ namespace CortexDeveloper.Messages.Service
         public MessageBuilder AsUnique()
         {
             IsUnique = true;
+
+            return this;
+        }
+        
+        public MessageBuilder AttachedTo(Entity entity)
+        {
+            Entity = entity;
 
             return this;
         }

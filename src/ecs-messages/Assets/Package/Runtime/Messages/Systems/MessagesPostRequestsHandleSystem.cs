@@ -8,9 +8,7 @@ namespace CortexDeveloper.Messages.Systems
     [AlwaysUpdateSystem]
     public partial class MessagesPostRequestsHandleSystem : SystemBase
     {
-        protected override void OnUpdate()
-        {
+        protected override void OnUpdate() => 
             MessageBroadcaster.ClearRequests();
-        }
     }
 }

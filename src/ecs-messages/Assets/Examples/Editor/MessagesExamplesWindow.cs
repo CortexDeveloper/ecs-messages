@@ -1,10 +1,11 @@
 using CortexDeveloper.Messages.Service;
+using Unity.Entities;
 using UnityEditor;
 using UnityEngine;
 
 namespace CortexDeveloper.Examples.Editor
 {
-    public class MessageBroadcasterWindow : EditorWindow
+    public class MessagesExamplesWindow : EditorWindow
     {
         private int _selectedTab;
 
@@ -28,7 +29,7 @@ namespace CortexDeveloper.Examples.Editor
         [MenuItem("Tools/Messages Examples")]
         public static void Init()
         {
-            MessageBroadcasterWindow window = (MessageBroadcasterWindow)GetWindow(typeof(MessageBroadcasterWindow), false, "Messages Use Case Examples");
+            MessagesExamplesWindow window = (MessagesExamplesWindow)GetWindow(typeof(MessagesExamplesWindow), false, "Messages Use Case Examples");
             
             window.Show();
         }
@@ -42,7 +43,7 @@ namespace CortexDeveloper.Examples.Editor
                 return;
             }
             
-            _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"One Frame", "Time Range", "Unlimited Time"});
+            _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"One Frame", "Time Range", "Unlimited Time", "Attached"});
             switch (_selectedTab)
             {
                 case 0:
@@ -53,6 +54,9 @@ namespace CortexDeveloper.Examples.Editor
                     break;
                 case 2:
                     DrawUnlimitedLifetimeExamples();
+                    break;
+                case 3:
+                    DrawAttachedToEntityExamples();
                     break;
             }
         }
@@ -68,6 +72,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareCommand()
+                    .AliveForOneFrame()
                     .Post(new PauseGameCommand());
             }
             
@@ -85,6 +90,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareCommand()
+                    .AliveForOneFrame()
                     .AsUnique()
                     .Post(new StartMatchCommand
                     {
@@ -103,6 +109,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareEvent()
+                    .AliveForOneFrame()
                     .Post(new CharacterDeadEvent { Tick = 1234567890 });
             }
         }
@@ -122,30 +129,33 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareEvent()
-                    .WithLifeTime(_debuffDuration)
+                    .AliveForTime(_debuffDuration)
                     .PostBuffer(
                         new DebuffData{ Value = _firstDebuff },
                         new DebuffData{ Value = _secondDebuff });
             }
-            
-            if (GUILayout.Button("Remove Event: Debuffs State")) 
-                MessageBroadcaster.RemoveBuffer<DebuffData>();
 
             // Case 2 
             EditorGUILayout.LabelField("Case: Informing other non-gameplay related systems that there are two active debuffs.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("Same as previous but message is unique. \n" +
+            EditorGUILayout.LabelField("Same as previous but message is unique and attached to already existing entity. \n" +
                                        "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
 
             _firstDebuff = (Debuffs)EditorGUILayout.EnumPopup("First Debuff: ", _firstDebuff);
             _secondDebuff = (Debuffs)EditorGUILayout.EnumPopup("Second Debuff: ", _secondDebuff);
             _debuffDuration = EditorGUILayout.FloatField("Debuff Duration: ", _debuffDuration);
 
-            if (GUILayout.Button("Post Unique Event: Debuffs State"))
+            if (GUILayout.Button("Post Unique Attached Event: Debuffs State"))
             {
+                Entity entity = World.DefaultGameObjectInjectionWorld
+                    .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>()
+                    .EntityManager
+                    .CreateEntity();
+
                 MessageBroadcaster
                     .PrepareEvent()
                     .AsUnique()
-                    .WithLifeTime(_debuffDuration)
+                    .AttachedTo(entity)
+                    .AliveForTime(_debuffDuration)
                     .PostBuffer(
                         new DebuffData{ Value = _firstDebuff },
                         new DebuffData{ Value = _secondDebuff });
@@ -163,7 +173,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareEvent()
-                    .WithLifeTime(_questAvailabilityTime)
+                    .AliveForTime(_questAvailabilityTime)
                     .Post(new QuestAvailabilityData { Quest = _availableQuest });
             }
         }
@@ -181,7 +191,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareEvent()
-                    .WithUnlimitedLifeTime()
+                    .AliveForUnlimitedTime()
                     .Post(new QuestCompletedEvent { Value = _completedQuest });
             }
             
@@ -196,12 +206,12 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareCommand()
-                    .WithUnlimitedLifeTime()
+                    .AliveForUnlimitedTime()
                     .Post(new DigGoldCommand());
             }
             
             if (GUILayout.Button("Remove Command: Dig Gold")) 
-                MessageBroadcaster.Remove<DigGoldCommand>();
+                MessageBroadcaster.RemoveWith<DigGoldCommand>();
             
             // Case 3
             EditorGUILayout.LabelField("Case: RTS player wants any free worker to start digging gold.", EditorStyles.helpBox);
@@ -214,8 +224,69 @@ namespace CortexDeveloper.Examples.Editor
                 MessageBroadcaster
                     .PrepareCommand()
                     .AsUnique()
-                    .WithUnlimitedLifeTime()
+                    .AliveForUnlimitedTime()
                     .Post(new DigGoldCommand());
+            }
+        }
+
+        private void DrawAttachedToEntityExamples()
+        {
+            // Case 1
+            if (GUILayout.Button("Post Attached Message"))
+            {
+                EndSimulationEntityCommandBufferSystem ecbSystem = World.DefaultGameObjectInjectionWorld
+                    .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+
+                EntityManager entityManager = ecbSystem.EntityManager;
+
+                Entity entity = entityManager.CreateEntity();
+                entityManager.SetName(entity, "MessageHolder");
+                entityManager.AddComponent<PauseGameCommand>(entity);
+                
+                MessageBroadcaster
+                    .PrepareEvent()
+                    .AliveForOneFrame()
+                    .AttachedTo(entity)
+                    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
+            }
+            
+            // Case 2
+            if (GUILayout.Button("Post Unique Attached Message"))
+            {
+                EndSimulationEntityCommandBufferSystem ecbSystem = World.DefaultGameObjectInjectionWorld
+                    .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+
+                EntityManager entityManager = ecbSystem.EntityManager;
+
+                Entity entity = entityManager.CreateEntity();
+                entityManager.SetName(entity, "MessageHolder");
+                entityManager.AddComponent<PauseGameCommand>(entity);
+                
+                MessageBroadcaster
+                    .PrepareEvent()
+                    .AliveForOneFrame()
+                    .AsUnique()
+                    .AttachedTo(entity)
+                    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
+            }
+            
+            // Case 2
+            if (GUILayout.Button("Post TimeRange Attached Message"))
+            {
+                EndSimulationEntityCommandBufferSystem ecbSystem = World.DefaultGameObjectInjectionWorld
+                    .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+
+                EntityManager entityManager = ecbSystem.EntityManager;
+
+                Entity entity = entityManager.CreateEntity();
+                entityManager.SetName(entity, "MessageHolder");
+                entityManager.AddComponent<PauseGameCommand>(entity);
+                
+                MessageBroadcaster
+                    .PrepareEvent()
+                    .AliveForTime(10f)
+                    .AttachedTo(entity)
+                    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
             }
         }
     }

@@ -6,7 +6,7 @@ using Unity.Entities;
 namespace CortexDeveloper.Messages.Systems
 {
     [UpdateInGroup(typeof(MessagesSystemGroup))]
-    public partial class MessagesOneFrameLifetimeSystem : SystemBase
+    public partial class MessagesTimeRangeLifetimeRemoveSystem : SystemBase
     {
         private EntityCommandBufferSystem _ecbSystem;
 
@@ -14,18 +14,19 @@ namespace CortexDeveloper.Messages.Systems
         {
             _ecbSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 
-            RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<MessageLifetimeOneFrameTag>()));
+            RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), typeof(MessageLifetimeTimeRange)));
         }
-        
+
         protected override void OnUpdate()
         {
             EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
             EntityManager entityManager = EntityManager;
-            
+
             Entities
-                .ForEach((Entity entity, in MessageTag messageTag, in MessageLifetimeOneFrameTag oneFrameTag) =>
+                .ForEach((Entity entity, in MessageTag messageTag, in MessageLifetimeTimeRange timeRange) =>
                 {
-                    MessageUtils.Destroy(entity, ecb, entityManager);
+                    if (timeRange.LifetimeLeft <= 0f)
+                        MessageUtils.Destroy(entity, ecb, entityManager);
                 })
                 .Schedule();
             
