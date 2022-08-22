@@ -1,6 +1,9 @@
+using System;
+using System.Diagnostics;
 using CortexDeveloper.Messages.Components.Meta;
 using Unity.Collections;
 using Unity.Entities;
+using Random = UnityEngine.Random;
 
 namespace CortexDeveloper.Messages.Service
 {
@@ -54,6 +57,7 @@ namespace CortexDeveloper.Messages.Service
             if (builder.IsUnique)
                 ecb.AddComponent<UniqueMessageTag>(messageEntity);
 
+            AddEditorInfoComponents(messageEntity, ecb);
             AddContextComponents<T>(builder, messageEntity, ecb);
             AddLifetimeComponents(builder, messageEntity, ecb);
         }
@@ -94,6 +98,16 @@ namespace CortexDeveloper.Messages.Service
                     ecb.AddComponent(messageEntity, new MessageLifetimeUnlimitedTag());
                     break;
             }
+        }
+        
+        [Conditional("UNITY_EDITOR")]
+        private static void AddEditorInfoComponents(Entity messageEntity, EntityCommandBuffer ecb)
+        {
+            ecb.AddComponent(messageEntity, new MessageEditorData
+            {
+                Id = Random.Range(0, 99999999),
+                CreationTime = DateTime.Now.ToString("HH:mm:ss")
+            });
         }
 
         private static bool UniqueContentAlreadyExist<T>(MessageBuilder builder) where T : struct
