@@ -13,12 +13,7 @@ namespace CortexDeveloper.Examples.Editor
         private Difficulty _difficulty;
         private float _matchLenght;
         private int _enemiesCount;
-        
-        // Debuffs params
-        private Debuffs _firstDebuff;
-        private Debuffs _secondDebuff;
-        private float _debuffDuration;
-        
+
         // Available quest params
         private Quests _availableQuest;
         private float _questAvailabilityTime;
