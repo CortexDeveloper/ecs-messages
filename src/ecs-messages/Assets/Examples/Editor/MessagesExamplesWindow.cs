@@ -116,52 +116,7 @@ namespace CortexDeveloper.Examples.Editor
 
         private void DrawTimeRangeExamples()
         {
-            // // Case 1 
-            // EditorGUILayout.LabelField("Case: Informing other non-gameplay related systems that there are two active debuffs.", EditorStyles.helpBox);
-            // EditorGUILayout.LabelField("In this case we need to post message-event with TimeRange Lifetime type. \n" +
-            //                            "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
-            //
-            // _firstDebuff = (Debuffs)EditorGUILayout.EnumPopup("First Debuff: ", _firstDebuff);
-            // _secondDebuff = (Debuffs)EditorGUILayout.EnumPopup("Second Debuff: ", _secondDebuff);
-            // _debuffDuration = EditorGUILayout.FloatField("Debuff Duration: ", _debuffDuration);
-            //
-            // if (GUILayout.Button("Post Event: Debuffs State"))
-            // {
-            //     MessageBroadcaster
-            //         .PrepareEvent()
-            //         .AliveForTime(_debuffDuration)
-            //         .PostBuffer(
-            //             new DebuffData{ Value = _firstDebuff },
-            //             new DebuffData{ Value = _secondDebuff });
-            // }
-            //
-            // // Case 2 
-            // EditorGUILayout.LabelField("Case: Informing other non-gameplay related systems that there are two active debuffs.", EditorStyles.helpBox);
-            // EditorGUILayout.LabelField("Same as previous but message is unique and attached to already existing entity. \n" +
-            //                            "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
-            //
-            // _firstDebuff = (Debuffs)EditorGUILayout.EnumPopup("First Debuff: ", _firstDebuff);
-            // _secondDebuff = (Debuffs)EditorGUILayout.EnumPopup("Second Debuff: ", _secondDebuff);
-            // _debuffDuration = EditorGUILayout.FloatField("Debuff Duration: ", _debuffDuration);
-            //
-            // if (GUILayout.Button("Post Unique Attached Event: Debuffs State"))
-            // {
-            //     Entity entity = World.DefaultGameObjectInjectionWorld
-            //         .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>()
-            //         .EntityManager
-            //         .CreateEntity();
-            //
-            //     MessageBroadcaster
-            //         .PrepareEvent()
-            //         .AsUnique()
-            //         .AttachedTo(entity)
-            //         .AliveForTime(_debuffDuration)
-            //         .PostBuffer(
-            //             new DebuffData{ Value = _firstDebuff },
-            //             new DebuffData{ Value = _secondDebuff });
-            // }
-            
-            // Case 3
+            // Case 1
             EditorGUILayout.LabelField("Case: Informing that quest available only for N seconds.", EditorStyles.helpBox);
             EditorGUILayout.LabelField("In this case we need to post message-event with TimeRange Lifetime type.\n" +
                                        "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
@@ -194,26 +149,8 @@ namespace CortexDeveloper.Examples.Editor
                     .AliveForUnlimitedTime()
                     .Post(new QuestCompletedEvent { Value = _completedQuest });
             }
-            
-            // Case 2
-            EditorGUILayout.LabelField("Case: RTS player wants any free worker to start digging gold.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("In this case we need to post message-command.\n" +
-                                       "Then listener systems should check is there any free worker.\n" +
-                                       "If there is no free workers wait.\n" +
-                                       "It will be alive until we manually delete it.", EditorStyles.textArea);
 
-            if (GUILayout.Button("Post Command: Dig Gold"))
-            {
-                MessageBroadcaster
-                    .PrepareCommand()
-                    .AliveForUnlimitedTime()
-                    .Post(new DigGoldCommand());
-            }
-            
-            if (GUILayout.Button("Remove Command: Dig Gold")) 
-                MessageBroadcaster.RemoveWith<DigGoldCommand>();
-            
-            // Case 3
+            // Case 2
             EditorGUILayout.LabelField("Case: RTS player wants any free worker to start digging gold.", EditorStyles.helpBox);
             EditorGUILayout.LabelField("Same situation but we want to have only one active instance of this command.\n" +
                                        "So, after command posting there would restriction to post one more until first is alive.\n" +
