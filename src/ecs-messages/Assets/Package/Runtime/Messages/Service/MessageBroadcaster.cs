@@ -21,10 +21,6 @@ namespace CortexDeveloper.Messages.Service
         public static void RemoveWith<T>() where T : struct, IComponentData =>
             PrepareCommand().AliveForOneFrame().Post(new RemoveMessagesByComponentCommand 
                 { ComponentType = new ComponentType(typeof(T)) });
-        
-        public static void RemoveBufferWith<T>() where T : struct, IBufferElementData =>
-            PrepareCommand().AliveForOneFrame().Post(new RemoveMessagesByComponentCommand 
-                { ComponentType = new ComponentType(typeof(T)) });
 
         public static void RemoveCommonWithLifetime(MessageLifetime lifetime)
         {
