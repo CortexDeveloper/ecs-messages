@@ -32,26 +32,6 @@ namespace CortexDeveloper.Messages.Service
             ecb.AddComponent(contentTargetEntity, component);
         }
 
-        public static void PostBuffer<T>(this MessageBuilder builder, params T[] elements) where T : struct, IBufferElementData
-        {
-            if (UniqueContentAlreadyExist<T>(builder) || UniqueAlreadyRequestedAtThisFrame<T>(builder))
-                return;
-
-            EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
-
-            Entity messageEntity = ecb.CreateEntity();
-            Entity contentTargetEntity = builder.Entity == Entity.Null 
-                ? messageEntity 
-                : builder.Entity;
-
-            AddMetaComponents<T>(builder, messageEntity, ecb);
-
-            DynamicBuffer<T> buffer = ecb.AddBuffer<T>(contentTargetEntity);
-
-            for (int i = 0; i < elements.Length; i++)
-                buffer.Add(elements[i]);
-        }
-
         private static void AddMetaComponents<T>(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
         {
             if (builder.IsUnique)
