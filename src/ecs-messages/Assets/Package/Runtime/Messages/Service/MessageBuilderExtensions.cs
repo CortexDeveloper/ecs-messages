@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using CortexDeveloper.Messages.Components.Meta;
+using CortexDeveloper.Messages.Systems;
 using Unity.Collections;
 using Unity.Entities;
 using Random = UnityEngine.Random;
@@ -86,7 +87,7 @@ namespace CortexDeveloper.Messages.Service
             ecb.AddComponent(messageEntity, new MessageEditorData
             {
                 Id = Random.Range(0, 99999999),
-                CreationTime = DateTime.Now.ToString("HH:mm:ss")
+                CreationTime = MessagesDateTimeSystem.TimeAsString.Data
             });
         }
 
