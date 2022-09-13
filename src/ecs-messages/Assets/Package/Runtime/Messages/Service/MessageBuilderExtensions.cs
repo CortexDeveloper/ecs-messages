@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Systems;
@@ -21,8 +20,7 @@ namespace CortexDeveloper.Messages.Service
             if (UniqueContentAlreadyExist<T>(builder) || UniqueAlreadyRequestedAtThisFrame<T>(builder))
                 return;
 
-            EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
-
+            EntityCommandBuffer ecb = builder.Ecb;
             Entity messageEntity = ecb.CreateEntity();
             Entity contentTargetEntity = builder.Entity != Entity.Null 
                 ? builder.Entity
@@ -121,7 +119,5 @@ namespace CortexDeveloper.Messages.Service
 
             return false;
         }
-
-        
     }
 }

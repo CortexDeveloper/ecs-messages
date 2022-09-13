@@ -9,31 +9,39 @@ namespace CortexDeveloper.Messages.Service
     {
         internal static readonly HashSet<ComponentType> PostRequests = new();
 
-        public static MessageBuilder PrepareEvent() =>
-            new() { Context = MessageContext.Event };
+        public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
+            new()
+            {
+                Ecb = ecb,
+                Context = MessageContext.Event
+            };
 
-        public static MessageBuilder PrepareCommand() =>
-            new() { Context = MessageContext.Command };
+        public static MessageBuilder PrepareCommand(EntityCommandBuffer ecb) =>
+            new()
+            {
+                Ecb = ecb,
+                Context = MessageContext.Command
+            };
 
-        public static void RemoveAll() =>
-            PrepareCommand().AliveForOneFrame().Post(new RemoveAllMessagesCommand());
+        public static void RemoveAll(EntityCommandBuffer ecb) =>
+            PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveAllMessagesCommand());
 
-        public static void RemoveWith<T>() where T : struct, IComponentData =>
-            PrepareCommand().AliveForOneFrame().Post(new RemoveMessagesByComponentCommand 
+        public static void RemoveWith<T>(EntityCommandBuffer ecb) where T : struct, IComponentData =>
+            PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveMessagesByComponentCommand 
                 { ComponentType = new ComponentType(typeof(T)) });
 
-        public static void RemoveCommonWithLifetime(MessageLifetime lifetime)
+        public static void RemoveCommonWithLifetime(EntityCommandBuffer ecb, MessageLifetime lifetime)
         {
             switch (lifetime)
             {
                 case MessageLifetime.OneFrame:
-                    RemoveWith<MessageLifetimeOneFrameTag>();
+                    RemoveWith<MessageLifetimeOneFrameTag>(ecb);
                     break;
                 case MessageLifetime.TimeRange:
-                    RemoveWith<MessageLifetimeTimeRange>();
+                    RemoveWith<MessageLifetimeTimeRange>(ecb);
                     break;
                 case MessageLifetime.Unlimited:
-                    RemoveWith<MessageLifetimeUnlimitedTag>();
+                    RemoveWith<MessageLifetimeUnlimitedTag>(ecb);
                     break;
             }
         }

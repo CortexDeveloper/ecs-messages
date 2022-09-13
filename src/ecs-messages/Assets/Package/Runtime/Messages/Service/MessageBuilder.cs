@@ -9,6 +9,7 @@ namespace CortexDeveloper.Messages.Service
         internal float Seconds;
         internal bool IsUnique;
         internal Entity Entity;
+        internal EntityCommandBuffer Ecb;
         
         public MessageBuilder AliveForOneFrame()
         {
