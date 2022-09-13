@@ -10,11 +10,15 @@ namespace CortexDeveloper.Tests
 {
     public class OneFrameMessagesTests
     {
+        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
+        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
+            _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        
         [UnityTest]
         public IEnumerator PostEvent_WaitFrame_CheckForExisting_WaitFrame_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareEvent().AliveForOneFrame().Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AliveForOneFrame().Post(new TestContentData{ Value = 123 });
             yield return null;
 
             // Assert
@@ -37,7 +41,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostCommand_WaitFrame_CheckForExisting_WaitFrame_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand().AliveForOneFrame().Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareCommand(EcbSystem.CreateCommandBuffer()).AliveForOneFrame().Post(new TestContentData { Value = 123 });
             
             yield return null;
 
@@ -61,8 +65,8 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostCommandAsUnique_PostCommandAsUnique_WaitFrame_CheckOnlyOneExist_WaitFrame_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand().AsUnique().AliveForOneFrame().Post(new TestContentData { Value = 123 });
-            MessageBroadcaster.PrepareCommand().AsUnique().AliveForOneFrame().Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareCommand(EcbSystem.CreateCommandBuffer()).AsUnique().AliveForOneFrame().Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareCommand(EcbSystem.CreateCommandBuffer()).AsUnique().AliveForOneFrame().Post(new TestContentData { Value = 123 });
             
             yield return null;
 

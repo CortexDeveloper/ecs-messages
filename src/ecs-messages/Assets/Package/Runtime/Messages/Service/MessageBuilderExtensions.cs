@@ -9,12 +9,6 @@ namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBuilderExtensions
     {
-        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
-
-        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
-            _ecbSystem ??= World.DefaultGameObjectInjectionWorld
-                .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-
         public static void Post<T>(this MessageBuilder builder, T component) where T : struct, IComponentData
         {
             if (UniqueContentAlreadyExist<T>(builder) || UniqueAlreadyRequestedAtThisFrame<T>(builder))

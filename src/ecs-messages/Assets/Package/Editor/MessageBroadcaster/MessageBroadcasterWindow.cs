@@ -16,6 +16,10 @@ namespace CortexDeveloper.Messages.Editor
         private int _logsEnabled;
         
         private MessageLifetime _messageLifetimeFilter;
+        
+        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
+        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
+            _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 
         public int PostRequestsCount
         {
@@ -84,10 +88,10 @@ namespace CortexDeveloper.Messages.Editor
             _messageLifetimeFilter = (MessageLifetime)EditorGUILayout.EnumPopup("Lifetime Filter: ", _messageLifetimeFilter);
 
             if (GUILayout.Button("Remove Messages by Lifetime Filter"))
-                MessageBroadcaster.RemoveCommonWithLifetime(_messageLifetimeFilter);
+                MessageBroadcaster.RemoveCommonWithLifetime(EcbSystem.CreateCommandBuffer(), _messageLifetimeFilter);
 
             if (GUILayout.Button("Remove All")) 
-                MessageBroadcaster.RemoveAll();
+                MessageBroadcaster.RemoveAll(EcbSystem.CreateCommandBuffer());
         }
     }
 }

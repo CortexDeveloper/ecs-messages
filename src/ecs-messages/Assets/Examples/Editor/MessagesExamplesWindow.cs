@@ -20,6 +20,10 @@ namespace CortexDeveloper.Examples.Editor
         
         // Completed quest params
         private Quests _completedQuest;
+        
+        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
+        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
+            _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 
         [MenuItem("Tools/Messages Examples")]
         public static void Init()
@@ -66,7 +70,7 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Command: Pause Game"))
             {
                 MessageBroadcaster
-                    .PrepareCommand()
+                    .PrepareCommand(EcbSystem.CreateCommandBuffer())
                     .AliveForOneFrame()
                     .Post(new PauseGameCommand());
             }
@@ -84,7 +88,7 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Unique Command: Start Game"))
             {
                 MessageBroadcaster
-                    .PrepareCommand()
+                    .PrepareCommand(EcbSystem.CreateCommandBuffer())
                     .AliveForOneFrame()
                     .AsUnique()
                     .Post(new StartMatchCommand
@@ -103,7 +107,7 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Event: Character Died"))
             {
                 MessageBroadcaster
-                    .PrepareEvent()
+                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
                     .AliveForOneFrame()
                     .Post(new CharacterDeadEvent { Tick = 1234567890 });
             }
@@ -122,7 +126,7 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post: Quest Availability Timer"))
             {
                 MessageBroadcaster
-                    .PrepareEvent()
+                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
                     .AliveForTime(_questAvailabilityTime)
                     .Post(new QuestAvailabilityData { Quest = _availableQuest });
             }
@@ -140,7 +144,7 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Event: Quest Completed"))
             {
                 MessageBroadcaster
-                    .PrepareEvent()
+                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
                     .AliveForUnlimitedTime()
                     .Post(new QuestCompletedEvent { Value = _completedQuest });
             }
@@ -154,7 +158,7 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Unique Command: Dig Gold"))
             {
                 MessageBroadcaster
-                    .PrepareCommand()
+                    .PrepareCommand(EcbSystem.CreateCommandBuffer())
                     .AsUnique()
                     .AliveForUnlimitedTime()
                     .Post(new DigGoldCommand());
@@ -176,7 +180,7 @@ namespace CortexDeveloper.Examples.Editor
                 entityManager.AddComponent<PauseGameCommand>(entity);
                 
                 MessageBroadcaster
-                    .PrepareEvent()
+                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
                     .AliveForOneFrame()
                     .AttachedTo(entity)
                     .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
@@ -195,7 +199,7 @@ namespace CortexDeveloper.Examples.Editor
                 entityManager.AddComponent<PauseGameCommand>(entity);
                 
                 MessageBroadcaster
-                    .PrepareEvent()
+                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
                     .AliveForOneFrame()
                     .AsUnique()
                     .AttachedTo(entity)
@@ -215,7 +219,7 @@ namespace CortexDeveloper.Examples.Editor
                 entityManager.AddComponent<PauseGameCommand>(entity);
                 
                 MessageBroadcaster
-                    .PrepareEvent()
+                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
                     .AliveForTime(10f)
                     .AttachedTo(entity)
                     .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });

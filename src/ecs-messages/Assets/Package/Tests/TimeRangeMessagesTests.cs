@@ -11,11 +11,15 @@ namespace CortexDeveloper.Tests
 {
     public class TimeRangeMessagesTests
     {
+        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
+        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
+            _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        
         [UnityTest]
         public IEnumerator PostOneSecondEvent_WaitFrame_CheckForExisting_WaitOneSecond_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareEvent().AliveForTime(1f).Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AliveForTime(1f).Post(new TestContentData{ Value = 123 });
             
             yield return null;
 
@@ -39,7 +43,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostTwoSecondsCommand_WaitOneSecond_CheckForExisting_WaitOneSecond_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand().AliveForTime(2f).Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster.PrepareCommand(EcbSystem.CreateCommandBuffer()).AliveForTime(2f).Post(new TestContentData{ Value = 123 });
             
             yield return null;
 
@@ -67,7 +71,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostCommand_CheckForExisting_WaitOneSecond_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand().AliveForTime(1f).Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareCommand(EcbSystem.CreateCommandBuffer()).AliveForTime(1f).Post(new TestContentData { Value = 123 });
             
             yield return null;
 
@@ -91,11 +95,11 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostUniqueEvent_WaitFrame_PostUniqueEvent_CheckOnlyOneExist_CheckForAutoRemove()
         {
             // Act
-            MessageBroadcaster.PrepareEvent().AsUnique().AliveForTime(2f).Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AsUnique().AliveForTime(2f).Post(new TestContentData { Value = 123 });
 
             yield return null;
             
-            MessageBroadcaster.PrepareEvent().AsUnique().AliveForTime(2f).Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AsUnique().AliveForTime(2f).Post(new TestContentData { Value = 123 });
 
             yield return null;
             
@@ -131,10 +135,10 @@ namespace CortexDeveloper.Tests
             Entity secondEntity = entityManager.CreateEntity();
             
             // Act
-            MessageBroadcaster.PrepareEvent().AsUnique().AttachedTo(firstEntity).AliveForTime(2f).Post(
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AsUnique().AttachedTo(firstEntity).AliveForTime(2f).Post(
                 new TestContentData { Value = 123 });
             
-            MessageBroadcaster.PrepareEvent().AsUnique().AttachedTo(secondEntity).AliveForTime(2f).Post(
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AsUnique().AttachedTo(secondEntity).AliveForTime(2f).Post(
                 new TestContentData { Value = 123 });
 
             yield return null;
