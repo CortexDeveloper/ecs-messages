@@ -15,6 +15,7 @@ namespace CortexDeveloper.Examples
         protected override void OnUpdate()
         {
             EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
+            EntityManager entityManager = EntityManager;
             
             Entities
                 .ForEach((Entity entity, in PauseGameCommand command) =>
@@ -22,9 +23,9 @@ namespace CortexDeveloper.Examples
                     ecb
                         .PrepareEvent()
                         .AliveForTime(10f)
-                        .Post(new QuestAvailabilityData { Quest = Quests.KillDiablo });
+                        .PostUnique(entityManager, new QuestAvailabilityData { Quest = Quests.KillDiablo });
                 })
-                .Schedule();
+                .Run();
         }
     }
 }

@@ -10,7 +10,8 @@ namespace CortexDeveloper.Messages.Systems
     [UpdateInGroup(typeof(MessagesSystemGroup))]
     public partial class MessagesDateTimeSystem : SystemBase
     {
-        public static readonly SharedStatic<FixedString32Bytes> TimeAsString = new();
+        public static readonly SharedStatic<FixedString32Bytes> TimeAsString =
+            SharedStatic<FixedString32Bytes>.GetOrCreate<MessagesDateTimeSystem, FixedString32Bytes>();
 
         protected override void OnCreate() => 
             TimeAsString.Data = DateTime.Now.ToString("hh:mm:ss");

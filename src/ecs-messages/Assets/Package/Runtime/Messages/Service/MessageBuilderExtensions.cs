@@ -11,9 +11,6 @@ namespace CortexDeveloper.Messages.Service
     {
         public static void Post<T>(this MessageBuilder builder, T component) where T : struct, IComponentData
         {
-            if (UniqueContentAlreadyExist<T>(builder) || UniqueAlreadyRequestedAtThisFrame<T>(builder))
-                return;
-
             EntityCommandBuffer ecb = builder.Ecb;
             Entity messageEntity = ecb.CreateEntity();
             Entity contentTargetEntity = builder.Entity != Entity.Null 
@@ -23,6 +20,14 @@ namespace CortexDeveloper.Messages.Service
             AddMetaComponents<T>(builder, messageEntity, ecb);
             
             ecb.AddComponent(contentTargetEntity, component);
+        }
+        
+        public static void PostUnique<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : struct, IComponentData
+        {
+            if (UniqueContentAlreadyExist<T>(builder, entityManager) /*|| UniqueAlreadyRequestedAtThisFrame<T>(builder)*/)
+                return;
+
+            Post(builder, component);
         }
 
         private static void AddMetaComponents<T>(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
@@ -42,7 +47,7 @@ namespace CortexDeveloper.Messages.Service
             if (builder.Entity != Entity.Null)
                 ecb.AddComponent(messageEntity, new AttachedMessageContent
                 {
-                    ComponentType = new ComponentType(typeof(T)),
+                    ComponentType = ComponentType.ReadOnly<T>(),
                     TargetEntity = builder.Entity
                 });
 
@@ -83,16 +88,12 @@ namespace CortexDeveloper.Messages.Service
             });
         }
 
-        private static bool UniqueContentAlreadyExist<T>(MessageBuilder builder) where T : struct
+        private static bool UniqueContentAlreadyExist<T>(MessageBuilder builder, EntityManager entityManager) where T : struct
         {
-            if (!builder.IsUnique)
-                return false;
-
             EntityQueryDescBuilder descBuilder = new(Allocator.Temp);
-            descBuilder.AddAny(new ComponentType(typeof(T)));
+            descBuilder.AddAny(ComponentType.ReadOnly<T>());
             descBuilder.FinalizeQuery();
-
-            EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+            
             EntityQuery query = entityManager.CreateEntityQuery(descBuilder);
             bool alreadyExist = query.CalculateEntityCount() > 0;
 
