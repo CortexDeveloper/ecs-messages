@@ -24,7 +24,7 @@ namespace CortexDeveloper.Messages.Service
         
         public static void PostUnique<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : struct, IComponentData
         {
-            if (UniqueContentAlreadyExist<T>(builder, entityManager) /*|| UniqueAlreadyRequestedAtThisFrame<T>(builder)*/)
+            if (UniqueContentAlreadyExist<T>(entityManager) || UniqueAlreadyRequestedAtThisFrame<T>())
                 return;
 
             Post(builder, component);
@@ -88,7 +88,7 @@ namespace CortexDeveloper.Messages.Service
             });
         }
 
-        private static bool UniqueContentAlreadyExist<T>(MessageBuilder builder, EntityManager entityManager) where T : struct
+        private static bool UniqueContentAlreadyExist<T>(EntityManager entityManager) where T : struct
         {
             EntityQueryDescBuilder descBuilder = new(Allocator.Temp);
             descBuilder.AddAny(ComponentType.ReadOnly<T>());
@@ -102,15 +102,12 @@ namespace CortexDeveloper.Messages.Service
             return alreadyExist;
         }
 
-        private static bool UniqueAlreadyRequestedAtThisFrame<T>(MessageBuilder builder)
+        private static bool UniqueAlreadyRequestedAtThisFrame<T>()
         {
-            if (!builder.IsUnique)
-                return false;
-            
-            if (MessageBroadcaster.PostRequests.Contains(new ComponentType(typeof(T))))
+            if (MessageBroadcaster.PostRequests.Contains(ComponentType.ReadOnly<T>()))
                 return true;
 
-            MessageBroadcaster.PostRequests.Add(new ComponentType(typeof(T)));
+            MessageBroadcaster.PostRequests.Add(ComponentType.ReadOnly<T>());
 
             return false;
         }

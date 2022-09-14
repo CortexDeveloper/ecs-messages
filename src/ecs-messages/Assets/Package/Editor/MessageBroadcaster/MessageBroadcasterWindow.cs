@@ -25,13 +25,14 @@ namespace CortexDeveloper.Messages.Editor
         {
             get
             {
-                FieldInfo postRequestsFieldInfo = typeof(MessageBroadcaster).GetField(
-                    "PostRequests", 
-                    BindingFlags.NonPublic | BindingFlags.Static);
-
-                HashSet<ComponentType> value = postRequestsFieldInfo.GetValue(null) as HashSet<ComponentType>;
-                    
-                return value.Count;
+                // FieldInfo postRequestsFieldInfo = typeof(MessageBroadcaster).GetField(
+                //     "PostRequests", 
+                //     BindingFlags.NonPublic | BindingFlags.Static);
+                //
+                // HashSet<ComponentType> value = postRequestsFieldInfo.GetValue(null) as HashSet<ComponentType>;
+                //     
+                // return value.Count;
+                return 0;
             }
         }
 

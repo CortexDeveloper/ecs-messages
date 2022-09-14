@@ -1,13 +1,15 @@
+using System;
 using System.Collections.Generic;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBroadcaster
     {
-        internal static readonly HashSet<ComponentType> PostRequests = new();
+        internal static readonly NativeList<ComponentType> PostRequests = new(Allocator.Persistent);
 
         public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
             new()
@@ -23,6 +25,8 @@ namespace CortexDeveloper.Messages.Service
                 Context = MessageContext.Command
             };
 
+        
+        
         public static void RemoveAll(EntityCommandBuffer ecb) =>
             PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveAllMessagesCommand());
 
