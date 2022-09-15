@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Systems;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Random = UnityEngine.Random;
@@ -102,6 +103,7 @@ namespace CortexDeveloper.Messages.Service
             return alreadyExist;
         }
 
+        [BurstDiscard]
         private static bool UniqueAlreadyRequestedAtThisFrame<T>()
         {
             if (MessageBroadcaster.PostRequests.Contains(ComponentType.ReadOnly<T>()))

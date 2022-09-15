@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
 using Unity.Collections;
@@ -9,7 +7,9 @@ namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBroadcaster
     {
-        internal static readonly NativeList<ComponentType> PostRequests = new(Allocator.Persistent);
+        internal static NativeList<ComponentType> PostRequests = new(Allocator.Persistent);
+
+        private static bool _isPostRequestsDisposed;
 
         public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
             new()
@@ -50,7 +50,19 @@ namespace CortexDeveloper.Messages.Service
             }
         }
 
-        internal static void ClearRequests() =>
+        public static void Dispose()
+        {
+            PostRequests.Dispose();
+
+            _isPostRequestsDisposed = true;
+        }
+
+        internal static void ClearRequests()
+        {
+            if (_isPostRequestsDisposed || !PostRequests.IsCreated)
+                return;
+            
             PostRequests.Clear();
+        }
     }
 }
