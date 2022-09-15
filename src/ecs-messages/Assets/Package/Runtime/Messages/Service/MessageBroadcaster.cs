@@ -1,3 +1,4 @@
+using System;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
 using Unity.Collections;
@@ -9,6 +10,8 @@ namespace CortexDeveloper.Messages.Service
     {
         internal static NativeList<ComponentType> PostRequests = new(Allocator.Persistent);
 
+        internal static readonly int RandomSeed = new Random().Next(int.MinValue, int.MaxValue);
+        
         private static bool _isPostRequestsDisposed;
 
         public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
@@ -25,8 +28,6 @@ namespace CortexDeveloper.Messages.Service
                 Context = MessageContext.Command
             };
 
-        
-        
         public static void RemoveAll(EntityCommandBuffer ecb) =>
             PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveAllMessagesCommand());
 

@@ -4,7 +4,7 @@ using CortexDeveloper.Messages.Systems;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Random = UnityEngine.Random;
+using Unity.Mathematics;
 
 namespace CortexDeveloper.Messages.Service
 {
@@ -84,7 +84,7 @@ namespace CortexDeveloper.Messages.Service
         {
             ecb.AddComponent(messageEntity, new MessageEditorData
             {
-                Id = Random.Range(0, 99999999),
+                Id = new Random(123).NextInt(),
                 CreationTime = MessagesDateTimeSystem.TimeAsString.Data
             });
         }
