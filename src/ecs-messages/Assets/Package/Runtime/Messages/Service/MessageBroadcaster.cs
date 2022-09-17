@@ -10,8 +10,6 @@ namespace CortexDeveloper.Messages.Service
     {
         internal static NativeList<ComponentType> PostRequests = new(Allocator.Persistent);
 
-        internal static readonly int RandomSeed = new Random().Next(int.MinValue, int.MaxValue);
-        
         private static bool _isPostRequestsDisposed;
 
         public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>

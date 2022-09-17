@@ -10,6 +10,9 @@ namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBuilderExtensions
     {
+        private static uint _seed;
+        private static uint Seed => _seed < uint.MaxValue ? ++_seed : _seed = 0;
+        
         public static void Post<T>(this MessageBuilder builder, T component) where T : struct, IComponentData
         {
             EntityCommandBuffer ecb = builder.Ecb;
@@ -84,7 +87,7 @@ namespace CortexDeveloper.Messages.Service
         {
             ecb.AddComponent(messageEntity, new MessageEditorData
             {
-                Id = new Random(123).NextInt(),
+                Id = new Random(Seed).NextInt(0, int.MaxValue),
                 CreationTime = MessagesDateTimeSystem.TimeAsString.Data
             });
         }
