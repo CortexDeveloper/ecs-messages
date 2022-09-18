@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using CortexDeveloper.Messages.Components;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Systems;
 using Unity.Burst;
@@ -13,7 +14,7 @@ namespace CortexDeveloper.Messages.Service
         private static uint _seed;
         private static uint Seed => _seed < uint.MaxValue ? ++_seed : _seed = 0;
         
-        public static void Post<T>(this MessageBuilder builder, T component) where T : struct, IComponentData
+        public static void Post<T>(this MessageBuilder builder, T component) where T : struct, IComponentData, IMessageComponent
         {
             EntityCommandBuffer ecb = builder.Ecb;
             Entity messageEntity = ecb.CreateEntity();
@@ -26,7 +27,7 @@ namespace CortexDeveloper.Messages.Service
             ecb.AddComponent(contentTargetEntity, component);
         }
         
-        public static void PostUnique<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : struct, IComponentData
+        public static void PostUnique<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : struct, IComponentData, IMessageComponent
         {
             if (UniqueContentAlreadyExist<T>(entityManager) || UniqueAlreadyRequestedAtThisFrame<T>())
                 return;
