@@ -64,9 +64,14 @@ namespace CortexDeveloper.Tests
         [UnityTest]
         public IEnumerator PostCommandAsUnique_PostCommandAsUnique_WaitFrame_CheckOnlyOneExist_WaitFrame_CheckForAutoRemove()
         {
+            //Arrange 
+            EntityManager entityManager = World.DefaultGameObjectInjectionWorld
+                .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>()
+                .EntityManager;
+            
             // Act
-            MessageBroadcaster.PrepareCommand(EcbSystem.CreateCommandBuffer()).AsUnique().AliveForOneFrame().Post(new TestContentData { Value = 123 });
-            MessageBroadcaster.PrepareCommand(EcbSystem.CreateCommandBuffer()).AsUnique().AliveForOneFrame().Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareCommand(EcbSystem.CreateCommandBuffer()).AliveForOneFrame().PostUnique(entityManager, new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareCommand(EcbSystem.CreateCommandBuffer()).AliveForOneFrame().PostUnique(entityManager, new TestContentData { Value = 123 });
             
             yield return null;
 

@@ -17,8 +17,8 @@ namespace CortexDeveloper.Messages.Service
         {
             EntityCommandBuffer ecb = builder.Ecb;
             Entity messageEntity = ecb.CreateEntity();
-            Entity contentTargetEntity = builder.Entity != Entity.Null 
-                ? builder.Entity
+            Entity contentTargetEntity = builder.MessageEntity != Entity.Null 
+                ? builder.MessageEntity
                 : messageEntity;
 
             AddMetaComponents<T>(builder, messageEntity, ecb);
@@ -31,6 +31,7 @@ namespace CortexDeveloper.Messages.Service
             if (UniqueContentAlreadyExist<T>(entityManager) || UniqueAlreadyRequestedAtThisFrame<T>())
                 return;
 
+            builder.IsUnique = true;
             Post(builder, component);
         }
 
@@ -38,7 +39,7 @@ namespace CortexDeveloper.Messages.Service
         {
             if (builder.IsUnique)
                 ecb.AddComponent<UniqueMessageTag>(messageEntity);
-
+            
             AddEditorInfoComponents(messageEntity, ecb);
             AddContextComponents<T>(builder, messageEntity, ecb);
             AddLifetimeComponents(builder, messageEntity, ecb);
@@ -48,11 +49,11 @@ namespace CortexDeveloper.Messages.Service
         {
             ecb.AddComponent(messageEntity, new MessageTag());
 
-            if (builder.Entity != Entity.Null)
+            if (builder.MessageEntity != Entity.Null)
                 ecb.AddComponent(messageEntity, new AttachedMessageContent
                 {
                     ComponentType = ComponentType.ReadOnly<T>(),
-                    TargetEntity = builder.Entity
+                    TargetEntity = builder.MessageEntity
                 });
 
             switch (builder.Context)

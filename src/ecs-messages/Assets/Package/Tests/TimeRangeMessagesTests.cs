@@ -94,12 +94,17 @@ namespace CortexDeveloper.Tests
         [UnityTest]
         public IEnumerator PostUniqueEvent_WaitFrame_PostUniqueEvent_CheckOnlyOneExist_CheckForAutoRemove()
         {
+            // Arrange
+            EntityManager entityManager = World.DefaultGameObjectInjectionWorld
+                .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>()
+                .EntityManager;
+            
             // Act
-            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AsUnique().AliveForTime(2f).Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AliveForTime(2f).PostUnique(entityManager, new TestContentData { Value = 123 });
 
             yield return null;
             
-            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AsUnique().AliveForTime(2f).Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AliveForTime(2f).PostUnique(entityManager, new TestContentData { Value = 123 });
 
             yield return null;
             
@@ -135,10 +140,12 @@ namespace CortexDeveloper.Tests
             Entity secondEntity = entityManager.CreateEntity();
             
             // Act
-            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AsUnique().AttachedTo(firstEntity).AliveForTime(2f).Post(
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AttachedTo(firstEntity).AliveForTime(2f).PostUnique(
+                entityManager,
                 new TestContentData { Value = 123 });
             
-            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AsUnique().AttachedTo(secondEntity).AliveForTime(2f).Post(
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AttachedTo(secondEntity).AliveForTime(2f).PostUnique(
+                entityManager,
                 new TestContentData { Value = 123 });
 
             yield return null;

@@ -90,8 +90,7 @@ namespace CortexDeveloper.Examples.Editor
                 MessageBroadcaster
                     .PrepareCommand(EcbSystem.CreateCommandBuffer())
                     .AliveForOneFrame()
-                    .AsUnique()
-                    .Post(new StartMatchCommand
+                    .PostUnique(EcbSystem.EntityManager, new StartMatchCommand
                     {
                         DifficultyLevel = _difficulty,
                         MatchLength = _matchLenght,
@@ -159,9 +158,8 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareCommand(EcbSystem.CreateCommandBuffer())
-                    .AsUnique()
                     .AliveForUnlimitedTime()
-                    .Post(new DigGoldCommand());
+                    .PostUnique(EcbSystem.EntityManager, new DigGoldCommand());
             }
         }
 
@@ -201,9 +199,8 @@ namespace CortexDeveloper.Examples.Editor
                 MessageBroadcaster
                     .PrepareEvent(EcbSystem.CreateCommandBuffer())
                     .AliveForOneFrame()
-                    .AsUnique()
                     .AttachedTo(entity)
-                    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
+                    .PostUnique(EcbSystem.EntityManager, new QuestCompletedEvent { Value = Quests.KillDiablo });
             }
             
             // Case 2

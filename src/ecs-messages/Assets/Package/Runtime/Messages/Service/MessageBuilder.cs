@@ -8,7 +8,7 @@ namespace CortexDeveloper.Messages.Service
         internal MessageLifetime Lifetime;
         internal float Seconds;
         internal bool IsUnique;
-        internal Entity Entity;
+        internal Entity MessageEntity;
         internal EntityCommandBuffer Ecb;
         
         public MessageBuilder AliveForOneFrame()
@@ -33,16 +33,9 @@ namespace CortexDeveloper.Messages.Service
             return this;
         }
 
-        public MessageBuilder AsUnique()
-        {
-            IsUnique = true;
-
-            return this;
-        }
-        
         public MessageBuilder AttachedTo(Entity entity)
         {
-            Entity = entity;
+            MessageEntity = entity;
 
             return this;
         }
