@@ -1,44 +1,67 @@
-using System.Collections.Generic;
+using System;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBroadcaster
     {
-        internal static readonly HashSet<ComponentType> PostRequests = new();
+        internal static NativeList<ComponentType> PostRequests = new(Allocator.Persistent);
 
-        public static MessageBuilder PrepareEvent() =>
-            new() { Context = MessageContext.Event };
+        private static bool _isPostRequestsDisposed;
 
-        public static MessageBuilder PrepareCommand() =>
-            new() { Context = MessageContext.Command };
+        public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
+            new()
+            {
+                Ecb = ecb,
+                Context = MessageContext.Event
+            };
 
-        public static void RemoveAll() =>
-            PrepareCommand().AliveForOneFrame().Post(new RemoveAllMessagesCommand());
+        public static MessageBuilder PrepareCommand(EntityCommandBuffer ecb) =>
+            new()
+            {
+                Ecb = ecb,
+                Context = MessageContext.Command
+            };
 
-        public static void RemoveWith<T>() where T : struct, IComponentData =>
-            PrepareCommand().AliveForOneFrame().Post(new RemoveMessagesByComponentCommand 
+        public static void RemoveAll(EntityCommandBuffer ecb) =>
+            PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveAllMessagesCommand());
+
+        public static void RemoveWith<T>(EntityCommandBuffer ecb) where T : struct, IComponentData =>
+            PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveMessagesByComponentCommand 
                 { ComponentType = new ComponentType(typeof(T)) });
 
-        public static void RemoveCommonWithLifetime(MessageLifetime lifetime)
+        public static void RemoveCommonWithLifetime(EntityCommandBuffer ecb, MessageLifetime lifetime)
         {
             switch (lifetime)
             {
                 case MessageLifetime.OneFrame:
-                    RemoveWith<MessageLifetimeOneFrameTag>();
+                    RemoveWith<MessageLifetimeOneFrameTag>(ecb);
                     break;
                 case MessageLifetime.TimeRange:
-                    RemoveWith<MessageLifetimeTimeRange>();
+                    RemoveWith<MessageLifetimeTimeRange>(ecb);
                     break;
                 case MessageLifetime.Unlimited:
-                    RemoveWith<MessageLifetimeUnlimitedTag>();
+                    RemoveWith<MessageLifetimeUnlimitedTag>(ecb);
                     break;
             }
         }
 
-        internal static void ClearRequests() =>
+        public static void Dispose()
+        {
+            PostRequests.Dispose();
+
+            _isPostRequestsDisposed = true;
+        }
+
+        internal static void ClearRequests()
+        {
+            if (_isPostRequestsDisposed || !PostRequests.IsCreated)
+                return;
+            
             PostRequests.Clear();
+        }
     }
 }

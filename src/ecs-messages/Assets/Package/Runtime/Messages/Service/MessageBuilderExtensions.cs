@@ -1,42 +1,46 @@
-using System;
 using System.Diagnostics;
+using CortexDeveloper.Messages.Components;
 using CortexDeveloper.Messages.Components.Meta;
+using CortexDeveloper.Messages.Systems;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Random = UnityEngine.Random;
+using Unity.Mathematics;
 
 namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBuilderExtensions
     {
-        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
-
-        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
-            _ecbSystem ??= World.DefaultGameObjectInjectionWorld
-                .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-
-        public static void Post<T>(this MessageBuilder builder, T component) where T : struct, IComponentData
+        private static uint _seed;
+        private static uint Seed => _seed < uint.MaxValue ? ++_seed : _seed = 0;
+        
+        public static void Post<T>(this MessageBuilder builder, T component) where T : struct, IComponentData, IMessageComponent
         {
-            if (UniqueContentAlreadyExist<T>(builder) || UniqueAlreadyRequestedAtThisFrame<T>(builder))
-                return;
-
-            EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
-
+            EntityCommandBuffer ecb = builder.Ecb;
             Entity messageEntity = ecb.CreateEntity();
-            Entity contentTargetEntity = builder.Entity != Entity.Null 
-                ? builder.Entity
+            Entity contentTargetEntity = builder.MessageEntity != Entity.Null 
+                ? builder.MessageEntity
                 : messageEntity;
 
             AddMetaComponents<T>(builder, messageEntity, ecb);
             
             ecb.AddComponent(contentTargetEntity, component);
         }
+        
+        public static void PostUnique<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : struct, IComponentData, IMessageComponent
+        {
+            if (UniqueContentAlreadyExist<T>(entityManager) || UniqueAlreadyRequestedAtThisFrame<T>())
+                return;
+
+            builder.IsUnique = true;
+            Post(builder, component);
+        }
 
         private static void AddMetaComponents<T>(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
         {
             if (builder.IsUnique)
                 ecb.AddComponent<UniqueMessageTag>(messageEntity);
-
+            
             AddEditorInfoComponents(messageEntity, ecb);
             AddContextComponents<T>(builder, messageEntity, ecb);
             AddLifetimeComponents(builder, messageEntity, ecb);
@@ -46,11 +50,11 @@ namespace CortexDeveloper.Messages.Service
         {
             ecb.AddComponent(messageEntity, new MessageTag());
 
-            if (builder.Entity != Entity.Null)
+            if (builder.MessageEntity != Entity.Null)
                 ecb.AddComponent(messageEntity, new AttachedMessageContent
                 {
-                    ComponentType = new ComponentType(typeof(T)),
-                    TargetEntity = builder.Entity
+                    ComponentType = ComponentType.ReadOnly<T>(),
+                    TargetEntity = builder.MessageEntity
                 });
 
             switch (builder.Context)
@@ -85,21 +89,17 @@ namespace CortexDeveloper.Messages.Service
         {
             ecb.AddComponent(messageEntity, new MessageEditorData
             {
-                Id = Random.Range(0, 99999999),
-                CreationTime = DateTime.Now.ToString("HH:mm:ss")
+                Id = new Random(Seed).NextInt(0, int.MaxValue),
+                CreationTime = MessagesDateTimeSystem.TimeAsString.Data
             });
         }
 
-        private static bool UniqueContentAlreadyExist<T>(MessageBuilder builder) where T : struct
+        private static bool UniqueContentAlreadyExist<T>(EntityManager entityManager) where T : struct
         {
-            if (!builder.IsUnique)
-                return false;
-
             EntityQueryDescBuilder descBuilder = new(Allocator.Temp);
-            descBuilder.AddAny(new ComponentType(typeof(T)));
+            descBuilder.AddAny(ComponentType.ReadOnly<T>());
             descBuilder.FinalizeQuery();
-
-            EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+            
             EntityQuery query = entityManager.CreateEntityQuery(descBuilder);
             bool alreadyExist = query.CalculateEntityCount() > 0;
 
@@ -108,19 +108,15 @@ namespace CortexDeveloper.Messages.Service
             return alreadyExist;
         }
 
-        private static bool UniqueAlreadyRequestedAtThisFrame<T>(MessageBuilder builder)
+        [BurstDiscard]
+        private static bool UniqueAlreadyRequestedAtThisFrame<T>()
         {
-            if (!builder.IsUnique)
-                return false;
-            
-            if (MessageBroadcaster.PostRequests.Contains(new ComponentType(typeof(T))))
+            if (MessageBroadcaster.PostRequests.Contains(ComponentType.ReadOnly<T>()))
                 return true;
 
-            MessageBroadcaster.PostRequests.Add(new ComponentType(typeof(T)));
+            MessageBroadcaster.PostRequests.Add(ComponentType.ReadOnly<T>());
 
             return false;
         }
-
-        
     }
 }

@@ -10,11 +10,15 @@ namespace CortexDeveloper.Tests
 {
     public class UnlimitedMessagesTests
     {
+        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
+        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
+            _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        
         [UnityTest]
         public IEnumerator PostEvent_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
         {
             // Act
-            MessageBroadcaster.PrepareEvent().AliveForUnlimitedTime().Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AliveForUnlimitedTime().Post(new TestContentData{ Value = 123 });
             yield return null;
 
             // Assert
@@ -26,7 +30,7 @@ namespace CortexDeveloper.Tests
                                    TestsUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                                    component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonWithLifetime(MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveCommonWithLifetime(EcbSystem.CreateCommandBuffer(), MessageLifetime.Unlimited);
             
             yield return null;
             yield return null;
@@ -40,7 +44,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostCommand_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand().AliveForUnlimitedTime().Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareCommand(EcbSystem.CreateCommandBuffer()).AliveForUnlimitedTime().Post(new TestContentData { Value = 123 });
             
             yield return null;
 
@@ -53,7 +57,7 @@ namespace CortexDeveloper.Tests
                              TestsUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                              component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonWithLifetime(MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveCommonWithLifetime(EcbSystem.CreateCommandBuffer(), MessageLifetime.Unlimited);
             
             yield return null;
             yield return null;
@@ -74,7 +78,7 @@ namespace CortexDeveloper.Tests
             Entity entity = entityManager.CreateEntity();
 
             // Act
-            MessageBroadcaster.PrepareEvent().AttachedTo(entity).AliveForUnlimitedTime().Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AttachedTo(entity).AliveForUnlimitedTime().Post(new TestContentData{ Value = 123 });
             yield return null;
 
             // Assert
@@ -89,7 +93,7 @@ namespace CortexDeveloper.Tests
                              TestsUtils.FirstEntityHasComponent<AttachedMessageContent>(query) &&
                              component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonWithLifetime(MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveCommonWithLifetime(EcbSystem.CreateCommandBuffer(), MessageLifetime.Unlimited);
             
             yield return null;
             yield return null;

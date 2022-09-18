@@ -14,7 +14,6 @@ namespace CortexDeveloper.Messages.Service
                     AttachedMessageContent attachedMessageContent = entityManager.GetComponentData<AttachedMessageContent>(messageEntity);
                 
                     ecb.RemoveComponent(attachedMessageContent.TargetEntity, attachedMessageContent.ComponentType);
-                    ecb.DestroyEntity(messageEntity);
                 }
                 
                 ecb.DestroyEntity(messageEntity);

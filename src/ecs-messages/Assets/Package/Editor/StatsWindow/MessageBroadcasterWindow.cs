@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using CortexDeveloper.Messages.Service;
 using Unity.Entities;
 using UnityEditor;
@@ -16,18 +13,23 @@ namespace CortexDeveloper.Messages.Editor
         private int _logsEnabled;
         
         private MessageLifetime _messageLifetimeFilter;
+        
+        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
+        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
+            _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 
         public int PostRequestsCount
         {
             get
             {
-                FieldInfo postRequestsFieldInfo = typeof(MessageBroadcaster).GetField(
-                    "PostRequests", 
-                    BindingFlags.NonPublic | BindingFlags.Static);
-
-                HashSet<ComponentType> value = postRequestsFieldInfo.GetValue(null) as HashSet<ComponentType>;
-                    
-                return value.Count;
+                // FieldInfo postRequestsFieldInfo = typeof(MessageBroadcaster).GetField(
+                //     "PostRequests", 
+                //     BindingFlags.NonPublic | BindingFlags.Static);
+                //
+                // HashSet<ComponentType> value = postRequestsFieldInfo.GetValue(null) as HashSet<ComponentType>;
+                //     
+                // return value.Count;
+                return 0;
             }
         }
 
@@ -84,10 +86,10 @@ namespace CortexDeveloper.Messages.Editor
             _messageLifetimeFilter = (MessageLifetime)EditorGUILayout.EnumPopup("Lifetime Filter: ", _messageLifetimeFilter);
 
             if (GUILayout.Button("Remove Messages by Lifetime Filter"))
-                MessageBroadcaster.RemoveCommonWithLifetime(_messageLifetimeFilter);
+                MessageBroadcaster.RemoveCommonWithLifetime(EcbSystem.CreateCommandBuffer(), _messageLifetimeFilter);
 
             if (GUILayout.Button("Remove All")) 
-                MessageBroadcaster.RemoveAll();
+                MessageBroadcaster.RemoveAll(EcbSystem.CreateCommandBuffer());
         }
     }
 }

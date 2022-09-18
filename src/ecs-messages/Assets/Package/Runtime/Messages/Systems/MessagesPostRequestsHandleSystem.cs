@@ -4,8 +4,8 @@ using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
-    [UpdateInGroup(typeof(MessagesSystemGroup))]
     [AlwaysUpdateSystem]
+    [UpdateInGroup(typeof(MessagesSystemGroup))]
     public partial class MessagesPostRequestsHandleSystem : SystemBase
     {
         protected override void OnUpdate() => 
