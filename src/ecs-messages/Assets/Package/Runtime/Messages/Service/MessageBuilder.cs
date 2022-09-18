@@ -18,7 +18,7 @@ namespace CortexDeveloper.Messages.Service
             return this;
         }
         
-        public MessageBuilder AliveForTime(float seconds)
+        public MessageBuilder AliveForSeconds(float seconds)
         {
             Lifetime = MessageLifetime.TimeRange;
             Seconds = seconds;

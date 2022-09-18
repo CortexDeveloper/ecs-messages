@@ -126,7 +126,7 @@ namespace CortexDeveloper.Examples.Editor
             {
                 MessageBroadcaster
                     .PrepareEvent(EcbSystem.CreateCommandBuffer())
-                    .AliveForTime(_questAvailabilityTime)
+                    .AliveForSeconds(_questAvailabilityTime)
                     .Post(new QuestAvailabilityData { Quest = _availableQuest });
             }
         }
@@ -217,7 +217,7 @@ namespace CortexDeveloper.Examples.Editor
                 
                 MessageBroadcaster
                     .PrepareEvent(EcbSystem.CreateCommandBuffer())
-                    .AliveForTime(10f)
+                    .AliveForSeconds(10f)
                     .AttachedTo(entity)
                     .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
             }
