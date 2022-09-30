@@ -26,10 +26,13 @@ namespace CortexDeveloper.Messages.Service
                 Context = MessageContext.Command
             };
 
-        public static void RemoveAll(EntityCommandBuffer ecb) =>
+        public static void RemoveMessage(EntityCommandBuffer ecb, EntityManager entityManager, Entity entity) =>
+            MessageUtils.Destroy(entity, ecb, entityManager);
+
+        public static void RemoveAllMessages(EntityCommandBuffer ecb) =>
             PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveAllMessagesCommand());
 
-        public static void RemoveWith<T>(EntityCommandBuffer ecb) where T : struct, IComponentData =>
+        public static void RemoveAllMessagesWith<T>(EntityCommandBuffer ecb) where T : struct, IComponentData =>
             PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveMessagesByComponentCommand 
                 { ComponentType = new ComponentType(typeof(T)) });
 
@@ -38,13 +41,13 @@ namespace CortexDeveloper.Messages.Service
             switch (lifetime)
             {
                 case MessageLifetime.OneFrame:
-                    RemoveWith<MessageLifetimeOneFrameTag>(ecb);
+                    RemoveAllMessagesWith<MessageLifetimeOneFrameTag>(ecb);
                     break;
                 case MessageLifetime.TimeRange:
-                    RemoveWith<MessageLifetimeTimeRange>(ecb);
+                    RemoveAllMessagesWith<MessageLifetimeTimeRange>(ecb);
                     break;
                 case MessageLifetime.Unlimited:
-                    RemoveWith<MessageLifetimeUnlimitedTag>(ecb);
+                    RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(ecb);
                     break;
             }
         }

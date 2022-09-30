@@ -11,15 +11,13 @@ namespace CortexDeveloper.Messages.Systems
 
         protected override void OnCreate()
         {
-            _ecbSystem =
-                World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+            _ecbSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 
             RequireForUpdate(GetEntityQuery(typeof(MessageLifetimeTimeRange)));
         }
 
         protected override void OnUpdate()
         {
-            EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
             float deltaTime = Time.DeltaTime;
 
             Entities

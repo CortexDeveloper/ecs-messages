@@ -89,7 +89,7 @@ namespace CortexDeveloper.Messages.Editor
                 MessageBroadcaster.RemoveCommonWithLifetime(EcbSystem.CreateCommandBuffer(), _messageLifetimeFilter);
 
             if (GUILayout.Button("Remove All")) 
-                MessageBroadcaster.RemoveAll(EcbSystem.CreateCommandBuffer());
+                MessageBroadcaster.RemoveAllMessages(EcbSystem.CreateCommandBuffer());
         }
     }
 }
