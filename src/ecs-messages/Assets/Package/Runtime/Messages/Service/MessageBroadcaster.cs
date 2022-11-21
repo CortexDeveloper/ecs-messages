@@ -36,18 +36,10 @@ namespace CortexDeveloper.Messages.Service
         }
 
         public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
-            new()
-            {
-                Ecb = ecb,
-                Context = MessageContext.Event
-            };
+            ecb.PrepareEvent();
 
         public static MessageBuilder PrepareCommand(EntityCommandBuffer ecb) =>
-            new()
-            {
-                Ecb = ecb,
-                Context = MessageContext.Command
-            };
+            ecb.PrepareCommand();
 
         public static void RemoveMessage(EntityCommandBuffer ecb, EntityManager entityManager, Entity entity) =>
             MessageUtils.Destroy(entity, ecb, entityManager);

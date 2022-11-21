@@ -15,6 +15,20 @@ namespace CortexDeveloper.Tests
         private static EndSimulationEntityCommandBufferSystem EcbSystem =>
             _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
         
+        [UnitySetUp]
+        public IEnumerator SetUp()
+        {
+            yield return new EnterPlayMode();
+            
+            MessageBroadcaster.Initialize(World.DefaultGameObjectInjectionWorld);
+        }
+        
+        [UnityTearDown]
+        public IEnumerator TearDown()
+        {
+            yield return new ExitPlayMode();
+        }
+        
         [UnityTest]
         public IEnumerator PostOneSecondEvent_WaitFrame_CheckForExisting_WaitOneSecond_CheckForAutoRemove()
         {
