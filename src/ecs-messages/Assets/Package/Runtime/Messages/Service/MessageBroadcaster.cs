@@ -1,6 +1,8 @@
 using System;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
+using CortexDeveloper.Messages.SystemGroups;
+using CortexDeveloper.Messages.Systems;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -11,6 +13,27 @@ namespace CortexDeveloper.Messages.Service
         internal static NativeList<ComponentType> PostRequests = new(Allocator.Persistent);
 
         private static bool _isPostRequestsDisposed;
+
+        public static void Initialize(World world)
+        {
+            MessagesSystemGroup messagesSystemGroup = world.GetOrCreateSystem<MessagesSystemGroup>();
+        
+            MessagesDateTimeSystem dateTimeSystem = world.GetOrCreateSystem<MessagesDateTimeSystem>();
+            MessagesOneFrameLifetimeSystem oneFrameLifetimeSystem = world.GetOrCreateSystem<MessagesOneFrameLifetimeSystem>();
+            MessagesPostRequestsHandleSystem postRequestsHandleSystem = world.GetOrCreateSystem<MessagesPostRequestsHandleSystem>();
+            MessagesRemoveAllCommandListenerSystem removeAllCommandListenerSystem = world.GetOrCreateSystem<MessagesRemoveAllCommandListenerSystem>();
+            MessagesRemoveByComponentCommandListenerSystem removeByComponentCommandListenerSystem = world.GetOrCreateSystem<MessagesRemoveByComponentCommandListenerSystem>();
+            MessagesTimeRangeLifetimeRemoveSystem timeRangeLifetimeRemoveSystem = world.GetOrCreateSystem<MessagesTimeRangeLifetimeRemoveSystem>();
+            MessagesTimeRangeLifetimeTimerSystem timeRangeLifetimeTimerSystem = world.GetOrCreateSystem<MessagesTimeRangeLifetimeTimerSystem>();
+            
+            messagesSystemGroup.AddSystemToUpdateList(dateTimeSystem);
+            messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem);
+            messagesSystemGroup.AddSystemToUpdateList(postRequestsHandleSystem);
+            messagesSystemGroup.AddSystemToUpdateList(removeAllCommandListenerSystem);
+            messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem);
+            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem);
+            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeTimerSystem);
+        }
 
         public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
             new()

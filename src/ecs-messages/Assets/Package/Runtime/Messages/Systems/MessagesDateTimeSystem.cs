@@ -6,6 +6,7 @@ using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
+    [DisableAutoCreation]
     [AlwaysUpdateSystem]
     [UpdateInGroup(typeof(MessagesSystemGroup))]
     public partial class MessagesDateTimeSystem : SystemBase
