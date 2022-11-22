@@ -22,12 +22,6 @@ namespace CortexDeveloper.Messages.Systems
 
         protected override void OnUpdate()
         {
-            bool removeRequested = GetEntityQuery(ComponentType.ReadOnly<RemoveAllMessagesCommand>())
-                .CalculateEntityCount() > 0;
-
-            if (!removeRequested)
-                return;
-            
             EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
             EntityQuery allMessages = GetEntityQuery(ComponentType.ReadOnly<MessageTag>());
             NativeArray<Entity> messageEntities = allMessages.ToEntityArray(Allocator.Temp);

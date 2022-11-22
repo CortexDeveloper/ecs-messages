@@ -8,11 +8,20 @@ namespace CortexDeveloper.Examples
     {
         private void Awake()
         {
-            World exampleWorld = new("Example World");
-            ScriptBehaviourUpdateOrder.AppendWorldToCurrentPlayerLoop(exampleWorld);
-            
             MessageBroadcaster.Initialize(World.DefaultGameObjectInjectionWorld);
-            MessageBroadcaster.Initialize(exampleWorld);
+            MessageBroadcaster.Initialize(GetWorldByName("Example World"));
+        }
+
+        private World GetWorldByName(string name)
+        {
+            World.NoAllocReadOnlyCollection<World> worlds = World.All;
+            foreach (World world in worlds)
+            {
+                if (world.Name == name)
+                    return world;
+            }
+
+            return null;
         }
     }
 }
