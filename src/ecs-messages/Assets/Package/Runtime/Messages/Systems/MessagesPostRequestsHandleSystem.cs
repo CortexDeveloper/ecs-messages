@@ -1,5 +1,4 @@
 using CortexDeveloper.Messages.Service;
-using CortexDeveloper.Messages.SystemGroups;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems

@@ -1,5 +1,4 @@
 ﻿using System;
-using CortexDeveloper.Messages.SystemGroups;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
