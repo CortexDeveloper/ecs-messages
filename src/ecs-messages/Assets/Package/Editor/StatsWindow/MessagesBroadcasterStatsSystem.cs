@@ -5,7 +5,6 @@ using Unity.Entities;
 namespace CortexDeveloper.Messages.Editor
 {
     [DisableAutoCreation]
-    [UpdateInGroup(typeof(MessagesSystemGroup))]
     [AlwaysUpdateSystem]
     public partial class MessagesBroadcasterStatsSystem : SystemBase
     {

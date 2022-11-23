@@ -16,7 +16,7 @@ namespace CortexDeveloper.Messages.Editor.Disposer
             if (state != PlayModeStateChange.ExitingPlayMode)
                 return;
 
-            MessageBroadcaster.Dispose();
+            MessageBroadcaster.DisposePostRequests();
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
 using CortexDeveloper.Messages.SystemGroups;
@@ -14,9 +13,12 @@ namespace CortexDeveloper.Messages.Service
 
         private static bool _isPostRequestsDisposed;
 
-        public static void Initialize(World world)
+        public static void Initialize(World world, ComponentSystemGroup parentSystemGroup = default)
         {
             MessagesSystemGroup messagesSystemGroup = world.GetOrCreateSystem<MessagesSystemGroup>();
+            ComponentSystemGroup systemGroup = parentSystemGroup ?? world.GetOrCreateSystem<SimulationSystemGroup>();
+            
+            systemGroup.AddSystemToUpdateList(messagesSystemGroup);
         
             MessagesDateTimeSystem dateTimeSystem = world.GetOrCreateSystem<MessagesDateTimeSystem>();
             MessagesOneFrameLifetimeSystem oneFrameLifetimeSystem = world.GetOrCreateSystem<MessagesOneFrameLifetimeSystem>();
@@ -67,7 +69,7 @@ namespace CortexDeveloper.Messages.Service
             }
         }
 
-        public static void Dispose()
+        public static void DisposePostRequests()
         {
             PostRequests.Dispose();
 

@@ -8,7 +8,6 @@ using Unity.Entities;
 namespace CortexDeveloper.Messages.Systems
 {
     [DisableAutoCreation]
-    [UpdateInGroup(typeof(MessagesSystemGroup))]
     public partial class MessagesRemoveByComponentCommandListenerSystem : SystemBase
     {
         private EntityCommandBufferSystem _ecbSystem;

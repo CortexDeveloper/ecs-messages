@@ -9,15 +9,15 @@ namespace CortexDeveloper.Examples
         private void Awake()
         {
             MessageBroadcaster.Initialize(World.DefaultGameObjectInjectionWorld);
-            MessageBroadcaster.Initialize(GetWorldByName("Example World"));
+            MessageBroadcaster.Initialize(GetWorldWithName("Example World"));
         }
 
-        private World GetWorldByName(string name)
+        private World GetWorldWithName(string worldName)
         {
             World.NoAllocReadOnlyCollection<World> worlds = World.All;
             foreach (World world in worlds)
             {
-                if (world.Name == name)
+                if (world.Name == worldName)
                     return world;
             }
 
