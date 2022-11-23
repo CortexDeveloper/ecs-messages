@@ -1,3 +1,4 @@
+using System;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
 using CortexDeveloper.Messages.SystemGroups;
@@ -13,10 +14,10 @@ namespace CortexDeveloper.Messages.Service
 
         private static bool _isPostRequestsDisposed;
 
-        public static void Initialize(World world, ComponentSystemGroup parentSystemGroup = default)
+        public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup = default)
         {
-            MessagesSystemGroup messagesSystemGroup = world.GetOrCreateSystem<MessagesSystemGroup>();
             ComponentSystemGroup systemGroup = parentSystemGroup ?? world.GetOrCreateSystem<SimulationSystemGroup>();
+            MessagesSystemGroup messagesSystemGroup = world.GetOrCreateSystem<MessagesSystemGroup>();
             
             systemGroup.AddSystemToUpdateList(messagesSystemGroup);
         

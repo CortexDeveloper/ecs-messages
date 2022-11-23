@@ -19,7 +19,7 @@ namespace CortexDeveloper.Tests
         {
             yield return new EnterPlayMode();
             
-            MessageBroadcaster.Initialize(World.DefaultGameObjectInjectionWorld);
+            MessageBroadcaster.InitializeInWorld(World.DefaultGameObjectInjectionWorld);
         }
         
         [UnityTearDown]
