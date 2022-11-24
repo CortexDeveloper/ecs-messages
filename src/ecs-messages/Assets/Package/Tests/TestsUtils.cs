@@ -19,16 +19,16 @@ namespace CortexDeveloper.Tests
             return query;
         }
         
-        internal static T GetComponentFromFirst<T>(EntityQuery query) where T : struct, IComponentData
+        internal static T GetComponentFromFirstEntity<T>(EntityQuery query) where T : struct, IComponentData
         {
             EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-            Entity entity = GetFirst(query);
+            Entity entity = GetFirstEntity(query);
             T component = entityManager.GetComponentData<T>(entity);
 
             return component;
         }
 
-        internal static Entity GetFirst(EntityQuery query)
+        internal static Entity GetFirstEntity(EntityQuery query)
         {
             NativeArray<Entity> array = query.ToEntityArray(Allocator.Temp);
             Entity entity = array[0];
@@ -38,13 +38,13 @@ namespace CortexDeveloper.Tests
             return entity;
         }
         
-        internal static bool IsExist<T>() where T : struct, IComponentData => 
+        internal static bool IsEntityWithComponentExist<T>() where T : struct, IComponentData => 
             GetQuery<T>().CalculateEntityCount() > 0;
 
         internal static bool FirstEntityHasComponent<T>(EntityQuery query) where T : struct, IComponentData
         {
             EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-            Entity entity = GetFirst(query);
+            Entity entity = GetFirstEntity(query);
             
             return entityManager.HasComponent<T>(entity);
         }

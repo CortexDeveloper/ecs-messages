@@ -37,7 +37,7 @@ namespace CortexDeveloper.Tests
 
             // Assert
             EntityQuery query = TestsUtils.GetQuery<TestContentData>();
-            TestContentData component = TestsUtils.GetComponentFromFirst<TestContentData>(query);
+            TestContentData component = TestsUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                                    TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
                                    TestsUtils.FirstEntityHasComponent<MessageContextEventTag>(query) &&
@@ -46,7 +46,7 @@ namespace CortexDeveloper.Tests
 
             yield return null;
 
-            bool wasAutoRemoved = !TestsUtils.IsExist<TestContentData>();
+            bool wasAutoRemoved = !TestsUtils.IsEntityWithComponentExist<TestContentData>();
             
             Assert.IsTrue(wasPosted && wasAutoRemoved);
         }
@@ -61,7 +61,7 @@ namespace CortexDeveloper.Tests
 
             // Assert
             EntityQuery query = TestsUtils.GetQuery<TestContentData>();
-            TestContentData component = TestsUtils.GetComponentFromFirst<TestContentData>(query);
+            TestContentData component = TestsUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                              TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
                              TestsUtils.FirstEntityHasComponent<MessageContextCommandTag>(query) &&
@@ -70,7 +70,7 @@ namespace CortexDeveloper.Tests
 
             yield return null;
 
-            bool wasAutoRemoved = !TestsUtils.IsExist<TestContentData>();
+            bool wasAutoRemoved = !TestsUtils.IsEntityWithComponentExist<TestContentData>();
             
             Assert.IsTrue(wasPosted && wasAutoRemoved);
         }
@@ -91,7 +91,7 @@ namespace CortexDeveloper.Tests
 
             // Assert
             EntityQuery query = TestsUtils.GetQuery<TestContentData>();
-            TestContentData component = TestsUtils.GetComponentFromFirst<TestContentData>(query);
+            TestContentData component = TestsUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                              TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
                              TestsUtils.FirstEntityHasComponent<MessageContextCommandTag>(query) &&
@@ -100,7 +100,7 @@ namespace CortexDeveloper.Tests
 
             yield return null;
 
-            bool wasAutoRemoved = !TestsUtils.IsExist<TestContentData>();
+            bool wasAutoRemoved = !TestsUtils.IsEntityWithComponentExist<TestContentData>();
             
             Assert.IsTrue(wasPosted && wasAutoRemoved);
         }
