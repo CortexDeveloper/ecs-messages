@@ -5,10 +5,8 @@ using UnityEngine;
 
 namespace CortexDeveloper.Messages.Editor
 {
-    public class MessageBroadcasterWindow : EditorWindow
+    public class MessageBroadcasterStatsWindow : EditorWindow
     {
-        private const string LogsEnabledKey = "ECS_MESSAGES_LOGS_ENABLED";
-        
         private int _selectedTab;
         private int _logsEnabled;
         
@@ -36,12 +34,12 @@ namespace CortexDeveloper.Messages.Editor
         [MenuItem("Tools/Message Broadcaster")]
         public static void Init()
         {
-            MessageBroadcasterWindow window = (MessageBroadcasterWindow)GetWindow(
-                typeof(MessageBroadcasterWindow), 
+            MessageBroadcasterStatsWindow statsWindow = (MessageBroadcasterStatsWindow)GetWindow(
+                typeof(MessageBroadcasterStatsWindow), 
                 false, 
                 "Message Broadcaster");
             
-            window.Show();
+            statsWindow.Show();
         }
 
         public void OnGUI()

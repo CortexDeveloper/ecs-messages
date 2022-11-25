@@ -10,16 +10,12 @@ namespace CortexDeveloper.Tests
 {
     public class UnlimitedMessagesTests
     {
-        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
-        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
-            _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-        
         [UnitySetUp]
         public IEnumerator SetUp()
         {
             yield return new EnterPlayMode();
             
-            MessageBroadcaster.InitializeInWorld(World.DefaultGameObjectInjectionWorld);
+            MessageBroadcaster.InitializeInWorld(TestUtils.GetTestWorld());
         }
         
         [UnityTearDown]
@@ -32,24 +28,24 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostEvent_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
         {
             // Act
-            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AliveForUnlimitedTime().Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster.PrepareEvent(TestUtils.GetEcbSystem().CreateCommandBuffer()).AliveForUnlimitedTime().Post(new TestContentData{ Value = 123 });
             yield return null;
 
             // Assert
-            EntityQuery query = TestsUtils.GetQuery<TestContentData>();
-            TestContentData component = TestsUtils.GetComponentFromFirstEntity<TestContentData>(query);
+            EntityQuery query = TestUtils.GetQuery<TestContentData>();
+            TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
-                                   TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                                   TestsUtils.FirstEntityHasComponent<MessageContextEventTag>(query) &&
-                                   TestsUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
+                                   TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
+                                   TestUtils.FirstEntityHasComponent<MessageContextEventTag>(query) &&
+                                   TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                                    component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonWithLifetime(EcbSystem.CreateCommandBuffer(), MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveCommonWithLifetime(TestUtils.GetEcbSystem().CreateCommandBuffer(), MessageLifetime.Unlimited);
             
             yield return null;
             yield return null;
 
-            bool wasRemoved = !TestsUtils.IsEntityWithComponentExist<TestContentData>();
+            bool wasRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
             
             Assert.IsTrue(wasPosted && wasRemoved);
         }
@@ -58,25 +54,25 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostCommand_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand(EcbSystem.CreateCommandBuffer()).AliveForUnlimitedTime().Post(new TestContentData { Value = 123 });
+            MessageBroadcaster.PrepareCommand(TestUtils.GetEcbSystem().CreateCommandBuffer()).AliveForUnlimitedTime().Post(new TestContentData { Value = 123 });
             
             yield return null;
 
             // Assert
-            EntityQuery query = TestsUtils.GetQuery<TestContentData>();
-            TestContentData component = TestsUtils.GetComponentFromFirstEntity<TestContentData>(query);
+            EntityQuery query = TestUtils.GetQuery<TestContentData>();
+            TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
-                             TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                             TestsUtils.FirstEntityHasComponent<MessageContextCommandTag>(query) &&
-                             TestsUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
+                             TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
+                             TestUtils.FirstEntityHasComponent<MessageContextCommandTag>(query) &&
+                             TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                              component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonWithLifetime(EcbSystem.CreateCommandBuffer(), MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveCommonWithLifetime(TestUtils.GetEcbSystem().CreateCommandBuffer(), MessageLifetime.Unlimited);
             
             yield return null;
             yield return null;
 
-            bool wasRemoved = !TestsUtils.IsEntityWithComponentExist<TestContentData>();
+            bool wasRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
             
             Assert.IsTrue(wasPosted && wasRemoved);
         }
@@ -92,27 +88,27 @@ namespace CortexDeveloper.Tests
             Entity entity = entityManager.CreateEntity();
 
             // Act
-            MessageBroadcaster.PrepareEvent(EcbSystem.CreateCommandBuffer()).AttachedTo(entity).AliveForUnlimitedTime().Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster.PrepareEvent(TestUtils.GetEcbSystem().CreateCommandBuffer()).AttachedTo(entity).AliveForUnlimitedTime().Post(new TestContentData{ Value = 123 });
             yield return null;
 
             // Assert
-            EntityQuery query = TestsUtils.GetQuery<MessageTag>();
-            EntityQuery attachedQuery = TestsUtils.GetQuery<TestContentData>();
-            TestContentData component = TestsUtils.GetComponentFromFirstEntity<TestContentData>(attachedQuery);
+            EntityQuery query = TestUtils.GetQuery<MessageTag>();
+            EntityQuery attachedQuery = TestUtils.GetQuery<TestContentData>();
+            TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(attachedQuery);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                              attachedQuery.CalculateEntityCount() == 1 &&
-                             TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                             TestsUtils.FirstEntityHasComponent<MessageContextEventTag>(query) &&
-                             TestsUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
-                             TestsUtils.FirstEntityHasComponent<AttachedMessageContent>(query) &&
+                             TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
+                             TestUtils.FirstEntityHasComponent<MessageContextEventTag>(query) &&
+                             TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
+                             TestUtils.FirstEntityHasComponent<AttachedMessageContent>(query) &&
                              component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonWithLifetime(EcbSystem.CreateCommandBuffer(), MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveCommonWithLifetime(TestUtils.GetEcbSystem().CreateCommandBuffer(), MessageLifetime.Unlimited);
             
             yield return null;
             yield return null;
 
-            bool wasRemoved = !TestsUtils.IsEntityWithComponentExist<TestContentData>();
+            bool wasRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
 
             entityManager.DestroyEntity(entity);
             
