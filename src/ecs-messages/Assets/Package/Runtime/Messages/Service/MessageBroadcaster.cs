@@ -2,17 +2,12 @@ using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
 using CortexDeveloper.Messages.SystemGroups;
 using CortexDeveloper.Messages.Systems;
-using Unity.Collections;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBroadcaster
     {
-        internal static NativeList<ComponentType> PostRequests = new(Allocator.Persistent);
-
-        private static bool _isPostRequestsDisposed;
-
         public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup = default)
         {
             ComponentSystemGroup systemGroup = parentSystemGroup ?? world.GetOrCreateSystem<SimulationSystemGroup>();
@@ -22,7 +17,6 @@ namespace CortexDeveloper.Messages.Service
         
             MessagesDateTimeSystem dateTimeSystem = world.GetOrCreateSystem<MessagesDateTimeSystem>();
             MessagesOneFrameLifetimeSystem oneFrameLifetimeSystem = world.GetOrCreateSystem<MessagesOneFrameLifetimeSystem>();
-            MessagesPostRequestsHandleSystem postRequestsHandleSystem = world.GetOrCreateSystem<MessagesPostRequestsHandleSystem>();
             MessagesRemoveAllCommandListenerSystem removeAllCommandListenerSystem = world.GetOrCreateSystem<MessagesRemoveAllCommandListenerSystem>();
             MessagesRemoveByComponentCommandListenerSystem removeByComponentCommandListenerSystem = world.GetOrCreateSystem<MessagesRemoveByComponentCommandListenerSystem>();
             MessagesTimeRangeLifetimeRemoveSystem timeRangeLifetimeRemoveSystem = world.GetOrCreateSystem<MessagesTimeRangeLifetimeRemoveSystem>();
@@ -30,7 +24,6 @@ namespace CortexDeveloper.Messages.Service
             
             messagesSystemGroup.AddSystemToUpdateList(dateTimeSystem);
             messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem);
-            messagesSystemGroup.AddSystemToUpdateList(postRequestsHandleSystem);
             messagesSystemGroup.AddSystemToUpdateList(removeAllCommandListenerSystem);
             messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem);
             messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem);
@@ -67,21 +60,6 @@ namespace CortexDeveloper.Messages.Service
                     RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(ecb);
                     break;
             }
-        }
-
-        public static void DisposePostRequests()
-        {
-            PostRequests.Dispose();
-
-            _isPostRequestsDisposed = true;
-        }
-
-        internal static void ClearRequests()
-        {
-            if (_isPostRequestsDisposed || !PostRequests.IsCreated)
-                return;
-            
-            PostRequests.Clear();
         }
     }
 }

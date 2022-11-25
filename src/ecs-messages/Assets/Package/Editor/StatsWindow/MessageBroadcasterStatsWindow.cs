@@ -16,21 +16,6 @@ namespace CortexDeveloper.Messages.Editor
         private static EndSimulationEntityCommandBufferSystem EcbSystem =>
             _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 
-        public int PostRequestsCount
-        {
-            get
-            {
-                // FieldInfo postRequestsFieldInfo = typeof(MessageBroadcaster).GetField(
-                //     "PostRequests", 
-                //     BindingFlags.NonPublic | BindingFlags.Static);
-                //
-                // HashSet<ComponentType> value = postRequestsFieldInfo.GetValue(null) as HashSet<ComponentType>;
-                //     
-                // return value.Count;
-                return 0;
-            }
-        }
-
         [MenuItem("Tools/Message Broadcaster")]
         public static void Init()
         {
@@ -68,10 +53,6 @@ namespace CortexDeveloper.Messages.Editor
             EditorGUILayout.LabelField($"Attached Messages: {MessagesStats.ActiveAttachedMessagesCount}");
             EditorGUILayout.LabelField($"Events: {MessagesStats.ActiveEventsCount}");
             EditorGUILayout.LabelField($"Commands: {MessagesStats.ActiveCommandsCount}");
-            EditorGUILayout.Space(10f);
-
-            EditorGUILayout.LabelField($"Unique: {MessagesStats.ActiveUniqueCount}");
-            EditorGUILayout.LabelField($"Post Requests: {PostRequestsCount}");
             EditorGUILayout.Space(10f);
 
             EditorGUILayout.LabelField($"OneFrame: {MessagesStats.ActiveOneFrameMessagesCount}");

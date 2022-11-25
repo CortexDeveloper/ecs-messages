@@ -7,7 +7,6 @@ namespace CortexDeveloper.Messages.Service
         internal MessageContext Context; 
         internal MessageLifetime Lifetime;
         internal float Seconds;
-        internal bool IsUnique;
         internal Entity MessageEntity;
         internal EntityCommandBuffer Ecb;
         

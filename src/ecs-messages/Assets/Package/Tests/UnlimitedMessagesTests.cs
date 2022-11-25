@@ -81,7 +81,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostAttachedEvent_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
         {
             // Arrange
-            EntityManager entityManager = World.DefaultGameObjectInjectionWorld
+            EntityManager entityManager = TestUtils.GetTestWorld()
                 .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>()
                 .EntityManager;
 

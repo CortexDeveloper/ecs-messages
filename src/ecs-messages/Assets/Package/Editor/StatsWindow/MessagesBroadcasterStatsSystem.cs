@@ -14,7 +14,6 @@ namespace CortexDeveloper.Messages.Editor
             EntityQuery allAttachedMessagesQuery = GetEntityQuery(new ComponentType(typeof(AttachedMessageContent)));
             EntityQuery allEventsQuery = GetEntityQuery(new ComponentType(typeof(MessageContextEventTag)));
             EntityQuery allCommandsQuery = GetEntityQuery(new ComponentType(typeof(MessageContextCommandTag)));
-            EntityQuery allUniqueQuery = GetEntityQuery(new ComponentType(typeof(UniqueMessageTag)));
             
             EntityQuery allOneFrameMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageLifetimeOneFrameTag)));
             EntityQuery allTimeRangeMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageLifetimeTimeRange)));
@@ -24,7 +23,6 @@ namespace CortexDeveloper.Messages.Editor
             MessagesStats.ActiveAttachedMessagesCount = allAttachedMessagesQuery.CalculateEntityCount();
             MessagesStats.ActiveEventsCount = allEventsQuery.CalculateEntityCount();
             MessagesStats.ActiveCommandsCount = allCommandsQuery.CalculateEntityCount();
-            MessagesStats.ActiveUniqueCount = allUniqueQuery.CalculateEntityCount();
             
             MessagesStats.ActiveOneFrameMessagesCount = allOneFrameMessagesQuery.CalculateEntityCount();
             MessagesStats.ActiveTimeRangeMessagesCount = allTimeRangeMessagesQuery.CalculateEntityCount();

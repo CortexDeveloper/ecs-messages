@@ -70,35 +70,5 @@ namespace CortexDeveloper.Tests
             
             Assert.IsTrue(wasPosted && wasAutoRemoved);
         }
-
-        [UnityTest]
-        public IEnumerator PostCommandAsUnique_PostCommandAsUnique_WaitFrame_CheckOnlyOneExist_WaitFrame_CheckForAutoRemove()
-        {
-            //Arrange 
-            EntityManager entityManager = World.DefaultGameObjectInjectionWorld
-                .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>()
-                .EntityManager;
-            
-            // Act
-            MessageBroadcaster.PrepareCommand(TestUtils.GetEcbSystem().CreateCommandBuffer()).AliveForOneFrame().PostUnique(entityManager, new TestContentData { Value = 123 });
-            MessageBroadcaster.PrepareCommand(TestUtils.GetEcbSystem().CreateCommandBuffer()).AliveForOneFrame().PostUnique(entityManager, new TestContentData { Value = 123 });
-            
-            yield return null;
-
-            // Assert
-            EntityQuery query = TestUtils.GetQuery<TestContentData>();
-            TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
-            bool wasPosted = query.CalculateEntityCount() == 1 &&
-                             TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                             TestUtils.FirstEntityHasComponent<MessageContextCommandTag>(query) &&
-                             TestUtils.FirstEntityHasComponent<MessageLifetimeOneFrameTag>(query) &&
-                             component.Value == 123;
-
-            yield return null;
-
-            bool wasAutoRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
-            
-            Assert.IsTrue(wasPosted && wasAutoRemoved);
-        }
     }
 }
