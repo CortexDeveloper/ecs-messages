@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using CortexDeveloper.Messages.Service;
 using Unity.Entities;
 using UnityEditor;
@@ -22,7 +23,7 @@ namespace CortexDeveloper.Examples.Editor
 
         private int _selectedTab;
         
-        private readonly List<string> _worldsList = new();
+        private List<string> _worldsList = new();
 
         private int _selectedWorld;
         private World SelectedWorld => World.All.GetWorldWithName(_worldsList[_selectedWorld]);
@@ -85,6 +86,7 @@ namespace CortexDeveloper.Examples.Editor
                 j++;
             }
 
+            _worldsList = _worldsList.Where(w => !w.Contains("LoadingWorld")).ToList();
             _selectedWorld = EditorGUILayout.Popup("World", _selectedWorld, _worldsList.ToArray());
         }
 

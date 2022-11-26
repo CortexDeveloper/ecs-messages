@@ -14,20 +14,24 @@ namespace CortexDeveloper.Messages.Service
             MessagesSystemGroup messagesSystemGroup = world.GetOrCreateSystem<MessagesSystemGroup>();
             
             systemGroup.AddSystemToUpdateList(messagesSystemGroup);
-        
+
             MessagesDateTimeSystem dateTimeSystem = world.GetOrCreateSystem<MessagesDateTimeSystem>();
             MessagesOneFrameLifetimeSystem oneFrameLifetimeSystem = world.GetOrCreateSystem<MessagesOneFrameLifetimeSystem>();
             MessagesRemoveAllCommandListenerSystem removeAllCommandListenerSystem = world.GetOrCreateSystem<MessagesRemoveAllCommandListenerSystem>();
             MessagesRemoveByComponentCommandListenerSystem removeByComponentCommandListenerSystem = world.GetOrCreateSystem<MessagesRemoveByComponentCommandListenerSystem>();
             MessagesTimeRangeLifetimeRemoveSystem timeRangeLifetimeRemoveSystem = world.GetOrCreateSystem<MessagesTimeRangeLifetimeRemoveSystem>();
             MessagesTimeRangeLifetimeTimerSystem timeRangeLifetimeTimerSystem = world.GetOrCreateSystem<MessagesTimeRangeLifetimeTimerSystem>();
-            
+            MessagesStatsSystem statsSystem = world.GetOrCreateSystem<MessagesStatsSystem>();
+
             messagesSystemGroup.AddSystemToUpdateList(dateTimeSystem);
             messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem);
             messagesSystemGroup.AddSystemToUpdateList(removeAllCommandListenerSystem);
             messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem);
             messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem);
             messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeTimerSystem);
+            messagesSystemGroup.AddSystemToUpdateList(statsSystem);
+            
+            MessagesStats.StatsMap.Add(world.Name, new Stats());
         }
 
         public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
