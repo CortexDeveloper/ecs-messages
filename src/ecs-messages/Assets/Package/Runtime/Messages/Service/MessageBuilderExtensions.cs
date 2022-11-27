@@ -26,21 +26,9 @@ namespace CortexDeveloper.Messages.Service
             
             ecb.AddComponent(contentTargetEntity, component);
         }
-        
-        public static void PostUnique<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : struct, IComponentData, IMessageComponent
-        {
-            if (UniqueContentAlreadyExist<T>(entityManager) || UniqueAlreadyRequestedAtThisFrame<T>())
-                return;
-
-            builder.IsUnique = true;
-            Post(builder, component);
-        }
 
         private static void AddMetaComponents<T>(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)
         {
-            if (builder.IsUnique)
-                ecb.AddComponent<UniqueMessageTag>(messageEntity);
-            
             AddEditorInfoComponents(messageEntity, ecb);
             AddContextComponents<T>(builder, messageEntity, ecb);
             AddLifetimeComponents(builder, messageEntity, ecb);
@@ -92,31 +80,6 @@ namespace CortexDeveloper.Messages.Service
                 Id = new Random(Seed).NextInt(0, int.MaxValue),
                 CreationTime = MessagesDateTimeSystem.TimeAsString.Data
             });
-        }
-
-        private static bool UniqueContentAlreadyExist<T>(EntityManager entityManager) where T : struct
-        {
-            EntityQueryDescBuilder descBuilder = new(Allocator.Temp);
-            descBuilder.AddAny(ComponentType.ReadOnly<T>());
-            descBuilder.FinalizeQuery();
-            
-            EntityQuery query = entityManager.CreateEntityQuery(descBuilder);
-            bool alreadyExist = query.CalculateEntityCount() > 0;
-
-            descBuilder.Dispose();
-
-            return alreadyExist;
-        }
-
-        [BurstDiscard]
-        private static bool UniqueAlreadyRequestedAtThisFrame<T>()
-        {
-            if (MessageBroadcaster.PostRequests.Contains(ComponentType.ReadOnly<T>()))
-                return true;
-
-            MessageBroadcaster.PostRequests.Add(ComponentType.ReadOnly<T>());
-
-            return false;
         }
     }
 }

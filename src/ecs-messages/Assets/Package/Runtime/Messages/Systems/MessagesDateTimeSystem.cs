@@ -1,13 +1,12 @@
 ﻿using System;
-using CortexDeveloper.Messages.SystemGroups;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
+    [DisableAutoCreation]
     [AlwaysUpdateSystem]
-    [UpdateInGroup(typeof(MessagesSystemGroup))]
     public partial class MessagesDateTimeSystem : SystemBase
     {
         public static readonly SharedStatic<FixedString32Bytes> TimeAsString =

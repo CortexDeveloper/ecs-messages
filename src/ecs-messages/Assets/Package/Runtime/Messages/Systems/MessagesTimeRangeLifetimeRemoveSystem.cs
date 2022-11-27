@@ -1,25 +1,22 @@
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Service;
-using CortexDeveloper.Messages.SystemGroups;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
-    [UpdateInGroup(typeof(MessagesSystemGroup))]
-    public partial class MessagesTimeRangeLifetimeRemoveSystem : SystemBase
+    [DisableAutoCreation]
+    public partial class MessagesTimeRangeLifetimeRemoveSystem : MessagesBaseSystem
     {
-        private EntityCommandBufferSystem _ecbSystem;
-
         protected override void OnCreate()
         {
-            _ecbSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+            base.OnCreate();
 
             RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), typeof(MessageLifetimeTimeRange)));
         }
 
         protected override void OnUpdate()
         {
-            EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
+            EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
             EntityManager entityManager = EntityManager;
 
             Entities

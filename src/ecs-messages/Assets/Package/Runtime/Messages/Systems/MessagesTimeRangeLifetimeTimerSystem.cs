@@ -1,17 +1,14 @@
 using CortexDeveloper.Messages.Components.Meta;
-using CortexDeveloper.Messages.SystemGroups;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
-    [UpdateInGroup(typeof(MessagesSystemGroup))]
-    public partial class MessagesTimeRangeLifetimeTimerSystem : SystemBase
+    [DisableAutoCreation]
+    public partial class MessagesTimeRangeLifetimeTimerSystem : MessagesBaseSystem
     {
-        private EntityCommandBufferSystem _ecbSystem;
-
         protected override void OnCreate()
         {
-            _ecbSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+            base.OnCreate();
 
             RequireForUpdate(GetEntityQuery(typeof(MessageLifetimeTimeRange)));
         }
@@ -29,7 +26,7 @@ namespace CortexDeveloper.Messages.Systems
                 })
                 .Schedule();
 
-            _ecbSystem.AddJobHandleForProducer(Dependency);
+            EcbSystem.AddJobHandleForProducer(Dependency);
         }
     }
 }

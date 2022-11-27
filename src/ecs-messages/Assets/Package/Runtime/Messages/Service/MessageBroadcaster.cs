@@ -1,30 +1,44 @@
-using System;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
-using Unity.Collections;
+using CortexDeveloper.Messages.SystemGroups;
+using CortexDeveloper.Messages.Systems;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBroadcaster
     {
-        internal static NativeList<ComponentType> PostRequests = new(Allocator.Persistent);
+        public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup = default)
+        {
+            ComponentSystemGroup systemGroup = parentSystemGroup ?? world.GetOrCreateSystem<SimulationSystemGroup>();
+            MessagesSystemGroup messagesSystemGroup = world.GetOrCreateSystem<MessagesSystemGroup>();
+            
+            systemGroup.AddSystemToUpdateList(messagesSystemGroup);
 
-        private static bool _isPostRequestsDisposed;
+            MessagesDateTimeSystem dateTimeSystem = world.GetOrCreateSystem<MessagesDateTimeSystem>();
+            MessagesOneFrameLifetimeSystem oneFrameLifetimeSystem = world.GetOrCreateSystem<MessagesOneFrameLifetimeSystem>();
+            MessagesRemoveAllCommandListenerSystem removeAllCommandListenerSystem = world.GetOrCreateSystem<MessagesRemoveAllCommandListenerSystem>();
+            MessagesRemoveByComponentCommandListenerSystem removeByComponentCommandListenerSystem = world.GetOrCreateSystem<MessagesRemoveByComponentCommandListenerSystem>();
+            MessagesTimeRangeLifetimeRemoveSystem timeRangeLifetimeRemoveSystem = world.GetOrCreateSystem<MessagesTimeRangeLifetimeRemoveSystem>();
+            MessagesTimeRangeLifetimeTimerSystem timeRangeLifetimeTimerSystem = world.GetOrCreateSystem<MessagesTimeRangeLifetimeTimerSystem>();
+            MessagesStatsSystem statsSystem = world.GetOrCreateSystem<MessagesStatsSystem>();
+
+            messagesSystemGroup.AddSystemToUpdateList(dateTimeSystem);
+            messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem);
+            messagesSystemGroup.AddSystemToUpdateList(removeAllCommandListenerSystem);
+            messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem);
+            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem);
+            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeTimerSystem);
+            messagesSystemGroup.AddSystemToUpdateList(statsSystem);
+            
+            MessagesStats.StatsMap.Add(world.Name, new Stats());
+        }
 
         public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
-            new()
-            {
-                Ecb = ecb,
-                Context = MessageContext.Event
-            };
+            ecb.PrepareEvent();
 
         public static MessageBuilder PrepareCommand(EntityCommandBuffer ecb) =>
-            new()
-            {
-                Ecb = ecb,
-                Context = MessageContext.Command
-            };
+            ecb.PrepareCommand();
 
         public static void RemoveMessage(EntityCommandBuffer ecb, EntityManager entityManager, Entity entity) =>
             MessageUtils.Destroy(entity, ecb, entityManager);
@@ -50,21 +64,6 @@ namespace CortexDeveloper.Messages.Service
                     RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(ecb);
                     break;
             }
-        }
-
-        public static void Dispose()
-        {
-            PostRequests.Dispose();
-
-            _isPostRequestsDisposed = true;
-        }
-
-        internal static void ClearRequests()
-        {
-            if (_isPostRequestsDisposed || !PostRequests.IsCreated)
-                return;
-            
-            PostRequests.Clear();
         }
     }
 }

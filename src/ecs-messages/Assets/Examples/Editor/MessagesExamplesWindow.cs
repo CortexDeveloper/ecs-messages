@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using CortexDeveloper.Messages.Service;
 using Unity.Entities;
 using UnityEditor;
@@ -7,8 +9,6 @@ namespace CortexDeveloper.Examples.Editor
 {
     public class MessagesExamplesWindow : EditorWindow
     {
-        private int _selectedTab;
-
         // Match params
         private Difficulty _difficulty;
         private float _matchLenght;
@@ -20,10 +20,16 @@ namespace CortexDeveloper.Examples.Editor
         
         // Completed quest params
         private Quests _completedQuest;
+
+        private int _selectedTab;
         
-        private static EndSimulationEntityCommandBufferSystem _ecbSystem;
-        private static EndSimulationEntityCommandBufferSystem EcbSystem =>
-            _ecbSystem ??= World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        private List<string> _worldsList = new();
+
+        private int _selectedWorld;
+        private World SelectedWorld => World.All.GetWorldWithName(_worldsList[_selectedWorld]);
+
+        private static EndSimulationEntityCommandBufferSystem GetEcbSystemInWorld(World world) => 
+            world.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 
         [MenuItem("Tools/Messages Examples")]
         public static void Init()
@@ -41,6 +47,8 @@ namespace CortexDeveloper.Examples.Editor
                 
                 return;
             }
+            
+            DrawWorldPopup();
             
             _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"One Frame", "Time Range", "Unlimited Time", "Attached"});
             switch (_selectedTab)
@@ -60,6 +68,28 @@ namespace CortexDeveloper.Examples.Editor
             }
         }
 
+        private void DrawWorldPopup()
+        {
+            _worldsList.Clear();
+
+            for (int i = 0; i < World.All.Count; i++) 
+                _worldsList.Add(default);
+
+            int j = 0;
+            foreach (World world in World.All)
+            {
+                if (j < World.All.Count) 
+                    _worldsList[j] = world.Name;
+                else
+                    break;
+
+                j++;
+            }
+
+            _worldsList = _worldsList.Where(w => !w.Contains("LoadingWorld")).ToList();
+            _selectedWorld = EditorGUILayout.Popup("World", _selectedWorld, _worldsList.ToArray());
+        }
+
         private void DrawOneFrameExamples()
         {
             // Case 1
@@ -70,35 +100,12 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Command: Pause Game"))
             {
                 MessageBroadcaster
-                    .PrepareCommand(EcbSystem.CreateCommandBuffer())
+                    .PrepareCommand(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer())
                     .AliveForOneFrame()
                     .Post(new PauseGameCommand());
             }
-            
-            // Case 2
-            EditorGUILayout.LabelField("Case: You need to start game by clicking \"Start\" button.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("In this case we need to post message-command that we have intention to launch match with next settings:\n" +
-                                       $"{_difficulty.ToString()} difficulty level, {_matchLenght} lenght and {_enemiesCount} enemies count\n" +
-                                       "Message will be alive only for one frame and then would be deleted.", EditorStyles.textArea);
-            
-            _difficulty = (Difficulty)EditorGUILayout.EnumPopup("Difficulty: ", _difficulty);
-            _matchLenght = EditorGUILayout.FloatField("Match Length: ", _matchLenght);
-            _enemiesCount = EditorGUILayout.IntField("Enemies Count: ", _enemiesCount);
-            
-            if (GUILayout.Button("Post Unique Command: Start Game"))
-            {
-                MessageBroadcaster
-                    .PrepareCommand(EcbSystem.CreateCommandBuffer())
-                    .AliveForOneFrame()
-                    .PostUnique(EcbSystem.EntityManager, new StartMatchCommand
-                    {
-                        DifficultyLevel = _difficulty,
-                        MatchLength = _matchLenght,
-                        EnemiesCount = _enemiesCount
-                    });
-            }
 
-            // Case 3
+            // Case 2
             EditorGUILayout.LabelField("Case: You need to notify somebody that character died on this frame.", EditorStyles.helpBox);
             EditorGUILayout.LabelField("In this case we need to post message-event that character died.\n" +
                                        "Message will be alive only for one frame and then would be deleted.", EditorStyles.textArea);
@@ -106,7 +113,7 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Event: Character Died"))
             {
                 MessageBroadcaster
-                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
+                    .PrepareEvent(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer())
                     .AliveForOneFrame()
                     .Post(new CharacterDeadEvent { Tick = 1234567890 });
             }
@@ -125,7 +132,7 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post: Quest Availability Timer"))
             {
                 MessageBroadcaster
-                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
+                    .PrepareEvent(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer())
                     .AliveForSeconds(_questAvailabilityTime)
                     .Post(new QuestAvailabilityData { Quest = _availableQuest });
             }
@@ -143,23 +150,9 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Event: Quest Completed"))
             {
                 MessageBroadcaster
-                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
+                    .PrepareEvent(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer())
                     .AliveForUnlimitedTime()
                     .Post(new QuestCompletedEvent { Value = _completedQuest });
-            }
-
-            // Case 2
-            EditorGUILayout.LabelField("Case: RTS player wants any free worker to start digging gold.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("Same situation but we want to have only one active instance of this command.\n" +
-                                       "So, after command posting there would restriction to post one more until first is alive.\n" +
-                                       "It will be alive until we manually delete it.", EditorStyles.textArea);
-
-            if (GUILayout.Button("Post Unique Command: Dig Gold"))
-            {
-                MessageBroadcaster
-                    .PrepareCommand(EcbSystem.CreateCommandBuffer())
-                    .AliveForUnlimitedTime()
-                    .PostUnique(EcbSystem.EntityManager, new DigGoldCommand());
             }
         }
 
@@ -178,31 +171,12 @@ namespace CortexDeveloper.Examples.Editor
                 entityManager.AddComponent<PauseGameCommand>(entity);
                 
                 MessageBroadcaster
-                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
+                    .PrepareEvent(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer())
                     .AliveForOneFrame()
                     .AttachedTo(entity)
                     .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
             }
-            
-            // Case 2
-            if (GUILayout.Button("Post Unique Attached Message"))
-            {
-                EndSimulationEntityCommandBufferSystem ecbSystem = World.DefaultGameObjectInjectionWorld
-                    .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 
-                EntityManager entityManager = ecbSystem.EntityManager;
-
-                Entity entity = entityManager.CreateEntity();
-                entityManager.SetName(entity, "MessageHolder");
-                entityManager.AddComponent<PauseGameCommand>(entity);
-                
-                MessageBroadcaster
-                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
-                    .AliveForOneFrame()
-                    .AttachedTo(entity)
-                    .PostUnique(EcbSystem.EntityManager, new QuestCompletedEvent { Value = Quests.KillDiablo });
-            }
-            
             // Case 2
             if (GUILayout.Button("Post TimeRange Attached Message"))
             {
@@ -216,7 +190,7 @@ namespace CortexDeveloper.Examples.Editor
                 entityManager.AddComponent<PauseGameCommand>(entity);
                 
                 MessageBroadcaster
-                    .PrepareEvent(EcbSystem.CreateCommandBuffer())
+                    .PrepareEvent(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer())
                     .AliveForSeconds(10f)
                     .AttachedTo(entity)
                     .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
