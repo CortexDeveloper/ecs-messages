@@ -10,7 +10,7 @@ namespace CortexDeveloper.Messages.Editor
     public class MessagesStatsWindow : EditorWindow
     {
         private int _selectedTab;
-        private int _logsEnabled;
+        private bool _statsEnabled;
         
         private MessageLifetime _messageLifetimeFilter;
 
@@ -70,6 +70,10 @@ namespace CortexDeveloper.Messages.Editor
 
         private void DrawStats()
         {
+            _statsEnabled = EditorGUILayout.Toggle("Stats Enabled: ", _statsEnabled);
+            MessagesStats.Enabled = _statsEnabled;
+            
+            EditorGUILayout.Space(10f);
             DrawMessagesStats();
             EditorGUILayout.Space(25f);
             DrawRemoveAPI();
@@ -78,6 +82,9 @@ namespace CortexDeveloper.Messages.Editor
         private void DrawMessagesStats()
         {
             string worldName = SelectedWorld.Name;
+            
+            if (!MessagesStats.StatsMap.ContainsKey(worldName))
+                return;
                 
             EditorGUILayout.LabelField($"Messages:          {MessagesStats.StatsMap[worldName].ActiveMessagesCount}");
             EditorGUILayout.LabelField($"Attached Messages: {MessagesStats.StatsMap[worldName].ActiveAttachedMessagesCount}");

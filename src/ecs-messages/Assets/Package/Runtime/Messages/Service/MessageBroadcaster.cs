@@ -34,6 +34,11 @@ namespace CortexDeveloper.Messages.Service
             MessagesStats.StatsMap.Add(world.Name, new Stats());
         }
 
+        public static void Dispose()
+        {
+            MessagesStats.StatsMap.Clear();
+        }
+
         public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
             ecb.PrepareEvent();
 

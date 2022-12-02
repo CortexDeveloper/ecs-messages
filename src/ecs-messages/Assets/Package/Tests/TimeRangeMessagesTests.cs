@@ -21,7 +21,9 @@ namespace CortexDeveloper.Tests
         
         [UnityTearDown]
         public IEnumerator TearDown()
-        {
+        {            
+            MessageBroadcaster.Dispose();
+
             yield return new ExitPlayMode();
         }
         
