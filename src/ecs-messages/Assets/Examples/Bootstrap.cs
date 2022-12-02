@@ -8,8 +8,17 @@ namespace CortexDeveloper.Examples
     {
         private void Awake()
         {
-            MessageBroadcaster.InitializeInWorld(World.DefaultGameObjectInjectionWorld);
-            MessageBroadcaster.InitializeInWorld(World.All.GetWorldWithName("Example World"));
+            World defaultWorld = World.DefaultGameObjectInjectionWorld;
+            MessageBroadcaster.InitializeInWorld(
+                defaultWorld, 
+                defaultWorld.GetOrCreateSystem<SimulationSystemGroup>(),
+                defaultWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>());
+
+            World exampleWorld = World.All.GetWorldWithName("Example World");
+            MessageBroadcaster.InitializeInWorld(
+                exampleWorld,
+                exampleWorld.GetOrCreateSystem<SimulationSystemGroup>(),
+                exampleWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>());
         }
     }
 }

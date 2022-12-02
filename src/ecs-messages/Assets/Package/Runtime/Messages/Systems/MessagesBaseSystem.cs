@@ -6,9 +6,11 @@ namespace CortexDeveloper.Messages.Systems
     {
         protected EntityCommandBufferSystem EcbSystem;
 
-        protected override void OnCreate()
-        {
-            EcbSystem = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+        public MessagesBaseSystem Construct(EntityCommandBufferSystem ecbSystem)
+        { 
+            EcbSystem = ecbSystem;
+
+            return this;
         }
     }
 }
