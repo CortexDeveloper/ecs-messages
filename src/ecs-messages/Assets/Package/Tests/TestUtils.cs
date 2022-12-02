@@ -60,5 +60,14 @@ namespace CortexDeveloper.Tests
 
             return World.All.GetWorldWithName(worldName);
         }
+
+        public static void InitializeTestWorld()
+        {
+            World testWorld = GetTestWorld();
+            MessageBroadcaster.InitializeInWorld(
+                testWorld,
+                testWorld.GetOrCreateSystem<SimulationSystemGroup>(),
+                testWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>());
+        }
     }
 }

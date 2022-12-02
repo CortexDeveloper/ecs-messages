@@ -16,12 +16,14 @@ namespace CortexDeveloper.Tests
         {
             yield return new EnterPlayMode();
             
-            MessageBroadcaster.InitializeInWorld(TestUtils.GetTestWorld());
+            TestUtils.InitializeTestWorld();
         }
         
         [UnityTearDown]
         public IEnumerator TearDown()
-        {
+        {            
+            MessageBroadcaster.Dispose();
+
             yield return new ExitPlayMode();
         }
         

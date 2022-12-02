@@ -8,9 +8,9 @@ namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBroadcaster
     {
-        public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup = default)
+        public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup, EntityCommandBufferSystem ecbSystem)
         {
-            ComponentSystemGroup systemGroup = parentSystemGroup ?? world.GetOrCreateSystem<SimulationSystemGroup>();
+            ComponentSystemGroup systemGroup = parentSystemGroup;
             MessagesSystemGroup messagesSystemGroup = world.GetOrCreateSystem<MessagesSystemGroup>();
             
             systemGroup.AddSystemToUpdateList(messagesSystemGroup);
@@ -23,15 +23,20 @@ namespace CortexDeveloper.Messages.Service
             MessagesTimeRangeLifetimeTimerSystem timeRangeLifetimeTimerSystem = world.GetOrCreateSystem<MessagesTimeRangeLifetimeTimerSystem>();
             MessagesStatsSystem statsSystem = world.GetOrCreateSystem<MessagesStatsSystem>();
 
-            messagesSystemGroup.AddSystemToUpdateList(dateTimeSystem);
-            messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem);
-            messagesSystemGroup.AddSystemToUpdateList(removeAllCommandListenerSystem);
-            messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem);
-            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem);
-            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeTimerSystem);
             messagesSystemGroup.AddSystemToUpdateList(statsSystem);
-            
+            messagesSystemGroup.AddSystemToUpdateList(dateTimeSystem);
+            messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem.Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(removeAllCommandListenerSystem.Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem.Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem.Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeTimerSystem.Construct(ecbSystem));
+
             MessagesStats.StatsMap.Add(world.Name, new Stats());
+        }
+
+        public static void Dispose()
+        {
+            MessagesStats.StatsMap.Clear();
         }
 
         public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
