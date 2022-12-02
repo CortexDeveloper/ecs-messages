@@ -47,6 +47,9 @@ namespace CortexDeveloper.Messages.Service
 
         public static void RemoveMessage(EntityCommandBuffer ecb, EntityManager entityManager, Entity entity) =>
             MessageUtils.Destroy(entity, ecb, entityManager);
+        
+        public static void RemoveMessageImmediate(EntityManager entityManager, Entity entity) =>
+            MessageUtils.DestroyImmediate(entity, entityManager);
 
         public static void RemoveAllMessages(EntityCommandBuffer ecb) =>
             PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveAllMessagesCommand());
@@ -55,7 +58,7 @@ namespace CortexDeveloper.Messages.Service
             PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveMessagesByComponentCommand 
                 { ComponentType = new ComponentType(typeof(T)) });
 
-        public static void RemoveCommonWithLifetime(EntityCommandBuffer ecb, MessageLifetime lifetime)
+        public static void RemoveCommonMessagesWithLifetime(EntityCommandBuffer ecb, MessageLifetime lifetime)
         {
             switch (lifetime)
             {
