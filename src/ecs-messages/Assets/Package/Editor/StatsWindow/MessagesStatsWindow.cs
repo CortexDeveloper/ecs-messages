@@ -86,15 +86,13 @@ namespace CortexDeveloper.Messages.Editor
             if (!MessagesStats.StatsMap.ContainsKey(worldName))
                 return;
                 
-            EditorGUILayout.LabelField($"Messages:          {MessagesStats.StatsMap[worldName].ActiveMessagesCount}");
+            EditorGUILayout.LabelField($"Messages: {MessagesStats.StatsMap[worldName].ActiveMessagesCount}");
             EditorGUILayout.LabelField($"Attached Messages: {MessagesStats.StatsMap[worldName].ActiveAttachedMessagesCount}");
-            EditorGUILayout.LabelField($"Events:            {MessagesStats.StatsMap[worldName].ActiveEventsCount}");
-            EditorGUILayout.LabelField($"Commands:          {MessagesStats.StatsMap[worldName].ActiveCommandsCount}");
             EditorGUILayout.Space(10f);
 
-            EditorGUILayout.LabelField($"OneFrame:          {MessagesStats.StatsMap[worldName].ActiveOneFrameMessagesCount}");
-            EditorGUILayout.LabelField($"TimeRange:         {MessagesStats.StatsMap[worldName].ActiveTimeRangeMessagesCount}");
-            EditorGUILayout.LabelField($"Unlimited:         {MessagesStats.StatsMap[worldName].ActiveUnlimitedLifetimeMessagesCount}");
+            EditorGUILayout.LabelField($"OneFrame: {MessagesStats.StatsMap[worldName].ActiveOneFrameMessagesCount}");
+            EditorGUILayout.LabelField($"TimeRange: {MessagesStats.StatsMap[worldName].ActiveTimeRangeMessagesCount}");
+            EditorGUILayout.LabelField($"Unlimited: {MessagesStats.StatsMap[worldName].ActiveUnlimitedLifetimeMessagesCount}");
         }
         
         private void DrawRemoveAPI()

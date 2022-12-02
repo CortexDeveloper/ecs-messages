@@ -4,8 +4,6 @@ namespace CortexDeveloper.Messages.Service
     {
         public int ActiveMessagesCount;
         public int ActiveAttachedMessagesCount;
-        public int ActiveEventsCount;
-        public int ActiveCommandsCount;
         public int ActiveOneFrameMessagesCount;
         public int ActiveTimeRangeMessagesCount;
         public int ActiveUnlimitedLifetimeMessagesCount;

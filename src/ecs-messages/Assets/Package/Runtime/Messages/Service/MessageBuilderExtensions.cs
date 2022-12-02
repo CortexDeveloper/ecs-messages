@@ -14,9 +14,8 @@ namespace CortexDeveloper.Messages.Service
         private static uint _seed;
         private static uint Seed => _seed < uint.MaxValue ? ++_seed : _seed = 0;
         
-        public static void Post<T>(this MessageBuilder builder, T component) where T : struct, IComponentData, IMessageComponent
+        public static void Post<T>(this MessageBuilder builder, EntityCommandBuffer ecb, T component) where T : struct, IComponentData, IMessageComponent
         {
-            EntityCommandBuffer ecb = builder.Ecb;
             Entity messageEntity = ecb.CreateEntity();
             Entity contentTargetEntity = builder.MessageEntity != Entity.Null 
                 ? builder.MessageEntity
@@ -44,16 +43,6 @@ namespace CortexDeveloper.Messages.Service
                     ComponentType = ComponentType.ReadOnly<T>(),
                     TargetEntity = builder.MessageEntity
                 });
-
-            switch (builder.Context)
-            {
-                case MessageContext.Event:
-                    ecb.AddComponent(messageEntity, new MessageContextEventTag());
-                    break;
-                case MessageContext.Command:
-                    ecb.AddComponent(messageEntity, new MessageContextCommandTag());
-                    break;
-            }
         }
 
         private static void AddLifetimeComponents(MessageBuilder builder, Entity messageEntity, EntityCommandBuffer ecb)

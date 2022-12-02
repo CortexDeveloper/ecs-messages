@@ -39,11 +39,8 @@ namespace CortexDeveloper.Messages.Service
             MessagesStats.StatsMap.Clear();
         }
 
-        public static MessageBuilder PrepareEvent(EntityCommandBuffer ecb) =>
-            ecb.PrepareEvent();
-
-        public static MessageBuilder PrepareCommand(EntityCommandBuffer ecb) =>
-            ecb.PrepareCommand();
+        public static MessageBuilder PrepareMessage() =>
+            new MessageBuilder();
 
         public static void RemoveMessage(EntityCommandBuffer ecb, EntityManager entityManager, Entity entity) =>
             MessageUtils.Destroy(entity, ecb, entityManager);
@@ -52,11 +49,10 @@ namespace CortexDeveloper.Messages.Service
             MessageUtils.DestroyImmediate(entity, entityManager);
 
         public static void RemoveAllMessages(EntityCommandBuffer ecb) =>
-            PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveAllMessagesCommand());
+            PrepareMessage().AliveForOneFrame().Post(ecb, new RemoveAllMessagesCommand());
 
         public static void RemoveAllMessagesWith<T>(EntityCommandBuffer ecb) where T : struct, IComponentData =>
-            PrepareCommand(ecb).AliveForOneFrame().Post(new RemoveMessagesByComponentCommand 
-                { ComponentType = new ComponentType(typeof(T)) });
+            PrepareMessage().AliveForOneFrame().Post(ecb, new RemoveMessagesByComponentCommand { ComponentType = new ComponentType(typeof(T)) });
 
         public static void RemoveCommonMessagesWithLifetime(EntityCommandBuffer ecb, MessageLifetime lifetime)
         {
