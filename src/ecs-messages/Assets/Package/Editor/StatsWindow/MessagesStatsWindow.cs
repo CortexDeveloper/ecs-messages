@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Service;
 using Unity.Entities;
 using UnityEditor;
@@ -97,7 +98,7 @@ namespace CortexDeveloper.Messages.Editor
         private void DrawRemoveAPI()
         {
             if (GUILayout.Button("Remove All")) 
-                MessageBroadcaster.RemoveAllMessages(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer());
+                MessageBroadcaster.RemoveAllMessagesWith<MessageTag>(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer());
         }
     }
 }

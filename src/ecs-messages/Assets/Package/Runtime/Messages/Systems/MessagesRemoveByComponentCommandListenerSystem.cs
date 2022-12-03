@@ -25,7 +25,7 @@ namespace CortexDeveloper.Messages.Systems
 
             foreach (RemoveMessagesByComponentCommand command in commands)
             {
-                EntityQuery destroyQuery = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), command.ComponentType);
+                EntityQuery destroyQuery = GetMessagesQueryWith(command.ComponentType); 
                 NativeArray<Entity> messageEntities = destroyQuery.ToEntityArray(Allocator.Temp);
 
                 foreach (Entity messageEntity in messageEntities)
@@ -36,5 +36,10 @@ namespace CortexDeveloper.Messages.Systems
             
             commands.Dispose();
         }
+
+        private EntityQuery GetMessagesQueryWith(ComponentType componentType) => 
+            componentType.TypeIndex == ComponentType.ReadOnly<MessageTag>().TypeIndex 
+                ? GetEntityQuery(ComponentType.ReadOnly<MessageTag>()) 
+                : GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), componentType);
     }
 }
