@@ -24,10 +24,10 @@ namespace CortexDeveloper.Messages.Service
 
             messagesSystemGroup.AddSystemToUpdateList(statsSystem);
             messagesSystemGroup.AddSystemToUpdateList(dateTimeSystem);
-            messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem.Construct(ecbSystem));
-            messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem.Construct(ecbSystem));
-            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem.Construct(ecbSystem));
-            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeTimerSystem.Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem);
+            messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem);
+            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem);
+            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeTimerSystem);
 
             MessagesStats.StatsMap.Add(world.Name, new Stats());
         }

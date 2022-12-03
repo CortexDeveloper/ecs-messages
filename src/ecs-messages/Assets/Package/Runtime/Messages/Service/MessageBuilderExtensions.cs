@@ -2,8 +2,6 @@ using System.Diagnostics;
 using CortexDeveloper.Messages.Components;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Systems;
-using Unity.Burst;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 

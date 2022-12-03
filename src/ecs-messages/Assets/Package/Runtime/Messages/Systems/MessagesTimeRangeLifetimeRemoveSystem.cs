@@ -6,7 +6,7 @@ using Unity.Entities;
 namespace CortexDeveloper.Messages.Systems
 {
     [DisableAutoCreation]
-    public partial class MessagesTimeRangeLifetimeRemoveSystem : MessagesBaseSystem
+    public partial class MessagesTimeRangeLifetimeRemoveSystem : SystemBase
     {
         protected override void OnCreate()
         {

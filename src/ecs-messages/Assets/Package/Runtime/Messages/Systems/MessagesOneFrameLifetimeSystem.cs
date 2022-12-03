@@ -6,7 +6,7 @@ using Unity.Entities;
 namespace CortexDeveloper.Messages.Systems
 {
     [DisableAutoCreation]
-    public partial class MessagesOneFrameLifetimeSystem : MessagesBaseSystem
+    public partial class MessagesOneFrameLifetimeSystem : SystemBase
     {
         protected override void OnCreate()
         {

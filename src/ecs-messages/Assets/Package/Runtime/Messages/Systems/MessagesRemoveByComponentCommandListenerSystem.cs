@@ -8,7 +8,7 @@ namespace CortexDeveloper.Messages.Systems
 {
     [UpdateBefore(typeof(MessagesOneFrameLifetimeSystem))]
     [DisableAutoCreation]
-    public partial class MessagesRemoveByComponentCommandListenerSystem : MessagesBaseSystem
+    public partial class MessagesRemoveByComponentCommandListenerSystem : SystemBase
     {
         protected override void OnCreate()
         {
