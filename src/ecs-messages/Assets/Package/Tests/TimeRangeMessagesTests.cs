@@ -34,7 +34,7 @@ namespace CortexDeveloper.Tests
             MessageBroadcaster
                 .PrepareMessage()
                 .AliveForSeconds(1f)
-                .Post(TestUtils.GetEcbSystem().CreateCommandBuffer(), new TestContentData{ Value = 123 });
+                .Post(TestUtils.GetEcbSystem().CreateCommandBuffer(), new TestContentData { Value = 123 });
             
             yield return null;
 
@@ -60,7 +60,7 @@ namespace CortexDeveloper.Tests
             MessageBroadcaster
                 .PrepareMessage()
                 .AliveForSeconds(2f)
-                .Post(TestUtils.GetEcbSystem().CreateCommandBuffer(), new TestContentData{ Value = 123 });
+                .Post(TestUtils.GetEcbSystem().CreateCommandBuffer(), new TestContentData { Value = 123 });
             
             yield return null;
 

@@ -6,6 +6,7 @@ using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
+    [UpdateBefore(typeof(MessagesOneFrameLifetimeSystem))]
     [DisableAutoCreation]
     public partial class MessagesRemoveByComponentCommandListenerSystem : MessagesBaseSystem
     {
@@ -18,7 +19,6 @@ namespace CortexDeveloper.Messages.Systems
 
         protected override void OnUpdate()
         {
-            EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
             EntityManager entityManager = EntityManager;
             EntityQuery query = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<RemoveMessagesByComponentCommand>());
             NativeArray<RemoveMessagesByComponentCommand> commands = query.ToComponentDataArray<RemoveMessagesByComponentCommand>(Allocator.Temp);
@@ -29,7 +29,7 @@ namespace CortexDeveloper.Messages.Systems
                 NativeArray<Entity> messageEntities = destroyQuery.ToEntityArray(Allocator.Temp);
 
                 foreach (Entity messageEntity in messageEntities)
-                    MessageUtils.Destroy(messageEntity, ecb, entityManager);
+                    MessageUtils.DestroyImmediate(messageEntity, entityManager);
 
                 messageEntities.Dispose();
             }

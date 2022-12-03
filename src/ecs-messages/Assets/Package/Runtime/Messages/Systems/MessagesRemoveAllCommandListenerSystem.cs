@@ -18,13 +18,12 @@ namespace CortexDeveloper.Messages.Systems
 
         protected override void OnUpdate()
         {
-            EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
-            EntityQuery allMessages = GetEntityQuery(ComponentType.ReadOnly<MessageTag>());
-            NativeArray<Entity> messageEntities = allMessages.ToEntityArray(Allocator.Temp);
+            EntityQuery query = GetEntityQuery(ComponentType.ReadOnly<MessageTag>());
+            NativeArray<Entity> messageEntities = query.ToEntityArray(Allocator.Temp);
             EntityManager entityManager = EntityManager;
 
             foreach (Entity messageEntity in messageEntities)
-                MessageUtils.Destroy(messageEntity, ecb, entityManager);
+                MessageUtils.DestroyImmediate(messageEntity, entityManager);
         }
     }
 }

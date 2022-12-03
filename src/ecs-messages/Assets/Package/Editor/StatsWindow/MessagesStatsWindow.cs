@@ -12,9 +12,8 @@ namespace CortexDeveloper.Messages.Editor
         private int _selectedTab;
         private bool _statsEnabled;
         
-        private MessageLifetime _messageLifetimeFilter;
-
         private List<string> _worldsList = new();
+        
         private int _selectedWorld;
         private World SelectedWorld => World.All.GetWorldWithName(_worldsList[_selectedWorld]);
         
@@ -97,11 +96,6 @@ namespace CortexDeveloper.Messages.Editor
         
         private void DrawRemoveAPI()
         {
-            _messageLifetimeFilter = (MessageLifetime)EditorGUILayout.EnumPopup("Lifetime Filter: ", _messageLifetimeFilter);
-
-            if (GUILayout.Button("Remove Messages by Lifetime Filter"))
-                MessageBroadcaster.RemoveCommonMessagesWithLifetime(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer(), _messageLifetimeFilter);
-
             if (GUILayout.Button("Remove All")) 
                 MessageBroadcaster.RemoveAllMessages(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer());
         }

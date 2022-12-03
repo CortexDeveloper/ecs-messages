@@ -24,9 +24,7 @@ namespace CortexDeveloper.Messages.Systems
                     messageTimeRange.LifetimeLeft -= deltaTime;
                     timeRange = messageTimeRange;
                 })
-                .Schedule();
-
-            EcbSystem.AddJobHandleForProducer(Dependency);
+                .Run();
         }
     }
 }

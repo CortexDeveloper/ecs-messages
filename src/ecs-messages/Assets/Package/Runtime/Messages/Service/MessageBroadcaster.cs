@@ -53,21 +53,5 @@ namespace CortexDeveloper.Messages.Service
 
         public static void RemoveAllMessagesWith<T>(EntityCommandBuffer ecb) where T : struct, IComponentData =>
             PrepareMessage().AliveForOneFrame().Post(ecb, new RemoveMessagesByComponentCommand { ComponentType = new ComponentType(typeof(T)) });
-
-        public static void RemoveCommonMessagesWithLifetime(EntityCommandBuffer ecb, MessageLifetime lifetime)
-        {
-            switch (lifetime)
-            {
-                case MessageLifetime.OneFrame:
-                    RemoveAllMessagesWith<MessageLifetimeOneFrameTag>(ecb);
-                    break;
-                case MessageLifetime.TimeRange:
-                    RemoveAllMessagesWith<MessageLifetimeTimeRange>(ecb);
-                    break;
-                case MessageLifetime.Unlimited:
-                    RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(ecb);
-                    break;
-            }
-        }
     }
 }

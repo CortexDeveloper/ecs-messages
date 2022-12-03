@@ -46,7 +46,7 @@ namespace CortexDeveloper.Tests
                                    TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                                    component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonMessagesWithLifetime(TestUtils.GetEcbSystem().CreateCommandBuffer(), MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(TestUtils.GetEcbSystem().CreateCommandBuffer());
             
             yield return null;
             yield return null;
@@ -104,7 +104,7 @@ namespace CortexDeveloper.Tests
                              TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                              component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonMessagesWithLifetime(TestUtils.GetEcbSystem().CreateCommandBuffer(), MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(TestUtils.GetEcbSystem().CreateCommandBuffer());
             
             yield return null;
             yield return null;
@@ -144,7 +144,7 @@ namespace CortexDeveloper.Tests
                              TestUtils.FirstEntityHasComponent<AttachedMessageContent>(query) &&
                              component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonMessagesWithLifetime(TestUtils.GetEcbSystem().CreateCommandBuffer(), MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(TestUtils.GetEcbSystem().CreateCommandBuffer());
             
             yield return null;
             yield return null;
