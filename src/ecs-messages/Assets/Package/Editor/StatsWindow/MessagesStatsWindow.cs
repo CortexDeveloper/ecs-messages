@@ -97,7 +97,7 @@ namespace CortexDeveloper.Messages.Editor
         private void DrawRemoveAPI()
         {
             if (GUILayout.Button("Remove All")) 
-                MessageBroadcaster.RemoveAllMessagesWith<MessageTag>(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer());
+                MessageBroadcaster.RemoveAllMessagesWith<MessageTag>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
         }
     }
 }

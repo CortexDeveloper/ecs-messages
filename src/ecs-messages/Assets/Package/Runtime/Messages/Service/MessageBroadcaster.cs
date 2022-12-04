@@ -27,7 +27,7 @@ namespace CortexDeveloper.Messages.Service
             messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem.Construct(ecbSystem));
             messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem.Construct(ecbSystem));
             messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeTimerSystem);
-            messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem);
+            messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem.Construct(ecbSystem));
 
             MessagesStats.StatsMap.Add(world.Name, new Stats());
         }
@@ -38,7 +38,9 @@ namespace CortexDeveloper.Messages.Service
         public static MessageBuilder PrepareMessage(FixedString64Bytes messageEntityName = default) => 
             new() { Name = messageEntityName };
 
-        public static void RemoveAllMessagesWith<T>(EntityCommandBuffer ecb) where T : struct, IComponentData =>
-            PrepareMessage().AliveForOneFrame().Post(ecb, new RemoveMessagesByComponentCommand { ComponentType = new ComponentType(typeof(T)) });
+        public static void RemoveAllMessagesWith<T>(EntityManager entityManager) where T : struct, IComponentData =>
+            PrepareMessage().AliveForOneFrame().PostImmediate(
+                entityManager,
+                new RemoveMessagesByComponentCommand { ComponentType = new ComponentType(typeof(T)) });
     }
 }

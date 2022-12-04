@@ -28,7 +28,7 @@ namespace CortexDeveloper.Tests
         }
         
         [UnityTest]
-        public IEnumerator Post_AliveForUnlimitedTime_WaitOneFrame_CheckForExisting_ManuallyRemoveAllUnlimited_WaitTwoFrames_CheckForRemove()
+        public IEnumerator Post_AliveForUnlimitedTime_WaitOneFrame_CheckForExisting_ManuallyRemoveAllUnlimited_WaitOneFrames_CheckForRemove()
         {
             // Act
             MessageBroadcaster
@@ -46,9 +46,8 @@ namespace CortexDeveloper.Tests
                                    TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                                    component.Value == 123;
 
-            MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(TestUtils.GetEcbSystem().CreateCommandBuffer());
+            MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(TestUtils.GetEcbSystem().EntityManager);
             
-            yield return null;
             yield return null;
 
             bool wasRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
