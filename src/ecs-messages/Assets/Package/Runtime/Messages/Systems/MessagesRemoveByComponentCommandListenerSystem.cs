@@ -10,13 +10,6 @@ namespace CortexDeveloper.Messages.Systems
     [DisableAutoCreation]
     public partial class MessagesRemoveByComponentCommandListenerSystem : SystemBase
     {
-        protected override void OnCreate()
-        {
-            base.OnCreate();
-            
-            RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<RemoveMessagesByComponentCommand>()));
-        }
-
         protected override void OnUpdate()
         {
             EntityManager entityManager = EntityManager;

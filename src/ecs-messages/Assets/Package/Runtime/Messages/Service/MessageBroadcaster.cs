@@ -1,4 +1,3 @@
-using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
 using CortexDeveloper.Messages.SystemGroups;
 using CortexDeveloper.Messages.Systems;
@@ -37,8 +36,8 @@ namespace CortexDeveloper.Messages.Service
             MessagesStats.StatsMap.Clear();
         }
 
-        public static MessageBuilder PrepareMessage() =>
-            new MessageBuilder();
+        public static MessageBuilder PrepareMessage() => 
+            new();
 
         public static void RemoveMessage(EntityCommandBuffer ecb, EntityManager entityManager, Entity entity) =>
             MessageUtils.Destroy(entity, ecb, entityManager);

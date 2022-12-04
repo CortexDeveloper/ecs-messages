@@ -53,6 +53,30 @@ namespace CortexDeveloper.Tests
         }
         
         [UnityTest]
+        public IEnumerator PostEventImmediate_CheckForExisting_WaitFrame_CheckForAutoRemove()
+        {
+            // Act
+            MessageBroadcaster
+                .PrepareMessage()
+                .AliveForOneFrame()
+                .PostImmediate(TestUtils.GetEcbSystem().EntityManager, new TestContentData { Value = 123 });
+
+            // Assert
+            EntityQuery query = TestUtils.GetQuery<TestContentData>();
+            TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
+            bool wasPosted = query.CalculateEntityCount() == 1 &&
+                             TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
+                             TestUtils.FirstEntityHasComponent<MessageLifetimeOneFrameTag>(query) &&
+                             component.Value == 123;
+
+            yield return null;
+
+            bool wasAutoRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
+            
+            Assert.IsTrue(wasPosted && wasAutoRemoved);
+        }
+        
+        [UnityTest]
         public IEnumerator PostCommand_WaitFrame_CheckForExisting_WaitFrame_CheckForAutoRemove()
         {
             // Act
