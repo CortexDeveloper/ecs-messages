@@ -16,6 +16,7 @@ namespace CortexDeveloper.Messages.Service
             Entity messageEntity = ecb.CreateEntity();
 
 #if UNITY_EDITOR
+            ecb.SetName(messageEntity, builder.Name);
             ecb.AddComponent(messageEntity, new MessageEditorData
             {
                 Id = new Random(Seed).NextInt(0, int.MaxValue),
@@ -40,6 +41,7 @@ namespace CortexDeveloper.Messages.Service
             Entity messageEntity = entityManager.CreateEntity();
 
 #if UNITY_EDITOR
+            entityManager.SetName(messageEntity, builder.Name);
             entityManager.AddComponentData(messageEntity, new MessageEditorData
             {
                 Id = new Random(Seed).NextInt(0, int.MaxValue),

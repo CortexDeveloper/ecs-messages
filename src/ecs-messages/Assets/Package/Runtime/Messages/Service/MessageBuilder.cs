@@ -1,7 +1,10 @@
+using Unity.Collections;
+
 namespace CortexDeveloper.Messages.Service
 {
     public struct MessageBuilder
     {
+        internal FixedString64Bytes Name;
         internal MessageLifetime Lifetime;
         internal float Seconds;
 

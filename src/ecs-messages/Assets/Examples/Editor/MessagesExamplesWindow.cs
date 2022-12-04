@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CortexDeveloper.Messages.Service;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEditor;
 using UnityEngine;
@@ -92,7 +93,7 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Command: Pause Game"))
             {
                 MessageBroadcaster
-                    .PrepareMessage()
+                    .PrepareMessage(new FixedString64Bytes("PauseGameCommand"))
                     .AliveForOneFrame()
                     .Post(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer(), new PauseGameCommand());
             }
@@ -105,7 +106,7 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Event: Character Died"))
             {
                 MessageBroadcaster
-                    .PrepareMessage()
+                    .PrepareMessage(new FixedString64Bytes("CharacterDeathEvent"))
                     .AliveForOneFrame()
                     .Post(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer(), new CharacterDeadEvent { Tick = 1234567890 });
             }

@@ -1,6 +1,7 @@
 using CortexDeveloper.Messages.Components.RemoveCommands;
 using CortexDeveloper.Messages.SystemGroups;
 using CortexDeveloper.Messages.Systems;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Service
@@ -31,19 +32,17 @@ namespace CortexDeveloper.Messages.Service
             MessagesStats.StatsMap.Add(world.Name, new Stats());
         }
 
-        public static void Dispose()
-        {
+        public static void Dispose() => 
             MessagesStats.StatsMap.Clear();
-        }
 
-        public static MessageBuilder PrepareMessage() => 
-            new();
+        public static MessageBuilder PrepareMessage(FixedString64Bytes messageEntityName = default) => 
+            new() { Name = messageEntityName };
 
-        public static void RemoveMessage(EntityCommandBuffer ecb, Entity entity) =>
-            MessageUtils.Destroy(entity, ecb);
+        public static void RemoveMessage(EntityCommandBuffer ecb, Entity messageEntity) =>
+            ecb.DestroyEntity(messageEntity);
         
-        public static void RemoveMessageImmediate(EntityManager entityManager, Entity entity) =>
-            MessageUtils.DestroyImmediate(entity, entityManager);
+        public static void RemoveMessageImmediate(EntityManager entityManager, Entity messageEntity) =>
+            entityManager.DestroyEntity(messageEntity);
 
         public static void RemoveAllMessagesWith<T>(EntityCommandBuffer ecb) where T : struct, IComponentData =>
             PrepareMessage().AliveForOneFrame().Post(ecb, new RemoveMessagesByComponentCommand { ComponentType = new ComponentType(typeof(T)) });
