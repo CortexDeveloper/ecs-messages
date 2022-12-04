@@ -7,13 +7,11 @@ namespace CortexDeveloper.Messages.Systems
 {
     [UpdateBefore(typeof(MessagesOneFrameLifetimeSystem))]
     [DisableAutoCreation]
-    public partial class MessagesRemoveByComponentCommandListenerSystem : SystemBase
+    public partial class MessagesRemoveByComponentCommandListenerSystem : MessagesBaseSystem
     {
         protected override void OnUpdate()
         {
-            EntityCommandBuffer ecb = World
-                .GetExistingSystem<EndSimulationEntityCommandBufferSystem>()
-                .CreateCommandBuffer();
+            EntityCommandBuffer ecb = MessagesEcb;
             EntityQuery query = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<RemoveMessagesByComponentCommand>());
             NativeArray<RemoveMessagesByComponentCommand> commands = query.ToComponentDataArray<RemoveMessagesByComponentCommand>(Allocator.Temp);
 
