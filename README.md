@@ -19,12 +19,11 @@ Simple way of communication between MonoBehaviours and ECS world.<br/>
   - [Lifetime Types](#lifetime-types)
 - [Code Examples](#code-examples)
   - [Post API](#post-api)
+  - [Immediate Post API](#immediate-post-api)
   - [Remove API](#remove-api)
 - [Editor Features](#editor-features)
   - [Stats Window](#stats-window)
-  - [Structure of message entity](#structure-of-message-entity)
-  - [Examples Editor Window(only for source code)](#examples-editor-windowonly-for-source-code)
-- [Next Versions Roadmap](#next-versions-roadmap)
+  - [Examples Editor Window](#examples-editor-window)
 - [Contacts](#contacts)
 
 ## Overview
@@ -111,7 +110,7 @@ That helps to quickly catch the intention of this message.
 ##### Case: Pause game
 
 ```csharp
-var ecb = yourEntityCommandBufferSystem.CreateCommandBuffer()
+var ecb = yourEntityCommandBufferSystem.CreateCommandBuffer();
 MessageBroadcaster
     .PrepareMessage()
     .AliveForOneFrame()
@@ -124,7 +123,7 @@ public struct PauseGameCommand : IComponentData, IMessageComponent { }
 ##### Case: Start game by clicking Start button
 
 ```csharp                
-var ecb = yourEntityCommandBufferSystem.CreateCommandBuffer()
+var ecb = yourEntityCommandBufferSystem.CreateCommandBuffer();
 MessageBroadcaster
     .PrepareMessage()
     .AliveForOneFrame()
@@ -143,39 +142,16 @@ public struct StartMatchCommand : IComponentData, IMessageComponent
 }
 ```
 
-##### Case: Notify somebody that character died on this frame
-```csharp
-MessageBroadcaster
-    .PrepareMessage()
-    .AliveForOneFrame()
-    .Post(new CharacterDeadEvent { Tick = 1234567890 });
-```
-
 #### Time Range Messages
-
-##### Case: Informing other non-gameplay related systems that there are two active debuffs
-
-```csharp
-// Here we add additional configuration WithLifeTime(...) to mark message as TimeRange type.
-// It won't be posted if there is already an active message of this type.
-// It will be automatically deleted after 10 seconds.
-// Also we used API that work with IBufferElementData interface to attach multiple elements to message.
-MessageBroadcaster
-    .PrepareEvent()
-    .AsUnique()
-    .WithLifeTime(10f)
-    .PostBuffer(
-        new DebuffData { Value = Debuffs.Stun },
-        new DebuffData { Value = Debuffs.Poison });
-```
 
 ##### Case: Informing that quest available only for 600 seconds(10 minutes)
 
 ```csharp
+// It will be automatically deleted after 1 minute
 MessageBroadcaster
-    .PrepareEvent()
-    .WithLifeTime(600f)
-    .Post(new QuestAvailabilityData { Quest = Quests.SavePrincess });
+    .PrepareMessage()
+    .AliveForSeconds(60f)
+    .Post(ecb, new QuestAvailabilityData { Quest = Quests.SavePrincess });
 ```
 
 #### Unlimited Lifetime Messages
@@ -183,81 +159,57 @@ MessageBroadcaster
 ##### Case: Notify that quest is completed
 
 ```csharp
+// It would be posted as usual message but should be deleted manualy
+// There is no special system for this type that handling deleting automaticaly
 MessageBroadcaster
-    .PrepareEvent()
-    .WithUnlimitedLifeTime()
-    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
+    .PrepareMessage()
+    .AliveForUnlimitedTime()
+    .Post(ecb, new QuestCompletedEvent { Value = Quests.KillDiablo });
 ```
 
-##### Case: RTS player wants any free worker to start digging gold
+### Immediate Post API
+
+For some cases it's neccessary to post message not via ECB system but right now via EntityManager.
+Here is alternative way how to post message.
+
+##### Case: Post pause message immediately
 
 ```csharp
+// The only difference here is last method to post message
+// It needs EntityManager instead of ECB
+var entityManager = yourWorld.EntityManager;
 MessageBroadcaster
-    .PrepareCommand()
-    .WithUnlimitedLifeTime()
-    .Post(new DigGoldCommand());
+    .PrepareMessage()
+    .AliveForOneFrame()
+    .PostImmediate(entityManager, new PauseGameCommand());
 ```
 
 ### Remove API
 
-There are examples of API to remove active messages.<br/>
-> **_NOTE:_** Current package version doesn't have filters to remove commands or events separetely.<br>
-
 ```csharp
-// Remove all messages of TimeRange lifetime type 
-MessageBroadcaster.RemoveWithLifetime(MessageLifetime.TimeRange);
+// removes message
+MessageBroadcaster.RemoveMessage(ecb, entityManager, messageEntity);
 
-// Remove messages with specific component 
-MessageBroadcaster.Remove<DigGoldCommand>();
+// removes message via EntityManager right now
+MessageBroadcaster.RemoveMessageImmediate(entityManager, messageEntity);
 
-// Remove messages with specific DynamicBuffer<T> where T is DebuffData
-MessageBroadcaster.RemoveBuffer<DebuffData>();
-
-// Remove all active messages of all types
-MessageBroadcaster.RemoveAll();
+// removes all messages with given T component
+MessageBroadcaster.RemoveAllMessagesWith<T>(ecb);
 ```
 
 ## Editor Features
 
 ### Stats Window 
-Stats window can be accessed by *Tools/Message Broadcaster Stats*.<br/>
-It shows count of active messages by type and provide few API calls to remove messages via editor.<br/>
+Stats window located here *DOTS/ECSMessages/Stats*.<br/>
+It shows count of active messages in chosen world and provide API to remove all messages via editor.<br/>
 
 ![Stats Window](documentation/images/editor_stats_window.png)
 
-### Structure of message entity
-
-Lets discover few enteties from examples.<br/>
-
-#### IComponentData as message content example
-
-![Component Inspector](documentation/images/editor_message_entity_component.png)
-
-*MessageContextCommandTag* - internal stuff to mark entity as "message-command".<br/>
-This one is OneFrame type, so it would be deleted on next frame.<br/>
-*StartMatchCommand* is common ECS component attached to command as content.<br/>
-
-#### DynamicBuffer as message content example
-
-![Buffer Inspector](documentation/images/editor_message_entity_buffer.png)
-
-*MessageContextEventTag* - internal stuff to mark entity as "message-event".<br/>
-This one is TimeRange type, so we can track how much time left to deletion.<br/>
-*DebuffData* is just a *DynamicBuffer* that attached to this event as content.<br/>
-
-### Examples Editor Window(only for source code)
+### Examples Editor Window
 
 You can also explore examples *Tools/Messages Examples* if you download package source code.<br/>
 
 ![Source Code Examples](documentation/images/editor_source_code_examples_window.png)
-
-## Next Versions Roadmap
-
-- Remove API with more filters
-- More examples
-- Additional features for Editor Tools
-- Performance optimization
-- Performance benchmark
 
 ## Contacts
 
