@@ -1,12 +1,9 @@
-using Unity.Entities;
-
 namespace CortexDeveloper.Messages.Service
 {
     public struct MessageBuilder
     {
         internal MessageLifetime Lifetime;
         internal float Seconds;
-        internal Entity MessageEntity;
 
         public MessageBuilder AliveForOneFrame()
         {
@@ -26,13 +23,6 @@ namespace CortexDeveloper.Messages.Service
         public MessageBuilder AliveForUnlimitedTime()
         {
             Lifetime = MessageLifetime.Unlimited;
-
-            return this;
-        }
-
-        public MessageBuilder AttachedTo(Entity entity)
-        {
-            MessageEntity = entity;
 
             return this;
         }

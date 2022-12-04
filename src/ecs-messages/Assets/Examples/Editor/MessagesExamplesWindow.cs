@@ -45,7 +45,7 @@ namespace CortexDeveloper.Examples.Editor
             
             DrawWorldPopup();
             
-            _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"One Frame", "Time Range", "Unlimited Time", "Attached"});
+            _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"One Frame", "Time Range", "Unlimited Time"});
             switch (_selectedTab)
             {
                 case 0:
@@ -56,9 +56,6 @@ namespace CortexDeveloper.Examples.Editor
                     break;
                 case 2:
                     DrawUnlimitedLifetimeExamples();
-                    break;
-                case 3:
-                    DrawAttachedToEntityExamples();
                     break;
             }
         }
@@ -148,43 +145,6 @@ namespace CortexDeveloper.Examples.Editor
                     .PrepareMessage()
                     .AliveForUnlimitedTime()
                     .Post(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer(), new QuestCompletedEvent { Value = _completedQuest });
-            }
-        }
-
-        private void DrawAttachedToEntityExamples()
-        {
-            // Case 1
-            if (GUILayout.Button("Post Attached Message"))
-            {
-                EndSimulationEntityCommandBufferSystem ecbSystem = SelectedWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-                EntityManager entityManager = ecbSystem.EntityManager;
-
-                Entity entity = entityManager.CreateEntity();
-                entityManager.SetName(entity, "MessageHolder");
-                entityManager.AddComponent<PauseGameCommand>(entity);
-                
-                MessageBroadcaster
-                    .PrepareMessage()
-                    .AliveForOneFrame()
-                    .AttachedTo(entity)
-                    .Post(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer(), new QuestCompletedEvent { Value = Quests.KillDiablo });
-            }
-
-            // Case 2
-            if (GUILayout.Button("Post TimeRange Attached Message"))
-            {
-                EndSimulationEntityCommandBufferSystem ecbSystem = SelectedWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-                EntityManager entityManager = ecbSystem.EntityManager;
-
-                Entity entity = entityManager.CreateEntity();
-                entityManager.SetName(entity, "MessageHolder");
-                entityManager.AddComponent<PauseGameCommand>(entity);
-                
-                MessageBroadcaster
-                    .PrepareMessage()
-                    .AliveForSeconds(10f)
-                    .AttachedTo(entity)
-                    .Post(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer(), new QuestCompletedEvent { Value = Quests.KillDiablo });
             }
         }
     }

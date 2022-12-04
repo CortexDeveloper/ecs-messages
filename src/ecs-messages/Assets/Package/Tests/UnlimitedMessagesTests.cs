@@ -84,47 +84,5 @@ namespace CortexDeveloper.Tests
 
             yield return null;
         }
-
-        [UnityTest]
-        public IEnumerator Post_AliveForUnlimitedTime_AsAttached_WaitOneFrame_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
-        {
-            // Arrange
-            EntityManager entityManager = TestUtils.GetTestWorld()
-                .GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>()
-                .EntityManager;
-
-            Entity entity = entityManager.CreateEntity();
-
-            // Act
-            MessageBroadcaster
-                .PrepareMessage()
-                .AttachedTo(entity)
-                .AliveForUnlimitedTime()
-                .Post(TestUtils.GetEcbSystem().CreateCommandBuffer(), new TestContentData { Value = 123 });
-            
-            yield return null;
-
-            // Assert
-            EntityQuery query = TestUtils.GetQuery<MessageTag>();
-            EntityQuery attachedQuery = TestUtils.GetQuery<TestContentData>();
-            TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(attachedQuery);
-            bool wasPosted = query.CalculateEntityCount() == 1 &&
-                             attachedQuery.CalculateEntityCount() == 1 &&
-                             TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                             TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
-                             TestUtils.FirstEntityHasComponent<AttachedMessageContent>(query) &&
-                             component.Value == 123;
-
-            MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(TestUtils.GetEcbSystem().CreateCommandBuffer());
-            
-            yield return null;
-            yield return null;
-
-            bool wasRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
-
-            entityManager.DestroyEntity(entity);
-            
-            Assert.IsTrue(wasPosted && wasRemoved);
-        }
     }
 }

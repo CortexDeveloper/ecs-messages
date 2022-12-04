@@ -39,8 +39,8 @@ namespace CortexDeveloper.Messages.Service
         public static MessageBuilder PrepareMessage() => 
             new();
 
-        public static void RemoveMessage(EntityCommandBuffer ecb, EntityManager entityManager, Entity entity) =>
-            MessageUtils.Destroy(entity, ecb, entityManager);
+        public static void RemoveMessage(EntityCommandBuffer ecb, Entity entity) =>
+            MessageUtils.Destroy(entity, ecb);
         
         public static void RemoveMessageImmediate(EntityManager entityManager, Entity entity) =>
             MessageUtils.DestroyImmediate(entity, entityManager);

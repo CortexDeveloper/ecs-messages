@@ -87,7 +87,6 @@ namespace CortexDeveloper.Messages.Editor
                 return;
                 
             EditorGUILayout.LabelField($"Messages: {MessagesStats.StatsMap[worldName].ActiveMessagesCount}");
-            EditorGUILayout.LabelField($"Attached Messages: {MessagesStats.StatsMap[worldName].ActiveAttachedMessagesCount}");
             EditorGUILayout.Space(10f);
 
             EditorGUILayout.LabelField($"OneFrame: {MessagesStats.StatsMap[worldName].ActiveOneFrameMessagesCount}");
