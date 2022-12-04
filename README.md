@@ -11,18 +11,21 @@ Simple way of communication between MonoBehaviours and ECS world.<br/>
 
 - [Overview](#overview)
 - [Installation](#installation)
+- [Initialization](#initialization)
 - [Use Cases](#use-cases)
   - [UI and ECS](#ui-and-ecs)
   - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
 - [Semantic of messages](#semantic-of-messages)
 - [Features](#features)
   - [Lifetime Types](#lifetime-types)
+  - [Multiple Worlds](#multiple-worlds)
 - [Code Examples](#code-examples)
   - [Post API](#post-api)
   - [Immediate Post API](#immediate-post-api)
   - [Remove API](#remove-api)
 - [Editor Features](#editor-features)
   - [Stats Window](#stats-window)
+  - [Message Entity](#message-entity)
   - [Examples Editor Window](#examples-editor-window)
 - [Contacts](#contacts)
 
@@ -35,6 +38,7 @@ Key features:
 - Simple API that ease to read
 - Handling messages lifetime(creation details, auto deleting according to configured rules, etc)
 - Supports *IComponentData* as message content
+- Multiple worlds support
 
 > Tested with Unity DOTS ECS v0.51.0-preview.32 and Unity 2021.3.6f1
 
@@ -48,6 +52,19 @@ Where "x.x.x" is version of package. Also pay attention that package code locate
 Or simply clone repository into your project.
 
 > Later versions will be added to OpenUPM too
+
+## Initialization
+
+Service must be initialized for each world separetely.
+For this purposes use API below in your entry point.
+
+```csharp
+World defaultWorld = World.DefaultGameObjectInjectionWorld;
+MessageBroadcaster.InitializeInWorld(
+    defaultWorld,
+    defaultWorld.GetOrCreateSystem<SimulationSystemGroup>(),
+    defaultWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>());
+```
 
 ## Use Cases
 
@@ -96,6 +113,11 @@ Auto deleting still managed by service.<br/>
 *Unlimited* - unmanaged by service type.<br/> 
 Special messages that might be useful for cases when you don't know exactly the lifetime.<bt/>
 In this case you should manually deal with it and delete message after usage.<br/>
+
+### Multiple Worlds
+
+Messages can be posted via EntityCommandBuffer or EntityManager. Both of them belong to some world. 
+So, if you want to post message in certain world just use ECB or EM from proper one.
 
 ## Code Examples
 
@@ -205,6 +227,13 @@ Stats window located here *DOTS/ECSMessages/Stats*.<br/>
 It shows count of active messages in chosen world and provide API to remove all messages via editor.<br/>
 
 ![Stats Window](documentation/images/editor_stats_window.png)
+
+### Message Entity
+
+There is an example of components on message entity.<br/>
+They might be useful for debug purposes. Each message have unique ID and stores creation time.
+
+![Source Code Examples](documentation/images/editor_message_components.png)
 
 ### Examples Editor Window
 
