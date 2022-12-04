@@ -30,16 +30,16 @@ namespace CortexDeveloper.Messages.Editor.TestWindow
         {
             _worldName = EditorGUILayout.TextField("World to run tests in: ", _worldName);
             
-            EditorGUILayout.LabelField($"Saved world: {EditorPrefs.GetString(TestsConstants.TESTS_WORLD_KEY, "Default World")}");
+            EditorGUILayout.LabelField($"Saved world: {EditorPrefs.GetString(TestConstants.TESTS_WORLD_KEY, "Default World")}");
 
             if (GUILayout.Button("Save chosen world for tests"))
             {
-                EditorPrefs.SetString(TestsConstants.TESTS_WORLD_KEY, _worldName);
+                EditorPrefs.SetString(TestConstants.TESTS_WORLD_KEY, _worldName);
             }
 
             if (GUILayout.Button($"Run all tests in {_worldName}"))
             {
-                EditorPrefs.SetString(TestsConstants.TESTS_WORLD_KEY, _worldName);
+                EditorPrefs.SetString(TestConstants.TESTS_WORLD_KEY, _worldName);
                 RunAll();
             }
         }
