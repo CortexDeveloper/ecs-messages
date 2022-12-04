@@ -26,7 +26,7 @@ namespace CortexDeveloper.Messages.Systems
                 MessageLifetimeTimeRange timeRange = entityManager.GetComponentData<MessageLifetimeTimeRange>(messageEntity);
                 
                 if (timeRange.LifetimeLeft <= 0)
-                    MessageUtils.DestroyImmediate(messageEntity, entityManager);
+                    entityManager.DestroyEntity(messageEntity);
             }
         }
     }

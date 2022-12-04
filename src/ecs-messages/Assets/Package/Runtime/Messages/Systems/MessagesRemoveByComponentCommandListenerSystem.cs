@@ -22,7 +22,7 @@ namespace CortexDeveloper.Messages.Systems
                 NativeArray<Entity> messageEntities = destroyQuery.ToEntityArray(Allocator.Temp);
 
                 foreach (Entity messageEntity in messageEntities)
-                    MessageUtils.DestroyImmediate(messageEntity, entityManager);
+                    entityManager.DestroyEntity(messageEntity);
 
                 messageEntities.Dispose();
             }

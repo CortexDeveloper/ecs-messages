@@ -38,12 +38,6 @@ namespace CortexDeveloper.Messages.Service
         public static MessageBuilder PrepareMessage(FixedString64Bytes messageEntityName = default) => 
             new() { Name = messageEntityName };
 
-        public static void RemoveMessage(EntityCommandBuffer ecb, Entity messageEntity) =>
-            ecb.DestroyEntity(messageEntity);
-        
-        public static void RemoveMessageImmediate(EntityManager entityManager, Entity messageEntity) =>
-            entityManager.DestroyEntity(messageEntity);
-
         public static void RemoveAllMessagesWith<T>(EntityCommandBuffer ecb) where T : struct, IComponentData =>
             PrepareMessage().AliveForOneFrame().Post(ecb, new RemoveMessagesByComponentCommand { ComponentType = new ComponentType(typeof(T)) });
     }

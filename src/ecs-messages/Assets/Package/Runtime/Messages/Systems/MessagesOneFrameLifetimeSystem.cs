@@ -15,7 +15,7 @@ namespace CortexDeveloper.Messages.Systems
             EntityManager entityManager = EntityManager;
 
             foreach (Entity messageEntity in messageEntities)
-                MessageUtils.DestroyImmediate(messageEntity, entityManager);
+                entityManager.DestroyEntity(messageEntity);
         }
     }
 }

@@ -76,7 +76,7 @@ namespace CortexDeveloper.Tests
                              TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                              component.Value == 123;
 
-            MessageBroadcaster.RemoveMessageImmediate(TestUtils.GetTestWorld().EntityManager, messageEntity);
+            TestUtils.GetTestWorld().EntityManager.DestroyEntity(messageEntity);
 
             bool wasRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
             
