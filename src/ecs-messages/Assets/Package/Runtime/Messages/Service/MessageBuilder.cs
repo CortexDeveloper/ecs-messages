@@ -4,12 +4,10 @@ namespace CortexDeveloper.Messages.Service
 {
     public struct MessageBuilder
     {
-        internal MessageContext Context; 
         internal MessageLifetime Lifetime;
         internal float Seconds;
         internal Entity MessageEntity;
-        internal EntityCommandBuffer Ecb;
-        
+
         public MessageBuilder AliveForOneFrame()
         {
             Lifetime = MessageLifetime.OneFrame;

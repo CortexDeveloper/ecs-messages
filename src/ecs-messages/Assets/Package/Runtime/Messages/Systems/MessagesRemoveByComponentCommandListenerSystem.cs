@@ -6,35 +6,33 @@ using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
+    [UpdateBefore(typeof(MessagesOneFrameLifetimeSystem))]
     [DisableAutoCreation]
-    public partial class MessagesRemoveByComponentCommandListenerSystem : MessagesBaseSystem
+    public partial class MessagesRemoveByComponentCommandListenerSystem : SystemBase
     {
-        protected override void OnCreate()
-        {
-            base.OnCreate();
-            
-            RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<RemoveMessagesByComponentCommand>()));
-        }
-
         protected override void OnUpdate()
         {
-            EntityCommandBuffer ecb = EcbSystem.CreateCommandBuffer();
             EntityManager entityManager = EntityManager;
             EntityQuery query = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<RemoveMessagesByComponentCommand>());
             NativeArray<RemoveMessagesByComponentCommand> commands = query.ToComponentDataArray<RemoveMessagesByComponentCommand>(Allocator.Temp);
 
             foreach (RemoveMessagesByComponentCommand command in commands)
             {
-                EntityQuery destroyQuery = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), command.ComponentType);
+                EntityQuery destroyQuery = GetMessagesQueryWith(command.ComponentType); 
                 NativeArray<Entity> messageEntities = destroyQuery.ToEntityArray(Allocator.Temp);
 
                 foreach (Entity messageEntity in messageEntities)
-                    MessageUtils.Destroy(messageEntity, ecb, entityManager);
+                    MessageUtils.DestroyImmediate(messageEntity, entityManager);
 
                 messageEntities.Dispose();
             }
             
             commands.Dispose();
         }
+
+        private EntityQuery GetMessagesQueryWith(ComponentType componentType) => 
+            componentType.TypeIndex == ComponentType.ReadOnly<MessageTag>().TypeIndex 
+                ? GetEntityQuery(ComponentType.ReadOnly<MessageTag>()) 
+                : GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), componentType);
     }
 }

@@ -3,6 +3,7 @@ using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Service;
 using CortexDeveloper.Tests.Components;
 using NUnit.Framework;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine.TestTools;
 
@@ -27,10 +28,14 @@ namespace CortexDeveloper.Tests
         }
         
         [UnityTest]
-        public IEnumerator PostEvent_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
+        public IEnumerator Post_AliveForUnlimitedTime_WaitOneFrame_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
         {
             // Act
-            MessageBroadcaster.PrepareEvent(TestUtils.GetEcbSystem().CreateCommandBuffer()).AliveForUnlimitedTime().Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster
+                .PrepareMessage()
+                .AliveForUnlimitedTime()
+                .Post(TestUtils.GetEcbSystem().CreateCommandBuffer(), new TestContentData { Value = 123 });
+            
             yield return null;
 
             // Assert
@@ -38,11 +43,10 @@ namespace CortexDeveloper.Tests
             TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                                    TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                                   TestUtils.FirstEntityHasComponent<MessageContextEventTag>(query) &&
                                    TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                                    component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonWithLifetime(TestUtils.GetEcbSystem().CreateCommandBuffer(), MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(TestUtils.GetEcbSystem().CreateCommandBuffer());
             
             yield return null;
             yield return null;
@@ -53,34 +57,36 @@ namespace CortexDeveloper.Tests
         }
         
         [UnityTest]
-        public IEnumerator PostCommand_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
+        public IEnumerator PostImmediate_AliveForUnlimitedTime_CheckForExisting_ManuallyRemoveImmediate_CheckForRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand(TestUtils.GetEcbSystem().CreateCommandBuffer()).AliveForUnlimitedTime().Post(new TestContentData { Value = 123 });
-            
-            yield return null;
+            MessageBroadcaster
+                .PrepareMessage()
+                .AliveForUnlimitedTime()
+                .PostImmediate(TestUtils.GetEcbSystem().EntityManager, new TestContentData { Value = 123 });
 
             // Assert
             EntityQuery query = TestUtils.GetQuery<TestContentData>();
+            NativeArray<Entity> queryEntities = query.ToEntityArray(Allocator.Temp);
+            Entity messageEntity = queryEntities[0];
+            queryEntities.Dispose();
             TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                              TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                             TestUtils.FirstEntityHasComponent<MessageContextCommandTag>(query) &&
                              TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                              component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonWithLifetime(TestUtils.GetEcbSystem().CreateCommandBuffer(), MessageLifetime.Unlimited);
-            
-            yield return null;
-            yield return null;
+            MessageBroadcaster.RemoveMessageImmediate(TestUtils.GetTestWorld().EntityManager, messageEntity);
 
             bool wasRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
             
             Assert.IsTrue(wasPosted && wasRemoved);
+
+            yield return null;
         }
-        
+
         [UnityTest]
-        public IEnumerator PostAttachedEvent_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
+        public IEnumerator Post_AliveForUnlimitedTime_AsAttached_WaitOneFrame_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
         {
             // Arrange
             EntityManager entityManager = TestUtils.GetTestWorld()
@@ -90,7 +96,12 @@ namespace CortexDeveloper.Tests
             Entity entity = entityManager.CreateEntity();
 
             // Act
-            MessageBroadcaster.PrepareEvent(TestUtils.GetEcbSystem().CreateCommandBuffer()).AttachedTo(entity).AliveForUnlimitedTime().Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster
+                .PrepareMessage()
+                .AttachedTo(entity)
+                .AliveForUnlimitedTime()
+                .Post(TestUtils.GetEcbSystem().CreateCommandBuffer(), new TestContentData { Value = 123 });
+            
             yield return null;
 
             // Assert
@@ -100,12 +111,11 @@ namespace CortexDeveloper.Tests
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                              attachedQuery.CalculateEntityCount() == 1 &&
                              TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                             TestUtils.FirstEntityHasComponent<MessageContextEventTag>(query) &&
                              TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                              TestUtils.FirstEntityHasComponent<AttachedMessageContent>(query) &&
                              component.Value == 123;
 
-            MessageBroadcaster.RemoveCommonWithLifetime(TestUtils.GetEcbSystem().CreateCommandBuffer(), MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(TestUtils.GetEcbSystem().CreateCommandBuffer());
             
             yield return null;
             yield return null;

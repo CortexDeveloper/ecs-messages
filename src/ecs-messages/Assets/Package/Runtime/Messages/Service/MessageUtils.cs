@@ -19,5 +19,20 @@ namespace CortexDeveloper.Messages.Service
                 ecb.DestroyEntity(messageEntity);
             }
         }
+
+        public static void DestroyImmediate(Entity messageEntity, EntityManager entityManager)
+        {
+            if (entityManager.HasComponent<MessageTag>(messageEntity))
+            {
+                if (entityManager.HasComponent<AttachedMessageContent>(messageEntity))
+                {
+                    AttachedMessageContent attachedMessageContent = entityManager.GetComponentData<AttachedMessageContent>(messageEntity);
+                
+                    entityManager.RemoveComponent(attachedMessageContent.TargetEntity, attachedMessageContent.ComponentType);
+                }
+                
+                entityManager.DestroyEntity(messageEntity);
+            }
+        }
     }
 }

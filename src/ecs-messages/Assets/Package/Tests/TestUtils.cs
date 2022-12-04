@@ -56,7 +56,7 @@ namespace CortexDeveloper.Tests
 
         public static World GetTestWorld()
         {
-            string worldName = EditorPrefs.GetString(TestsConstants.TESTS_WORLD_KEY, "Default World");
+            string worldName = EditorPrefs.GetString(TestConstants.TESTS_WORLD_KEY, "Default World");
 
             return World.All.GetWorldWithName(worldName);
         }
