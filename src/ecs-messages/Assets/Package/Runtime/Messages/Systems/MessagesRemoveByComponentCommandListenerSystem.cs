@@ -13,6 +13,9 @@ namespace CortexDeveloper.Messages.Systems
         protected override void OnUpdate()
         {
             EntityManager entityManager = EntityManager;
+            EntityCommandBuffer ecb = World
+                .GetExistingSystem<EndSimulationEntityCommandBufferSystem>()
+                .CreateCommandBuffer();
             EntityQuery query = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<RemoveMessagesByComponentCommand>());
             NativeArray<RemoveMessagesByComponentCommand> commands = query.ToComponentDataArray<RemoveMessagesByComponentCommand>(Allocator.Temp);
 
@@ -22,7 +25,7 @@ namespace CortexDeveloper.Messages.Systems
                 NativeArray<Entity> messageEntities = destroyQuery.ToEntityArray(Allocator.Temp);
 
                 foreach (Entity messageEntity in messageEntities)
-                    entityManager.DestroyEntity(messageEntity);
+                    ecb.DestroyEntity(messageEntity);
 
                 messageEntities.Dispose();
             }

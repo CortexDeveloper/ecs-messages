@@ -28,7 +28,7 @@ namespace CortexDeveloper.Tests
         }
         
         [UnityTest]
-        public IEnumerator Post_AliveForUnlimitedTime_WaitOneFrame_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
+        public IEnumerator Post_AliveForUnlimitedTime_WaitOneFrame_CheckForExisting_ManuallyRemoveAllUnlimited_WaitTwoFrames_CheckForRemove()
         {
             // Act
             MessageBroadcaster

@@ -10,12 +10,15 @@ namespace CortexDeveloper.Messages.Systems
     {
         protected override void OnUpdate()
         {
-            EntityQuery query = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<MessageLifetimeOneFrameTag>());
-            NativeArray<Entity> messageEntities = query.ToEntityArray(Allocator.Temp);
-            EntityManager entityManager = EntityManager;
-
-            foreach (Entity messageEntity in messageEntities)
-                entityManager.DestroyEntity(messageEntity);
+            EntityCommandBuffer ecb = World
+                .GetExistingSystem<EndSimulationEntityCommandBufferSystem>()
+                .CreateCommandBuffer();
+            
+            Entities
+                .ForEach((Entity entity, in MessageTag messageTag, in MessageLifetimeOneFrameTag oneFrameTag) =>
+                {
+                    ecb.DestroyEntity(entity);
+                }).Run();
         }
     }
 }

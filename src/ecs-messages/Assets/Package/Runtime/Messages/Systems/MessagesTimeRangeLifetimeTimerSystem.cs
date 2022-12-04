@@ -6,25 +6,17 @@ namespace CortexDeveloper.Messages.Systems
     [DisableAutoCreation]
     public partial class MessagesTimeRangeLifetimeTimerSystem : SystemBase
     {
-        protected override void OnCreate()
-        {
-            base.OnCreate();
-
-            RequireForUpdate(GetEntityQuery(typeof(MessageLifetimeTimeRange)));
-        }
-
         protected override void OnUpdate()
         {
             float deltaTime = Time.DeltaTime;
 
             Entities
-                .ForEach((Entity entity, ref MessageLifetimeTimeRange timeRange) =>
+                .ForEach((Entity entity, ref MessageLifetimeTimeRange timeRange, in MessageTag messageTag) =>
                 {
                     MessageLifetimeTimeRange messageTimeRange = timeRange;
                     messageTimeRange.LifetimeLeft -= deltaTime;
                     timeRange = messageTimeRange;
-                })
-                .Run();
+                }).Run();
         }
     }
 }

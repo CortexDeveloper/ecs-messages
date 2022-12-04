@@ -8,26 +8,18 @@ namespace CortexDeveloper.Messages.Systems
     [DisableAutoCreation]
     public partial class MessagesTimeRangeLifetimeRemoveSystem : SystemBase
     {
-        protected override void OnCreate()
-        {
-            base.OnCreate();
-
-            RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), typeof(MessageLifetimeTimeRange)));
-        }
-
         protected override void OnUpdate()
         {
-            EntityQuery query = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<MessageLifetimeTimeRange>());
-            NativeArray<Entity> messageEntities = query.ToEntityArray(Allocator.Temp);
-            EntityManager entityManager = EntityManager;
+            EntityCommandBuffer ecb = World
+                .GetExistingSystem<EndSimulationEntityCommandBufferSystem>()
+                .CreateCommandBuffer();
 
-            foreach (Entity messageEntity in messageEntities)
-            {
-                MessageLifetimeTimeRange timeRange = entityManager.GetComponentData<MessageLifetimeTimeRange>(messageEntity);
-                
-                if (timeRange.LifetimeLeft <= 0)
-                    entityManager.DestroyEntity(messageEntity);
-            }
+            Entities
+                .ForEach((Entity entity, in MessageTag messageTag, in MessageLifetimeTimeRange timeRange) =>
+                {
+                    if (timeRange.LifetimeLeft <= 0)
+                        ecb.DestroyEntity(entity);
+                }).Run();
         }
     }
 }
