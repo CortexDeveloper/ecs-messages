@@ -111,6 +111,7 @@ That helps to quickly catch the intention of this message.
 
 ```csharp
 var ecb = yourEntityCommandBufferSystem.CreateCommandBuffer();
+// It will be automatically deleted after one frame
 MessageBroadcaster
     .PrepareMessage()
     .AliveForOneFrame()
@@ -169,7 +170,7 @@ MessageBroadcaster
 
 ### Immediate Post API
 
-For some cases it's neccessary to post message not via ECB system but right now via EntityManager.
+For some cases it's necessary to post message not via ECB system but right now via EntityManager.<br/>
 Here is alternative way how to post message.
 
 ##### Case: Post pause message immediately
