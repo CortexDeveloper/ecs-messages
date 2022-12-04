@@ -9,11 +9,6 @@ namespace CortexDeveloper.Examples.Editor
 {
     public class MessagesExamplesWindow : EditorWindow
     {
-        // Match params
-        private Difficulty _difficulty;
-        private float _matchLenght;
-        private int _enemiesCount;
-
         // Available quest params
         private Quests _availableQuest;
         private float _questAvailabilityTime;
