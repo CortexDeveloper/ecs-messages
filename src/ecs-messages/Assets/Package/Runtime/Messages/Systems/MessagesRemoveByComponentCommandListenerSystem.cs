@@ -1,6 +1,5 @@
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
-using CortexDeveloper.Messages.Service;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -12,7 +11,6 @@ namespace CortexDeveloper.Messages.Systems
     {
         protected override void OnUpdate()
         {
-            EntityManager entityManager = EntityManager;
             EntityCommandBuffer ecb = World
                 .GetExistingSystem<EndSimulationEntityCommandBufferSystem>()
                 .CreateCommandBuffer();
