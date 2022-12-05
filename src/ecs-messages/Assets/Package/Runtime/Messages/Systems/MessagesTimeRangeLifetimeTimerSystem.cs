@@ -13,10 +13,10 @@ namespace CortexDeveloper.Messages.Systems
             Entities
                 .ForEach((Entity entity, ref MessageLifetimeTimeRange timeRange, in MessageTag messageTag) =>
                 {
-                    MessageLifetimeTimeRange messageTimeRange = timeRange;
-                    messageTimeRange.LifetimeLeft -= deltaTime;
-                    timeRange = messageTimeRange;
-                }).Run();
+                    timeRange.LifetimeLeft -= deltaTime;
+                }).ScheduleParallel();
+            
+            Dependency.Complete();
         }
     }
 }

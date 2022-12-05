@@ -8,13 +8,15 @@ namespace CortexDeveloper.Messages.Systems
     {
         protected override void OnUpdate()
         {
-            EntityCommandBuffer ecb = MessagesEcb;
+            EntityCommandBuffer.ParallelWriter ecb = MessagesEcb.AsParallelWriter();
             
             Entities
-                .ForEach((Entity entity, in MessageTag messageTag, in MessageLifetimeOneFrameTag oneFrameTag) =>
+                .ForEach((Entity entity, int entityInQueryIndex, in MessageTag messageTag, in MessageLifetimeOneFrameTag oneFrameTag) =>
                 {
-                    ecb.DestroyEntity(entity);
-                }).Run();
+                    ecb.DestroyEntity(entityInQueryIndex, entity);
+                }).ScheduleParallel();
+            
+            Dependency.Complete();
         }
     }
 }
