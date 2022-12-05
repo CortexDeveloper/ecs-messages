@@ -10,31 +10,22 @@ namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBroadcaster
     {
-        internal static readonly SharedStatic<Random> Random = SharedStatic<Random>.GetOrCreate<RandomKey, Random>();
+        internal static readonly SharedStatic<Random> RandomGen = SharedStatic<Random>.GetOrCreate<RandomKey, Random>();
 
         public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup, EntityCommandBufferSystem ecbSystem)
         {
-            if (Random.Data.state == 0)
-                Random.Data.InitState(1);
-            
-            ComponentSystemGroup systemGroup = parentSystemGroup;
+            if (RandomGen.Data.state == 0)
+                RandomGen.Data.InitState(1);
+
             MessagesSystemGroup messagesSystemGroup = world.GetOrCreateSystem<MessagesSystemGroup>();
-            
-            systemGroup.AddSystemToUpdateList(messagesSystemGroup);
+            parentSystemGroup.AddSystemToUpdateList(messagesSystemGroup);
 
-            MessagesDateTimeSystem dateTimeSystem = world.GetOrCreateSystem<MessagesDateTimeSystem>();
-            MessagesOneFrameLifetimeSystem oneFrameLifetimeSystem = world.GetOrCreateSystem<MessagesOneFrameLifetimeSystem>();
-            MessagesRemoveByComponentCommandListenerSystem removeByComponentCommandListenerSystem = world.GetOrCreateSystem<MessagesRemoveByComponentCommandListenerSystem>();
-            MessagesTimeRangeLifetimeRemoveSystem timeRangeLifetimeRemoveSystem = world.GetOrCreateSystem<MessagesTimeRangeLifetimeRemoveSystem>();
-            MessagesTimeRangeLifetimeTimerSystem timeRangeLifetimeTimerSystem = world.GetOrCreateSystem<MessagesTimeRangeLifetimeTimerSystem>();
-            MessagesStatsSystem statsSystem = world.GetOrCreateSystem<MessagesStatsSystem>();
-
-            messagesSystemGroup.AddSystemToUpdateList(statsSystem);
-            messagesSystemGroup.AddSystemToUpdateList(dateTimeSystem);
-            messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem.Construct(ecbSystem));
-            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem.Construct(ecbSystem));
-            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeTimerSystem);
-            messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem.Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesStatsSystem>());
+            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesDateTimeSystem>());
+            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesOneFrameLifetimeSystem>().Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesTimeRangeLifetimeRemoveSystem>().Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesTimeRangeLifetimeTimerSystem>());
+            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesRemoveByComponentCommandListenerSystem>().Construct(ecbSystem));
 
             MessagesStats.StatsMap.Add(world.Name, new Stats());
         }
@@ -45,9 +36,7 @@ namespace CortexDeveloper.Messages.Service
         public static MessageBuilder PrepareMessage(FixedString64Bytes messageEntityName = default) => 
             new() { Name = messageEntityName };
 
-        public static void RemoveAllMessagesWith<T>(EntityManager entityManager) where T : struct, IComponentData =>
-            PrepareMessage().AliveForOneFrame().PostImmediate(
-                entityManager,
-                new RemoveMessagesByComponentCommand { ComponentType = new ComponentType(typeof(T)) });
+        public static void RemoveAllMessagesWith<T>(EntityManager entityManager) where T : struct, IComponentData => 
+            PrepareMessage().AliveForOneFrame().PostImmediate(entityManager, new RemoveMessagesByComponentCommand { ComponentType = new ComponentType(typeof(T)) });
     }
 }

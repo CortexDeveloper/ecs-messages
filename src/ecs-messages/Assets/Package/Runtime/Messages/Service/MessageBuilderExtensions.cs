@@ -15,7 +15,7 @@ namespace CortexDeveloper.Messages.Service
             ecb.SetName(messageEntity, builder.Name);
             ecb.AddComponent(messageEntity, new MessageEditorData
             {
-                Id = MessageBroadcaster.Random.Data.NextInt(0, int.MaxValue),
+                Id = MessageBroadcaster.RandomGen.Data.NextInt(0, int.MaxValue),
                 CreationTime = MessagesDateTimeSystem.TimeAsString.Data
             });
 #endif
@@ -40,7 +40,7 @@ namespace CortexDeveloper.Messages.Service
             entityManager.SetName(messageEntity, builder.Name);
             entityManager.AddComponentData(messageEntity, new MessageEditorData
             {
-                Id = MessageBroadcaster.Random.Data.NextInt(0, int.MaxValue),
+                Id = MessageBroadcaster.RandomGen.Data.NextInt(0, int.MaxValue),
                 CreationTime = MessagesDateTimeSystem.TimeAsString.Data
             });
 #endif
