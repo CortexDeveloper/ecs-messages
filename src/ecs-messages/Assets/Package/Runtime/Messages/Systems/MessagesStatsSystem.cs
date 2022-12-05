@@ -14,7 +14,6 @@ namespace CortexDeveloper.Messages.Systems
                 return;
             
             EntityQuery allMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageTag)));
-            EntityQuery allAttachedMessagesQuery = GetEntityQuery(new ComponentType(typeof(AttachedMessageContent)));
             EntityQuery allOneFrameMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageLifetimeOneFrameTag)));
             EntityQuery allTimeRangeMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageLifetimeTimeRange)));
             EntityQuery allUnlimitedLifetimeMessagesQuery = GetEntityQuery(new ComponentType(typeof(MessageLifetimeUnlimitedTag)));
@@ -22,7 +21,6 @@ namespace CortexDeveloper.Messages.Systems
             string worldName = World.Name;
             
             MessagesStats.StatsMap[worldName].ActiveMessagesCount = allMessagesQuery.CalculateEntityCount();
-            MessagesStats.StatsMap[worldName].ActiveAttachedMessagesCount = allAttachedMessagesQuery.CalculateEntityCount();
             MessagesStats.StatsMap[worldName].ActiveOneFrameMessagesCount = allOneFrameMessagesQuery.CalculateEntityCount();
             MessagesStats.StatsMap[worldName].ActiveTimeRangeMessagesCount = allTimeRangeMessagesQuery.CalculateEntityCount();
             MessagesStats.StatsMap[worldName].ActiveUnlimitedLifetimeMessagesCount = allUnlimitedLifetimeMessagesQuery.CalculateEntityCount();

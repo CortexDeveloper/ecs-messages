@@ -1,21 +1,20 @@
 using CortexDeveloper.Messages.Components.Meta;
-using CortexDeveloper.Messages.Service;
-using Unity.Collections;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
     [DisableAutoCreation]
-    public partial class MessagesOneFrameLifetimeSystem : SystemBase
+    public partial class MessagesOneFrameLifetimeSystem : MessagesBaseSystem
     {
         protected override void OnUpdate()
         {
-            EntityQuery query = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<MessageLifetimeOneFrameTag>());
-            NativeArray<Entity> messageEntities = query.ToEntityArray(Allocator.Temp);
-            EntityManager entityManager = EntityManager;
-
-            foreach (Entity messageEntity in messageEntities)
-                MessageUtils.DestroyImmediate(messageEntity, entityManager);
+            EntityCommandBuffer ecb = MessagesEcb;
+            
+            Entities
+                .ForEach((Entity entity, in MessageTag messageTag, in MessageLifetimeOneFrameTag oneFrameTag) =>
+                {
+                    ecb.DestroyEntity(entity);
+                }).Run();
         }
     }
 }

@@ -1,6 +1,7 @@
 using CortexDeveloper.Messages.Components.RemoveCommands;
 using CortexDeveloper.Messages.SystemGroups;
 using CortexDeveloper.Messages.Systems;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Service
@@ -23,29 +24,23 @@ namespace CortexDeveloper.Messages.Service
 
             messagesSystemGroup.AddSystemToUpdateList(statsSystem);
             messagesSystemGroup.AddSystemToUpdateList(dateTimeSystem);
-            messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem);
-            messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem);
-            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem);
+            messagesSystemGroup.AddSystemToUpdateList(oneFrameLifetimeSystem.Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeRemoveSystem.Construct(ecbSystem));
             messagesSystemGroup.AddSystemToUpdateList(timeRangeLifetimeTimerSystem);
+            messagesSystemGroup.AddSystemToUpdateList(removeByComponentCommandListenerSystem.Construct(ecbSystem));
 
             MessagesStats.StatsMap.Add(world.Name, new Stats());
         }
 
-        public static void Dispose()
-        {
+        public static void Dispose() => 
             MessagesStats.StatsMap.Clear();
-        }
 
-        public static MessageBuilder PrepareMessage() => 
-            new();
+        public static MessageBuilder PrepareMessage(FixedString64Bytes messageEntityName = default) => 
+            new() { Name = messageEntityName };
 
-        public static void RemoveMessage(EntityCommandBuffer ecb, EntityManager entityManager, Entity entity) =>
-            MessageUtils.Destroy(entity, ecb, entityManager);
-        
-        public static void RemoveMessageImmediate(EntityManager entityManager, Entity entity) =>
-            MessageUtils.DestroyImmediate(entity, entityManager);
-
-        public static void RemoveAllMessagesWith<T>(EntityCommandBuffer ecb) where T : struct, IComponentData =>
-            PrepareMessage().AliveForOneFrame().Post(ecb, new RemoveMessagesByComponentCommand { ComponentType = new ComponentType(typeof(T)) });
+        public static void RemoveAllMessagesWith<T>(EntityManager entityManager) where T : struct, IComponentData =>
+            PrepareMessage().AliveForOneFrame().PostImmediate(
+                entityManager,
+                new RemoveMessagesByComponentCommand { ComponentType = new ComponentType(typeof(T)) });
     }
 }

@@ -1,6 +1,5 @@
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Components.RemoveCommands;
-using CortexDeveloper.Messages.Service;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -8,11 +7,11 @@ namespace CortexDeveloper.Messages.Systems
 {
     [UpdateBefore(typeof(MessagesOneFrameLifetimeSystem))]
     [DisableAutoCreation]
-    public partial class MessagesRemoveByComponentCommandListenerSystem : SystemBase
+    public partial class MessagesRemoveByComponentCommandListenerSystem : MessagesBaseSystem
     {
         protected override void OnUpdate()
         {
-            EntityManager entityManager = EntityManager;
+            EntityCommandBuffer ecb = MessagesEcb;
             EntityQuery query = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<RemoveMessagesByComponentCommand>());
             NativeArray<RemoveMessagesByComponentCommand> commands = query.ToComponentDataArray<RemoveMessagesByComponentCommand>(Allocator.Temp);
 
@@ -22,7 +21,7 @@ namespace CortexDeveloper.Messages.Systems
                 NativeArray<Entity> messageEntities = destroyQuery.ToEntityArray(Allocator.Temp);
 
                 foreach (Entity messageEntity in messageEntities)
-                    MessageUtils.DestroyImmediate(messageEntity, entityManager);
+                    ecb.DestroyEntity(messageEntity);
 
                 messageEntities.Dispose();
             }
