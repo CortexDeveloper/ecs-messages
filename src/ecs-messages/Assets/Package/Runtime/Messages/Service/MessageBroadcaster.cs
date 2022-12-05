@@ -1,15 +1,22 @@
 using CortexDeveloper.Messages.Components.RemoveCommands;
 using CortexDeveloper.Messages.SystemGroups;
 using CortexDeveloper.Messages.Systems;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 
 namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBroadcaster
     {
+        internal static readonly SharedStatic<Random> Random = SharedStatic<Random>.GetOrCreate<RandomKey, Random>();
+
         public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup, EntityCommandBufferSystem ecbSystem)
         {
+            if (Random.Data.state == 0)
+                Random.Data.InitState(1);
+            
             ComponentSystemGroup systemGroup = parentSystemGroup;
             MessagesSystemGroup messagesSystemGroup = world.GetOrCreateSystem<MessagesSystemGroup>();
             

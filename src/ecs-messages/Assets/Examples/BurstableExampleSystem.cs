@@ -17,7 +17,7 @@
 //         protected override void OnUpdate()
 //         {
 //             EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
-//             
+//
 //             Entities
 //                 .ForEach((Entity entity, in PauseGameCommand command) =>
 //                 {
