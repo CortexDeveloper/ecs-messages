@@ -6,7 +6,7 @@ namespace CortexDeveloper.Messages.Service
     {
         internal FixedString64Bytes Name;
         internal MessageLifetime Lifetime;
-        internal float Seconds;
+        internal float LifetimeSeconds;
 
         public MessageBuilder AliveForOneFrame()
         {
@@ -18,7 +18,7 @@ namespace CortexDeveloper.Messages.Service
         public MessageBuilder AliveForSeconds(float seconds)
         {
             Lifetime = MessageLifetime.TimeRange;
-            Seconds = seconds;
+            LifetimeSeconds = seconds;
 
             return this;
         }

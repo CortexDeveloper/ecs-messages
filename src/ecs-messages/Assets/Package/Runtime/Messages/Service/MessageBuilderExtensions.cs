@@ -29,7 +29,7 @@ namespace CortexDeveloper.Messages.Service
             if (builder.Lifetime == MessageLifetime.OneFrame)
                 ecb.AddComponent(messageEntity, new MessageLifetimeOneFrameTag());
             else if (builder.Lifetime == MessageLifetime.TimeRange)
-                ecb.AddComponent(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = builder.Seconds });
+                ecb.AddComponent(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = builder.LifetimeSeconds });
             else if (builder.Lifetime == MessageLifetime.Unlimited)
                 ecb.AddComponent(messageEntity, new MessageLifetimeUnlimitedTag());
             
@@ -54,7 +54,7 @@ namespace CortexDeveloper.Messages.Service
             if (builder.Lifetime == MessageLifetime.OneFrame)
                 entityManager.AddComponentData(messageEntity, new MessageLifetimeOneFrameTag());
             else if (builder.Lifetime == MessageLifetime.TimeRange)
-                entityManager.AddComponentData(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = builder.Seconds });
+                entityManager.AddComponentData(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = builder.LifetimeSeconds });
             else if (builder.Lifetime == MessageLifetime.Unlimited)
                 entityManager.AddComponentData(messageEntity, new MessageLifetimeUnlimitedTag());
 
