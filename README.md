@@ -26,6 +26,7 @@ Simple way of communication between MonoBehaviours and ECS world.<br/>
 - [Editor Features](#editor-features)
   - [Stats Window](#stats-window)
   - [Message Entity](#message-entity)
+  - [Message Entity Editor Name](#message-entity-editor-name)
   - [Examples Editor Window](#examples-editor-window)
 - [Contacts](#contacts)
 
@@ -201,21 +202,24 @@ Here is alternative way how to post message.
 // The only difference here is last method to post message
 // It needs EntityManager instead of ECB
 var entityManager = yourWorld.EntityManager;
-MessageBroadcaster
+Entity messageEntity = MessageBroadcaster
     .PrepareMessage()
     .AliveForOneFrame()
     .PostImmediate(entityManager, new PauseGameCommand());
 ```
 
+Pay attention that *PostImmediate* method returns message entity.<br/>
+Thats give you an oportunity to do whatever you want with message and control its lifetime manually.
+
 ### Remove API
 
+Messages removing is supoused to be automated by service.<br/>
+In case you realy need to manualy delete message you can use EntityManager or EntityCommandBuffer API.<br/>
+As far as message is just an entity with bunch of components, there is no special way of removing them from World.<br/>
+
+If you need to delete messages of certain type use broadcaster API below.
+
 ```csharp
-// removes message
-MessageBroadcaster.RemoveMessage(ecb, entityManager, messageEntity);
-
-// removes message via EntityManager right now
-MessageBroadcaster.RemoveMessageImmediate(entityManager, messageEntity);
-
 // removes all messages with given T component
 MessageBroadcaster.RemoveAllMessagesWith<T>(ecb);
 ```
@@ -234,6 +238,18 @@ There is an example of components on message entity.<br/>
 They might be useful for debug purposes. Each message have unique ID and stores creation time.
 
 ![Source Code Examples](documentation/images/editor_message_components.png)
+
+### Message Entity Editor Name
+
+There is an optional feature that allows you to name message.<br/>
+Pass *FixedString64Bytes* instance to method *PrepareMessage* to give a name to message.
+
+```csharp
+MessageBroadcaster
+    .PrepareMessage(new FixedString64Bytes("PauseGameCommand"))
+    .AliveForOneFrame()
+    .Post(ecb, new PauseGameCommand());
+```
 
 ### Examples Editor Window
 

@@ -2,15 +2,11 @@ using CortexDeveloper.Messages.Components;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Systems;
 using Unity.Entities;
-using Unity.Mathematics;
 
 namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBuilderExtensions
     {
-        private static uint _seed = 1;
-        private static uint Seed => _seed < uint.MaxValue ? _seed++ : _seed = 1;
-        
         public static void Post<T>(this MessageBuilder builder, EntityCommandBuffer ecb, T component) where T : struct, IComponentData, IMessageComponent
         {
             Entity messageEntity = ecb.CreateEntity();
@@ -19,7 +15,7 @@ namespace CortexDeveloper.Messages.Service
             ecb.SetName(messageEntity, builder.Name);
             ecb.AddComponent(messageEntity, new MessageEditorData
             {
-                Id = new Random(Seed).NextInt(0, int.MaxValue),
+                Id = MessageBroadcaster.RandomGen.Data.NextInt(0, int.MaxValue),
                 CreationTime = MessagesDateTimeSystem.TimeAsString.Data
             });
 #endif
@@ -36,7 +32,7 @@ namespace CortexDeveloper.Messages.Service
             ecb.AddComponent(messageEntity, component);
         }
         
-        public static void PostImmediate<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : struct, IComponentData, IMessageComponent
+        public static Entity PostImmediate<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : struct, IComponentData, IMessageComponent
         {
             Entity messageEntity = entityManager.CreateEntity();
 
@@ -44,7 +40,7 @@ namespace CortexDeveloper.Messages.Service
             entityManager.SetName(messageEntity, builder.Name);
             entityManager.AddComponentData(messageEntity, new MessageEditorData
             {
-                Id = new Random(Seed).NextInt(0, int.MaxValue),
+                Id = MessageBroadcaster.RandomGen.Data.NextInt(0, int.MaxValue),
                 CreationTime = MessagesDateTimeSystem.TimeAsString.Data
             });
 #endif
@@ -59,6 +55,8 @@ namespace CortexDeveloper.Messages.Service
                 entityManager.AddComponentData(messageEntity, new MessageLifetimeUnlimitedTag());
 
             entityManager.AddComponentData(messageEntity, component);
+
+            return messageEntity;
         }
     }
 }

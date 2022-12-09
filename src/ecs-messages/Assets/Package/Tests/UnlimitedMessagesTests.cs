@@ -59,7 +59,7 @@ namespace CortexDeveloper.Tests
         public IEnumerator PostImmediate_AliveForUnlimitedTime_CheckForExisting_ManuallyRemoveImmediate_CheckForRemove()
         {
             // Act
-            MessageBroadcaster
+            Entity messageEntity = MessageBroadcaster
                 .PrepareMessage()
                 .AliveForUnlimitedTime()
                 .PostImmediate(TestUtils.GetEcbSystem().EntityManager, new TestContentData { Value = 123 });
@@ -67,7 +67,6 @@ namespace CortexDeveloper.Tests
             // Assert
             EntityQuery query = TestUtils.GetQuery<TestContentData>();
             NativeArray<Entity> queryEntities = query.ToEntityArray(Allocator.Temp);
-            Entity messageEntity = queryEntities[0];
             queryEntities.Dispose();
             TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
