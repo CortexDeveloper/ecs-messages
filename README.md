@@ -201,11 +201,14 @@ Here is alternative way how to post message.
 // The only difference here is last method to post message
 // It needs EntityManager instead of ECB
 var entityManager = yourWorld.EntityManager;
-MessageBroadcaster
+Entity messageEntity = MessageBroadcaster
     .PrepareMessage()
     .AliveForOneFrame()
     .PostImmediate(entityManager, new PauseGameCommand());
 ```
+
+Pay attention that *PostImmediate* method returns message entity.<br/>
+Thats give you an oportunity to do whatever you want with message and control its lifetime manually.
 
 ### Remove API
 

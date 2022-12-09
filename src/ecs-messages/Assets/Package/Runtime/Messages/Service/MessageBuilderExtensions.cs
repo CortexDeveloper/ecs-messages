@@ -32,7 +32,7 @@ namespace CortexDeveloper.Messages.Service
             ecb.AddComponent(messageEntity, component);
         }
         
-        public static void PostImmediate<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : struct, IComponentData, IMessageComponent
+        public static Entity PostImmediate<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : struct, IComponentData, IMessageComponent
         {
             Entity messageEntity = entityManager.CreateEntity();
 
@@ -55,6 +55,8 @@ namespace CortexDeveloper.Messages.Service
                 entityManager.AddComponentData(messageEntity, new MessageLifetimeUnlimitedTag());
 
             entityManager.AddComponentData(messageEntity, component);
+
+            return messageEntity;
         }
     }
 }
