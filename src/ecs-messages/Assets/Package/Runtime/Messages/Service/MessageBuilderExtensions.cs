@@ -7,7 +7,7 @@ namespace CortexDeveloper.Messages.Service
 {
     public static class MessageBuilderExtensions
     {
-        public static void Post<T>(this MessageBuilder builder, EntityCommandBuffer ecb, T component) where T : struct, IComponentData, IMessageComponent
+        public static void Post<T>(this MessageBuilder builder, EntityCommandBuffer ecb, T component) where T : unmanaged, IComponentData, IMessageComponent
         {
             Entity messageEntity = ecb.CreateEntity();
 
@@ -32,7 +32,7 @@ namespace CortexDeveloper.Messages.Service
             ecb.AddComponent(messageEntity, component);
         }
         
-        public static Entity PostImmediate<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : struct, IComponentData, IMessageComponent
+        public static Entity PostImmediate<T>(this MessageBuilder builder, EntityManager entityManager, T component) where T : unmanaged, IComponentData, IMessageComponent
         {
             Entity messageEntity = entityManager.CreateEntity();
 
