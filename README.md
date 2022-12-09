@@ -3,7 +3,7 @@
 ecs-messages
 ============
 
-![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.1.1-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen)
+![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.2.0-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen)
 
 
 Simple way of communication between MonoBehaviours and ECS world.<br/>
@@ -11,32 +11,35 @@ Simple way of communication between MonoBehaviours and ECS world.<br/>
 
 - [Overview](#overview)
 - [Installation](#installation)
+- [Initialization](#initialization)
 - [Use Cases](#use-cases)
   - [UI and ECS](#ui-and-ecs)
   - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
-- [Idea](#idea)
+- [Semantic of messages](#semantic-of-messages)
 - [Features](#features)
   - [Lifetime Types](#lifetime-types)
-  - [Unique Messages](#unique-messages)
+  - [Multiple Worlds](#multiple-worlds)
 - [Code Examples](#code-examples)
   - [Post API](#post-api)
+  - [Immediate Post API](#immediate-post-api)
   - [Remove API](#remove-api)
 - [Editor Features](#editor-features)
   - [Stats Window](#stats-window)
-  - [Structure of message entity](#structure-of-message-entity)
-  - [Examples Editor Window(only for source code)](#examples-editor-windowonly-for-source-code)
-- [Next Versions Roadmap](#next-versions-roadmap)
+  - [Message Entity](#message-entity)
+  - [Message Entity Editor Name](#message-entity-editor-name)
+  - [Examples Editor Window](#examples-editor-window)
 - [Contacts](#contacts)
 
 ## Overview
 
-This messaging system for DOTS implementation of ECS solves some problems of messaging.<br/>
-It can be used as bridge between MonoBehavior based logic and ECS based logic or interaction service for ECS systems.<br/>
+This messaging system can be used as bridge between MonoBehavior logic and ECS logic.<br/>
+Also it serves as commucation tool between ECS systems for some cases.<br/>
 
 Key features:
 - Simple API that ease to read
 - Handling messages lifetime(creation details, auto deleting according to configured rules, etc)
-- Supports *IComponentData* or *IBufferElementData* as message content
+- Supports *IComponentData* as message content
+- Multiple worlds support
 
 > Tested with Unity DOTS ECS v0.51.0-preview.32 and Unity 2021.3.6f1
 
@@ -51,27 +54,36 @@ Or simply clone repository into your project.
 
 > Later versions will be added to OpenUPM too
 
+## Initialization
+
+Service must be initialized for each world separetely.
+For this purposes use API below in your entry point.
+
+```csharp
+World defaultWorld = World.DefaultGameObjectInjectionWorld;
+MessageBroadcaster.InitializeInWorld(
+    defaultWorld,
+    defaultWorld.GetOrCreateSystem<SimulationSystemGroup>(),
+    defaultWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>());
+```
+
 ## Use Cases
 
 ### UI and ECS 
 
 There are a lot of reasons to implement UI logic via *Object Oriented Design*.<br/>
 So we need somehow connect our ECS gameplay parts and interface elements.<br/>
-For example start match by clicking button or react somehow when swiping up on mobile phone.<br/>
+For example start match by clicking button or do something on swiping up on mobile phone.<br/>
 
 ![UI magic](documentation/images/use_case_ui.png)
 
 ### Gameplay and Non-Gameplay/Meta Game
 
 It also OK for communication between ECS Systems without carying about entities-messages creation and deleting.<br/>
-As example we can talk about achivements. Player lost match but game designer wants to give him achivement as reward. Naive people...<br/>
-So, *CharacterDeathSystem* just post message that available only for **one frame** via service API and hopes that *AchievementsListenerSystem* will react somehow to this sad news.<br/>
+As example we can talk about achivements. Player lost match but game designer wants to give him achivement as reward.<br/>
+So, *CharacterDeathSystem* just post message that available only for **one frame** via service API and hopes that *AchievementsListenerSystem* will catch it and send analytics data.<br/>
 
-Another good example is analytics. Tracking mechanisms can be built with messaging system too.<br/>
-
-![Achiements happens..](documentation/images/use_case_achievement.png)
-
-## Idea
+## Semantic of messages
 
 In *Data Oriented Design* we can say that commands and events are enteties with bunch of special components.<br/>
 So, from computer point of view they looks almost identicaly but not for developer.<br/>
@@ -79,8 +91,7 @@ Both are messages but with different semantic.<br/>
 The difference between them in reasons why they were sent to world.<br/>
 Event notifies that owner of this event **changed its own state**.<br/>
 Command, despite they also just an entity with some components, **have intention to change someones state**.<br/>
-In classic OOP paradigm command is a peace of logic that have form of object. But in Data Driven Design we can operate only with data.<br/>
-Practicaly it can be used as filter to separate commands and events with same components. 
+In classic OOP paradigm command is a peace of logic that have form of object. But in Data Driven Design we can operate only with data.
 
 ![Everything is message](documentation/images/data_driven_message.png)
 
@@ -92,9 +103,6 @@ Practicaly it can be used as filter to separate commands and events with same co
 ### Lifetime Types
 
 Message can be one of three types:
- - OneFrame
- - TimeRange
- - Unlimited
 
 *OneFrame* - message will live only one frame and then would be deleted.<br/> 
 Removing handled by service.
@@ -105,15 +113,12 @@ Auto deleting still managed by service.<br/>
 
 *Unlimited* - unmanaged by service type.<br/> 
 Special messages that might be useful for cases when you don't know exactly the lifetime.<bt/>
-In this case you should manually deal with it removing from world after usage.<br/>
+In this case you should manually deal with it and delete message after usage.<br/>
 
-### Unique Messages
+### Multiple Worlds
 
-Message can be marked as ***unique***. In this case you cannot post another one message if same type already active.<br/>
-This feature might be useful for different cases. Let's say, you want to inform your teamate that magic portal is opened for 30 seconds.<br/>
-You post event by clicking some buttom. What will happen if you start spamming it? A lot of duplicates of event would be posted.<br/>
-Event marked as ***unique*** won't be posted twice in row and prevents this kind of situtations.<br/> 
-Check code examples to discover more detailed explanation how it works.<br/>
+Messages can be posted via EntityCommandBuffer or EntityManager. Both of them belong to some world. 
+So, if you want to post message in certain world just use ECB or EM from proper one.
 
 ## Code Examples
 
@@ -122,36 +127,38 @@ Check code examples to discover more detailed explanation how it works.<br/>
 #### One Frame Messages
 
 Messages of this type will be alive only for one frame and then would be automatically deleted.<br/>
-Pay attention that dividing messages to "events" and "commands" performed more for semantic and filtering purposes.<br/>
+Pay attention that dividing messages to "events" and "commands" performed for semantic purposes.<br/>
+That helps to quickly catch the intention of this message.
 
-##### Case: You need to pause game via UI button or in-game action
+##### Case: Pause game
 
 ```csharp
-// Just start from method PrepareCommand() in static class MessageBroadcaster and then call Post(...).
+var ecb = yourEntityCommandBufferSystem.CreateCommandBuffer();
+// It will be automatically deleted after one frame
 MessageBroadcaster
-    .PrepareCommand()
-    .Post(new PauseGameCommand());
+    .PrepareMessage()
+    .AliveForOneFrame()
+    .Post(ecb, new PauseGameCommand());
 
-// Command is just a component
-public struct PauseGameCommand : IComponentData { }
+// Message component must implement an interface IMessageComponent
+public struct PauseGameCommand : IComponentData, IMessageComponent { }
 ```
 
-##### Case: You need to start game by clicking Start button
+##### Case: Start game by clicking Start button
 
-```csharp             
-// Very similar situation as previous but here used AsUnique() configuration.
-// This means that message won't be posted if there is already an active message of this type.      
+```csharp                
+var ecb = yourEntityCommandBufferSystem.CreateCommandBuffer();
 MessageBroadcaster
-    .PrepareCommand()
-    .AsUnique()
-    .Post(new StartMatchCommand
+    .PrepareMessage()
+    .AliveForOneFrame()
+    .Post(ecb, new StartMatchCommand
     {
         DifficultyLevel = Difficulty.Hard,
         MatchLength = 300f,
         EnemiesCount = 25
     });
 
-public struct StartMatchCommand : IComponentData
+public struct StartMatchCommand : IComponentData, IMessageComponent
 {
     public Difficulty DifficultyLevel;
     public float MatchLength;
@@ -159,38 +166,16 @@ public struct StartMatchCommand : IComponentData
 }
 ```
 
-##### Case: You need to notify somebody that character died on this frame
-```csharp
-MessageBroadcaster
-    .PrepareEvent()
-    .Post(new CharacterDeadEvent { Tick = 1234567890 } );
-```
-
 #### Time Range Messages
-
-##### Case: Informing other non-gameplay related systems that there are two active debuffs
-
-```csharp
-// Here we add additional configuration WithLifeTime(...) to mark message as TimeRange type.
-// It won't be posted if there is already an active message of this type.
-// It will be automatically deleted after 10 seconds.
-// Also we used API that work with IBufferElementData interface to attach multiple elements to message.
-MessageBroadcaster
-    .PrepareEvent()
-    .AsUnique()
-    .WithLifeTime(10f)
-    .PostBuffer(
-        new DebuffData { Value = Debuffs.Stun },
-        new DebuffData { Value = Debuffs.Poison });
-```
 
 ##### Case: Informing that quest available only for 600 seconds(10 minutes)
 
 ```csharp
+// It will be automatically deleted after 1 minute
 MessageBroadcaster
-    .PrepareEvent()
-    .WithLifeTime(600f)
-    .Post(new QuestAvailabilityData { Quest = Quests.SavePrincess });
+    .PrepareMessage()
+    .AliveForSeconds(60f)
+    .Post(ecb, new QuestAvailabilityData { Quest = Quests.SavePrincess });
 ```
 
 #### Unlimited Lifetime Messages
@@ -198,85 +183,79 @@ MessageBroadcaster
 ##### Case: Notify that quest is completed
 
 ```csharp
+// It would be posted as usual message but should be deleted manualy
+// There is no special system for this type that handling deleting automaticaly
 MessageBroadcaster
-    .PrepareEvent()
-    .WithUnlimitedLifeTime()
-    .Post(new QuestCompletedEvent { Value = Quests.KillDiablo });
+    .PrepareMessage()
+    .AliveForUnlimitedTime()
+    .Post(ecb, new QuestCompletedEvent { Value = Quests.KillDiablo });
 ```
 
-##### Case: RTS player wants any free worker to start digging gold
+### Immediate Post API
+
+For some cases it's necessary to post message not via ECB system but right now via EntityManager.<br/>
+Here is alternative way how to post message.
+
+##### Case: Post pause message immediately
 
 ```csharp
-MessageBroadcaster
-    .PrepareCommand()
-    .WithUnlimitedLifeTime()
-    .Post(new DigGoldCommand());
+// The only difference here is last method to post message
+// It needs EntityManager instead of ECB
+var entityManager = yourWorld.EntityManager;
+Entity messageEntity = MessageBroadcaster
+    .PrepareMessage()
+    .AliveForOneFrame()
+    .PostImmediate(entityManager, new PauseGameCommand());
 ```
+
+Pay attention that *PostImmediate* method returns message entity.<br/>
+Thats give you an oportunity to do whatever you want with message and control its lifetime manually.
 
 ### Remove API
 
-There are examples of API to remove active messages.<br/>
-> **_NOTE:_** Current package version doesn't have filters to remove commands or events separetely.<br>
+Messages removing is supoused to be automated by service.<br/>
+In case you realy need to manualy delete message you can use EntityManager or EntityCommandBuffer API.<br/>
+As far as message is just an entity with bunch of components, there is no special way of removing them from World.<br/>
+
+If you need to delete messages of certain type use broadcaster API below.
 
 ```csharp
-// Remove all messages of TimeRange lifetime type 
-MessageBroadcaster.RemoveWithLifetime(MessageLifetime.TimeRange);
-
-// Remove messages with specific component 
-MessageBroadcaster.Remove<DigGoldCommand>();
-
-// Remove messages with specific DynamicBuffer<T> where T is DebuffData
-MessageBroadcaster.RemoveBuffer<DebuffData>();
-
-// Remove all active messages of all types
-MessageBroadcaster.RemoveAll();
+// removes all messages with given T component
+MessageBroadcaster.RemoveAllMessagesWith<T>(ecb);
 ```
 
 ## Editor Features
 
 ### Stats Window 
-Stats window can be accessed by *Tools/Message Broadcaster Stats*.<br/>
-It shows count of active messages by type and provide few API calls to remove messages via editor.<br/>
+Stats window located here *DOTS/ECSMessages/Stats*.<br/>
+It shows count of active messages in chosen world and provide API to remove all messages via editor.<br/>
 
 ![Stats Window](documentation/images/editor_stats_window.png)
 
-### Structure of message entity
+### Message Entity
 
-Lets discover few enteties from examples.<br/>
+There is an example of components on message entity.<br/>
+They might be useful for debug purposes. Each message have unique ID and stores creation time.
 
-#### IComponentData as message content example
+![Source Code Examples](documentation/images/editor_message_components.png)
 
-![Component Inspector](documentation/images/editor_message_entity_component.png)
+### Message Entity Editor Name
 
-*MessageContextCommandTag* - internal stuff to mark entity as "message-command".<br/>
-This one is OneFrame type, so it would be deleted on next frame.<br/>
-*StartMatchCommand* is common ECS component attached to command as content.<br/>
+There is an optional feature that allows you to name message.<br/>
+Pass *FixedString64Bytes* instance to method *PrepareMessage* to give a name to message.
 
-#### DynamicBuffer as message content example
+```csharp
+MessageBroadcaster
+    .PrepareMessage(new FixedString64Bytes("PauseGameCommand"))
+    .AliveForOneFrame()
+    .Post(ecb, new PauseGameCommand());
+```
 
-![Buffer Inspector](documentation/images/editor_message_entity_buffer.png)
-
-*MessageContextEventTag* - internal stuff to mark entity as "message-event".<br/>
-This one is TimeRange type, so we can track how much time left to deletion.<br/>
-*DebuffData* is just a *DynamicBuffer* that attached to this event as content.<br/>
-
-### Examples Editor Window(only for source code)
+### Examples Editor Window
 
 You can also explore examples *Tools/Messages Examples* if you download package source code.<br/>
 
 ![Source Code Examples](documentation/images/editor_source_code_examples_window.png)
-
-## Next Versions Roadmap
-
-- Unique messages(only one instance of type can be active)
-- Messages with multiple components(without DynamicBuffer)
-- Remove API with more filters
-- Bursted version of *MessagesRemoveByComponentCommandListenerSystem*
-- More examples
-- Additional features for Editor Stats window
-- Performance optimization
-- Performance benchmark
-- Unit tests
 
 ## Contacts
 

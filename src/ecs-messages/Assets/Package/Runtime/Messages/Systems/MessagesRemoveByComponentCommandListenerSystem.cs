@@ -1,35 +1,37 @@
-using CortexDeveloper.Messages.Components;
-using CortexDeveloper.Messages.SystemGroups;
+using CortexDeveloper.Messages.Components.Meta;
+using CortexDeveloper.Messages.Components.RemoveCommands;
 using Unity.Collections;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
-    [UpdateInGroup(typeof(MessagesSystemGroup))]
-    public partial class MessagesRemoveByLifetimeCommandListenerSystem : SystemBase
+    [UpdateBefore(typeof(MessagesOneFrameLifetimeSystem))]
+    [DisableAutoCreation]
+    public partial class MessagesRemoveByComponentCommandListenerSystem : MessagesBaseSystem
     {
-        private EntityCommandBufferSystem _ecbSystem;
-
-        protected override void OnCreate()
-        {
-            _ecbSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-            RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<RemoveMessagesByComponentCommand>()));
-        }
-
         protected override void OnUpdate()
         {
-            EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
+            EntityCommandBuffer ecb = MessagesEcb;
             EntityQuery query = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<RemoveMessagesByComponentCommand>());
             NativeArray<RemoveMessagesByComponentCommand> commands = query.ToComponentDataArray<RemoveMessagesByComponentCommand>(Allocator.Temp);
-            
+
             foreach (RemoveMessagesByComponentCommand command in commands)
             {
-                EntityQuery destroyQuery = GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), command.ComponentType);
+                EntityQuery destroyQuery = GetMessagesQueryWith(command.ComponentType); 
+                NativeArray<Entity> messageEntities = destroyQuery.ToEntityArray(Allocator.Temp);
 
-                ecb.DestroyEntitiesForEntityQuery(destroyQuery);
+                foreach (Entity messageEntity in messageEntities)
+                    ecb.DestroyEntity(messageEntity);
+
+                messageEntities.Dispose();
             }
             
             commands.Dispose();
         }
+
+        private EntityQuery GetMessagesQueryWith(ComponentType componentType) => 
+            componentType.TypeIndex == ComponentType.ReadOnly<MessageTag>().TypeIndex 
+                ? GetEntityQuery(ComponentType.ReadOnly<MessageTag>()) 
+                : GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), componentType);
     }
 }

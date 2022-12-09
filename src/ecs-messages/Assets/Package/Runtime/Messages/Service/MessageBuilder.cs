@@ -1,30 +1,31 @@
+using Unity.Collections;
+
 namespace CortexDeveloper.Messages.Service
 {
     public struct MessageBuilder
     {
-        internal MessageContext Context; 
+        internal FixedString64Bytes Name;
         internal MessageLifetime Lifetime;
-        internal float Seconds;
-        internal bool IsUnique;
+        internal float LifetimeSeconds;
+
+        public MessageBuilder AliveForOneFrame()
+        {
+            Lifetime = MessageLifetime.OneFrame;
+
+            return this;
+        }
         
-        public MessageBuilder WithLifeTime(float seconds)
+        public MessageBuilder AliveForSeconds(float seconds)
         {
             Lifetime = MessageLifetime.TimeRange;
-            Seconds = seconds;
+            LifetimeSeconds = seconds;
 
             return this;
         }
         
-        public MessageBuilder WithUnlimitedLifeTime()
+        public MessageBuilder AliveForUnlimitedTime()
         {
             Lifetime = MessageLifetime.Unlimited;
-
-            return this;
-        }
-
-        public MessageBuilder AsUnique()
-        {
-            IsUnique = true;
 
             return this;
         }

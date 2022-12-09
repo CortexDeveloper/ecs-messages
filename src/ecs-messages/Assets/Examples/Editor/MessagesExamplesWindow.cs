@@ -1,23 +1,15 @@
+using System.Collections.Generic;
+using System.Linq;
 using CortexDeveloper.Messages.Service;
+using Unity.Collections;
+using Unity.Entities;
 using UnityEditor;
 using UnityEngine;
 
 namespace CortexDeveloper.Examples.Editor
 {
-    public class MessageBroadcasterWindow : EditorWindow
+    public class MessagesExamplesWindow : EditorWindow
     {
-        private int _selectedTab;
-
-        // Match params
-        private Difficulty _difficulty;
-        private float _matchLenght;
-        private int _enemiesCount;
-        
-        // Debuffs params
-        private Debuffs _firstDebuff;
-        private Debuffs _secondDebuff;
-        private float _debuffDuration;
-        
         // Available quest params
         private Quests _availableQuest;
         private float _questAvailabilityTime;
@@ -25,10 +17,20 @@ namespace CortexDeveloper.Examples.Editor
         // Completed quest params
         private Quests _completedQuest;
 
+        private int _selectedTab;
+        
+        private List<string> _worldsList = new();
+
+        private int _selectedWorld;
+        private World SelectedWorld => World.All.GetWorldWithName(_worldsList[_selectedWorld]);
+
+        private static EndSimulationEntityCommandBufferSystem GetEcbSystemInWorld(World world) => 
+            world.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+
         [MenuItem("Tools/Messages Examples")]
         public static void Init()
         {
-            MessageBroadcasterWindow window = (MessageBroadcasterWindow)GetWindow(typeof(MessageBroadcasterWindow), false, "Messages Use Case Examples");
+            MessagesExamplesWindow window = (MessagesExamplesWindow)GetWindow(typeof(MessagesExamplesWindow), false, "Messages Use Case Examples");
             
             window.Show();
         }
@@ -41,6 +43,8 @@ namespace CortexDeveloper.Examples.Editor
                 
                 return;
             }
+            
+            DrawWorldPopup();
             
             _selectedTab = GUILayout.Toolbar(_selectedTab, new [] {"One Frame", "Time Range", "Unlimited Time"});
             switch (_selectedTab)
@@ -57,6 +61,28 @@ namespace CortexDeveloper.Examples.Editor
             }
         }
 
+        private void DrawWorldPopup()
+        {
+            _worldsList.Clear();
+
+            for (int i = 0; i < World.All.Count; i++) 
+                _worldsList.Add(default);
+
+            int j = 0;
+            foreach (World world in World.All)
+            {
+                if (j < World.All.Count) 
+                    _worldsList[j] = world.Name;
+                else
+                    break;
+
+                j++;
+            }
+
+            _worldsList = _worldsList.Where(w => !w.Contains("LoadingWorld")).ToList();
+            _selectedWorld = EditorGUILayout.Popup("World", _selectedWorld, _worldsList.ToArray());
+        }
+
         private void DrawOneFrameExamples()
         {
             // Case 1
@@ -67,34 +93,12 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Command: Pause Game"))
             {
                 MessageBroadcaster
-                    .PrepareCommand()
-                    .Post(new PauseGameCommand());
-            }
-            
-            // Case 2
-            EditorGUILayout.LabelField("Case: You need to start game by clicking \"Start\" button.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("In this case we need to post message-command that we have intention to launch match with next settings:\n" +
-                                       $"{_difficulty.ToString()} difficulty level, {_matchLenght} lenght and {_enemiesCount} enemies count\n" +
-                                       "Message will be alive only for one frame and then would be deleted.", EditorStyles.textArea);
-            
-            _difficulty = (Difficulty)EditorGUILayout.EnumPopup("Difficulty: ", _difficulty);
-            _matchLenght = EditorGUILayout.FloatField("Match Length: ", _matchLenght);
-            _enemiesCount = EditorGUILayout.IntField("Enemies Count: ", _enemiesCount);
-            
-            if (GUILayout.Button("Post Unique Command: Start Game"))
-            {
-                MessageBroadcaster
-                    .PrepareCommand()
-                    .AsUnique()
-                    .Post(new StartMatchCommand
-                    {
-                        DifficultyLevel = _difficulty,
-                        MatchLength = _matchLenght,
-                        EnemiesCount = _enemiesCount
-                    });
+                    .PrepareMessage(new FixedString64Bytes("PauseGameCommand"))
+                    .AliveForOneFrame()
+                    .Post(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer(), new PauseGameCommand());
             }
 
-            // Case 3
+            // Case 2
             EditorGUILayout.LabelField("Case: You need to notify somebody that character died on this frame.", EditorStyles.helpBox);
             EditorGUILayout.LabelField("In this case we need to post message-event that character died.\n" +
                                        "Message will be alive only for one frame and then would be deleted.", EditorStyles.textArea);
@@ -102,56 +106,15 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Event: Character Died"))
             {
                 MessageBroadcaster
-                    .PrepareEvent()
-                    .Post(new CharacterDeadEvent { Tick = 1234567890 });
+                    .PrepareMessage(new FixedString64Bytes("CharacterDeathEvent"))
+                    .AliveForOneFrame()
+                    .Post(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer(), new CharacterDeadEvent { Tick = 1234567890 });
             }
         }
 
         private void DrawTimeRangeExamples()
         {
-            // Case 1 
-            EditorGUILayout.LabelField("Case: Informing other non-gameplay related systems that there are two active debuffs.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("In this case we need to post message-event with TimeRange Lifetime type. \n" +
-                                       "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
-
-            _firstDebuff = (Debuffs)EditorGUILayout.EnumPopup("First Debuff: ", _firstDebuff);
-            _secondDebuff = (Debuffs)EditorGUILayout.EnumPopup("Second Debuff: ", _secondDebuff);
-            _debuffDuration = EditorGUILayout.FloatField("Debuff Duration: ", _debuffDuration);
-
-            if (GUILayout.Button("Post Event: Debuffs State"))
-            {
-                MessageBroadcaster
-                    .PrepareEvent()
-                    .WithLifeTime(_debuffDuration)
-                    .PostBuffer(
-                        new DebuffData{ Value = _firstDebuff },
-                        new DebuffData{ Value = _secondDebuff });
-            }
-            
-            if (GUILayout.Button("Remove Event: Debuffs State")) 
-                MessageBroadcaster.RemoveBuffer<DebuffData>();
-
-            // Case 2 
-            EditorGUILayout.LabelField("Case: Informing other non-gameplay related systems that there are two active debuffs.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("Same as previous but message is unique. \n" +
-                                       "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
-
-            _firstDebuff = (Debuffs)EditorGUILayout.EnumPopup("First Debuff: ", _firstDebuff);
-            _secondDebuff = (Debuffs)EditorGUILayout.EnumPopup("Second Debuff: ", _secondDebuff);
-            _debuffDuration = EditorGUILayout.FloatField("Debuff Duration: ", _debuffDuration);
-
-            if (GUILayout.Button("Post Unique Event: Debuffs State"))
-            {
-                MessageBroadcaster
-                    .PrepareEvent()
-                    .AsUnique()
-                    .WithLifeTime(_debuffDuration)
-                    .PostBuffer(
-                        new DebuffData{ Value = _firstDebuff },
-                        new DebuffData{ Value = _secondDebuff });
-            }
-            
-            // Case 3
+            // Case 1
             EditorGUILayout.LabelField("Case: Informing that quest available only for N seconds.", EditorStyles.helpBox);
             EditorGUILayout.LabelField("In this case we need to post message-event with TimeRange Lifetime type.\n" +
                                        "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
@@ -162,9 +125,9 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post: Quest Availability Timer"))
             {
                 MessageBroadcaster
-                    .PrepareEvent()
-                    .WithLifeTime(_questAvailabilityTime)
-                    .Post(new QuestAvailabilityData { Quest = _availableQuest });
+                    .PrepareMessage()
+                    .AliveForSeconds(_questAvailabilityTime)
+                    .Post(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer(), new QuestAvailabilityData { Quest = _availableQuest });
             }
         }
 
@@ -180,42 +143,9 @@ namespace CortexDeveloper.Examples.Editor
             if (GUILayout.Button("Post Event: Quest Completed"))
             {
                 MessageBroadcaster
-                    .PrepareEvent()
-                    .WithUnlimitedLifeTime()
-                    .Post(new QuestCompletedEvent { Value = _completedQuest });
-            }
-            
-            // Case 2
-            EditorGUILayout.LabelField("Case: RTS player wants any free worker to start digging gold.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("In this case we need to post message-command.\n" +
-                                       "Then listener systems should check is there any free worker.\n" +
-                                       "If there is no free workers wait.\n" +
-                                       "It will be alive until we manually delete it.", EditorStyles.textArea);
-
-            if (GUILayout.Button("Post Command: Dig Gold"))
-            {
-                MessageBroadcaster
-                    .PrepareCommand()
-                    .WithUnlimitedLifeTime()
-                    .Post(new DigGoldCommand());
-            }
-            
-            if (GUILayout.Button("Remove Command: Dig Gold")) 
-                MessageBroadcaster.Remove<DigGoldCommand>();
-            
-            // Case 3
-            EditorGUILayout.LabelField("Case: RTS player wants any free worker to start digging gold.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("Same situation but we want to have only one active instance of this command.\n" +
-                                       "So, after command posting there would restriction to post one more until first is alive.\n" +
-                                       "It will be alive until we manually delete it.", EditorStyles.textArea);
-
-            if (GUILayout.Button("Post Unique Command: Dig Gold"))
-            {
-                MessageBroadcaster
-                    .PrepareCommand()
-                    .AsUnique()
-                    .WithUnlimitedLifeTime()
-                    .Post(new DigGoldCommand());
+                    .PrepareMessage()
+                    .AliveForUnlimitedTime()
+                    .Post(GetEcbSystemInWorld(SelectedWorld).CreateCommandBuffer(), new QuestCompletedEvent { Value = _completedQuest });
             }
         }
     }

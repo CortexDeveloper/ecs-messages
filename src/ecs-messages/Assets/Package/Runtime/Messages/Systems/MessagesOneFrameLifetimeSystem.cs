@@ -1,31 +1,22 @@
-using CortexDeveloper.Messages.Components;
-using CortexDeveloper.Messages.SystemGroups;
+using CortexDeveloper.Messages.Components.Meta;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
-    [UpdateInGroup(typeof(MessagesSystemGroup))]
-    public partial class MessagesOneFrameLifetimeSystem : SystemBase
+    [DisableAutoCreation]
+    public partial class MessagesOneFrameLifetimeSystem : MessagesBaseSystem
     {
-        private EntityCommandBufferSystem _ecbSystem;
-        
-        protected override void OnCreate()
-        {
-            _ecbSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
-            
-            RequireForUpdate(GetEntityQuery(ComponentType.ReadOnly<MessageLifetimeOneFrameTag>()));
-        }
-        
         protected override void OnUpdate()
         {
-            EntityCommandBuffer ecb = _ecbSystem.CreateCommandBuffer();
+            EntityCommandBuffer.ParallelWriter ecb = MessagesEcb.AsParallelWriter();
             
             Entities
-                .ForEach((Entity entity, in MessageLifetimeOneFrameTag oneFrameTag) => 
-                    ecb.DestroyEntity(entity))
-                .Schedule();
+                .ForEach((Entity entity, int entityInQueryIndex, in MessageTag messageTag, in MessageLifetimeOneFrameTag oneFrameTag) =>
+                {
+                    ecb.DestroyEntity(entityInQueryIndex, entity);
+                }).ScheduleParallel();
             
-            _ecbSystem.AddJobHandleForProducer(Dependency);
+            Dependency.Complete();
         }
     }
 }

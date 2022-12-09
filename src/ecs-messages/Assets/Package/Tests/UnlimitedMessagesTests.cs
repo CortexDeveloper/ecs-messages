@@ -1,8 +1,9 @@
 using System.Collections;
-using CortexDeveloper.Messages.Components;
+using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Service;
 using CortexDeveloper.Tests.Components;
 using NUnit.Framework;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine.TestTools;
 
@@ -10,62 +11,76 @@ namespace CortexDeveloper.Tests
 {
     public class UnlimitedMessagesTests
     {
+        [UnitySetUp]
+        public IEnumerator SetUp()
+        {
+            yield return new EnterPlayMode();
+            
+            TestUtils.InitializeTestWorld();
+        }
+        
+        [UnityTearDown]
+        public IEnumerator TearDown()
+        {
+            MessageBroadcaster.Dispose();
+
+            yield return new ExitPlayMode();
+        }
+        
         [UnityTest]
-        public IEnumerator PostUnlimitedEvent_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
+        public IEnumerator Post_AliveForUnlimitedTime_WaitOneFrame_CheckForExisting_ManuallyRemoveAllUnlimited_WaitOneFrames_CheckForRemove()
         {
             // Act
-            MessageBroadcaster.PrepareEvent().WithUnlimitedLifeTime().Post(new TestContentData{ Value = 123 });
+            MessageBroadcaster
+                .PrepareMessage()
+                .AliveForUnlimitedTime()
+                .Post(TestUtils.GetEcbSystem().CreateCommandBuffer(), new TestContentData { Value = 123 });
+            
             yield return null;
 
             // Assert
-            EntityQuery query = TestsUtils.GetQuery<TestContentData>();
-            TestContentData component = TestsUtils.GetComponentFromFirst<TestContentData>(query);
-            bool wasPosted = query.CalculateEntityCount() > 0 &&
-                                   TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                                   TestsUtils.FirstEntityHasComponent<MessageContextEventTag>(query) &&
-                                   TestsUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
+            EntityQuery query = TestUtils.GetQuery<TestContentData>();
+            TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
+            bool wasPosted = query.CalculateEntityCount() == 1 &&
+                                   TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
+                                   TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
                                    component.Value == 123;
 
-            MessageBroadcaster.RemoveWithLifetime(MessageLifetime.Unlimited);
+            MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(TestUtils.GetEcbSystem().EntityManager);
             
             yield return null;
-            yield return null;
 
-            bool wasRemoved = !TestsUtils.IsExist<TestContentData>();
+            bool wasRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
             
             Assert.IsTrue(wasPosted && wasRemoved);
         }
         
         [UnityTest]
-        public IEnumerator PostUnlimitedBufferCommand_CheckForExisting_ManuallyRemove_WaitTwoFrames_CheckForRemove()
+        public IEnumerator PostImmediate_AliveForUnlimitedTime_CheckForExisting_ManuallyRemoveImmediate_CheckForRemove()
         {
             // Act
-            MessageBroadcaster.PrepareCommand().WithUnlimitedLifeTime().PostBuffer(
-                new TestContentBufferData { Value = 123 },
-                new TestContentBufferData { Value = 456 },
-                new TestContentBufferData { Value = 789 });
-            
-            yield return null;
+            Entity messageEntity = MessageBroadcaster
+                .PrepareMessage()
+                .AliveForUnlimitedTime()
+                .PostImmediate(TestUtils.GetEcbSystem().EntityManager, new TestContentData { Value = 123 });
 
             // Assert
-            EntityQuery query = TestsUtils.GetBufferQuery<TestContentBufferData>();
-            DynamicBuffer<TestContentBufferData> buffer = TestsUtils.GetBufferFromFirst<TestContentBufferData>(query);
-            bool wasPosted = query.CalculateEntityCount() > 0 &&
-                             TestsUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                             TestsUtils.FirstEntityHasComponent<MessageContextCommandTag>(query) &&
-                             TestsUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
-                             buffer[0].Value == 123 &&
-                             buffer[1].Value == 456 &&
-                             buffer[2].Value == 789;
+            EntityQuery query = TestUtils.GetQuery<TestContentData>();
+            NativeArray<Entity> queryEntities = query.ToEntityArray(Allocator.Temp);
+            queryEntities.Dispose();
+            TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
+            bool wasPosted = query.CalculateEntityCount() == 1 &&
+                             TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
+                             TestUtils.FirstEntityHasComponent<MessageLifetimeUnlimitedTag>(query) &&
+                             component.Value == 123;
 
-            MessageBroadcaster.RemoveWithLifetime(MessageLifetime.Unlimited);
-            
-            yield return null;
-            yield return null;
+            TestUtils.GetTestWorld().EntityManager.DestroyEntity(messageEntity);
 
-            bool wasRemoved = !TestsUtils.IsBufferExist<TestContentBufferData>();
+            bool wasRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
             
             Assert.IsTrue(wasPosted && wasRemoved);
+
+            yield return null;
         }
     }
 }
