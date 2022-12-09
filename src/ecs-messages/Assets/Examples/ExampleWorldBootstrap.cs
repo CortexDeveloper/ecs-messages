@@ -19,21 +19,21 @@ namespace CortexDeveloper.Examples
 
         private void CreateInitializationGroup(World world)
         {
-            InitializationSystemGroup initGroup = world.GetOrCreateSystem<InitializationSystemGroup>();
+            InitializationSystemGroup initGroup = world.GetOrCreateSystemManaged<InitializationSystemGroup>();
 
-            UpdateWorldTimeSystem updateWorldTimeSystem = world.GetOrCreateSystem<UpdateWorldTimeSystem>();
+            UpdateWorldTimeSystem updateWorldTimeSystem = world.GetOrCreateSystemManaged<UpdateWorldTimeSystem>();
             
             initGroup.AddSystemToUpdateList(updateWorldTimeSystem);
         }
         
         private void CreateSimulationGroup(World world)
         {
-            SimulationSystemGroup simGroup = world.GetOrCreateSystem<SimulationSystemGroup>();
+            SimulationSystemGroup simGroup = world.GetOrCreateSystemManaged<SimulationSystemGroup>();
             
             BeginSimulationEntityCommandBufferSystem beginSimulationEntityCommandBufferSystem =
-                world.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
+                world.GetOrCreateSystemManaged<BeginSimulationEntityCommandBufferSystem>();
             EndSimulationEntityCommandBufferSystem endSimulationEntityCommandBufferSystem =
-                world.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+                world.GetOrCreateSystemManaged<EndSimulationEntityCommandBufferSystem>();
             
             simGroup.AddSystemToUpdateList(beginSimulationEntityCommandBufferSystem);
             simGroup.AddSystemToUpdateList(endSimulationEntityCommandBufferSystem);

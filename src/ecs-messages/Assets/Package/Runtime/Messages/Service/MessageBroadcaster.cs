@@ -17,15 +17,15 @@ namespace CortexDeveloper.Messages.Service
             if (RandomGen.Data.state == 0)
                 RandomGen.Data.InitState(1);
 
-            MessagesSystemGroup messagesSystemGroup = world.GetOrCreateSystem<MessagesSystemGroup>();
+            MessagesSystemGroup messagesSystemGroup = world.CreateSystemManaged<MessagesSystemGroup>();
             parentSystemGroup.AddSystemToUpdateList(messagesSystemGroup);
 
-            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesStatsSystem>());
-            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesDateTimeSystem>());
-            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesOneFrameLifetimeSystem>().Construct(ecbSystem));
-            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesTimeRangeLifetimeRemoveSystem>().Construct(ecbSystem));
-            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesTimeRangeLifetimeTimerSystem>());
-            messagesSystemGroup.AddSystemToUpdateList(world.GetOrCreateSystem<MessagesRemoveByComponentCommandListenerSystem>().Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesStatsSystem>());
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesDateTimeSystem>());
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesOneFrameLifetimeSystem>().Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesTimeRangeLifetimeRemoveSystem>().Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesTimeRangeLifetimeTimerSystem>());
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesRemoveByComponentCommandListenerSystem>().Construct(ecbSystem));
 
             MessagesStats.StatsMap.Add(world.Name, new Stats());
         }

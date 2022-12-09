@@ -19,7 +19,7 @@ namespace CortexDeveloper.Messages.Editor
         private World SelectedWorld => World.All.GetWorldWithName(_worldsList[_selectedWorld]);
         
         private static EndSimulationEntityCommandBufferSystem GetEcbSystemInWorld(World world) => 
-            world.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+            world.GetOrCreateSystemManaged<EndSimulationEntityCommandBufferSystem>();
 
         [MenuItem("DOTS/ECSMessages/Stats")]
         public static void Init()

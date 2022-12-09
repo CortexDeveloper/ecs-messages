@@ -8,7 +8,7 @@ namespace CortexDeveloper.Messages.Systems
     {
         protected override void OnUpdate()
         {
-            float deltaTime = Time.DeltaTime;
+            float deltaTime = World.Time.DeltaTime;
 
             Entities
                 .ForEach((Entity entity, ref MessageLifetimeTimeRange timeRange, in MessageTag messageTag) =>

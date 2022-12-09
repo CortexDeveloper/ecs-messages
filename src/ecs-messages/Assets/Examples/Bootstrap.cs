@@ -11,14 +11,14 @@ namespace CortexDeveloper.Examples
             World defaultWorld = World.DefaultGameObjectInjectionWorld;
             MessageBroadcaster.InitializeInWorld(
                 defaultWorld, 
-                defaultWorld.GetOrCreateSystem<SimulationSystemGroup>(),
-                defaultWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>());
+                defaultWorld.GetOrCreateSystemManaged<SimulationSystemGroup>(),
+                defaultWorld.GetOrCreateSystemManaged<EndSimulationEntityCommandBufferSystem>());
 
             World exampleWorld = World.All.GetWorldWithName("Example World");
             MessageBroadcaster.InitializeInWorld(
                 exampleWorld,
-                exampleWorld.GetOrCreateSystem<SimulationSystemGroup>(),
-                exampleWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>());
+                exampleWorld.GetOrCreateSystemManaged<SimulationSystemGroup>(),
+                exampleWorld.GetOrCreateSystemManaged<EndSimulationEntityCommandBufferSystem>());
         }
     }
 }

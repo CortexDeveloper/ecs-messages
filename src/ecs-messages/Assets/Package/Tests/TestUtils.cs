@@ -9,19 +9,21 @@ namespace CortexDeveloper.Tests
     {
         internal static EntityQuery GetQuery<T>() where T : struct, IComponentData
         {
-            EntityQueryDescBuilder descBuilder = new(Allocator.Temp);
-            descBuilder.AddAny(new ComponentType(typeof(T)));
-            descBuilder.FinalizeQuery();
+            NativeList<ComponentType> queryComponents = new(Allocator.Temp);
+            queryComponents.Add(new ComponentType(typeof(T)));
 
-            EntityManager entityManager = GetTestWorld().EntityManager;
-            EntityQuery query = entityManager.CreateEntityQuery(descBuilder);
+            EntityQueryBuilder descBuilder = new(Allocator.Temp);
+            EntityQuery query = descBuilder
+                .WithAny(ref queryComponents)
+                .Build(GetTestWorld().EntityManager);
 
             descBuilder.Dispose();
+            queryComponents.Dispose();
 
             return query;
         }
         
-        internal static T GetComponentFromFirstEntity<T>(EntityQuery query) where T : struct, IComponentData
+        internal static T GetComponentFromFirstEntity<T>(EntityQuery query) where T : unmanaged, IComponentData
         {
             EntityManager entityManager = GetTestWorld().EntityManager;
             Entity entity = GetFirstEntity(query);
@@ -52,7 +54,7 @@ namespace CortexDeveloper.Tests
         }
 
         internal static EntityCommandBufferSystem GetEcbSystem() => 
-            GetTestWorld().GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+            GetTestWorld().GetExistingSystemManaged<EndSimulationEntityCommandBufferSystem>();
 
         public static World GetTestWorld()
         {
@@ -66,8 +68,8 @@ namespace CortexDeveloper.Tests
             World testWorld = GetTestWorld();
             MessageBroadcaster.InitializeInWorld(
                 testWorld,
-                testWorld.GetOrCreateSystem<SimulationSystemGroup>(),
-                testWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>());
+                testWorld.GetExistingSystemManaged<SimulationSystemGroup>(),
+                testWorld.GetExistingSystemManaged<EndSimulationEntityCommandBufferSystem>());
         }
     }
 }
