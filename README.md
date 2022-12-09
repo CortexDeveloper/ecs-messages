@@ -26,6 +26,7 @@ Simple way of communication between MonoBehaviours and ECS world.<br/>
 - [Editor Features](#editor-features)
   - [Stats Window](#stats-window)
   - [Message Entity](#message-entity)
+  - [Message Entity Editor Name](#message-entity-editor-name)
   - [Examples Editor Window](#examples-editor-window)
 - [Contacts](#contacts)
 
@@ -237,6 +238,18 @@ There is an example of components on message entity.<br/>
 They might be useful for debug purposes. Each message have unique ID and stores creation time.
 
 ![Source Code Examples](documentation/images/editor_message_components.png)
+
+### Message Entity Editor Name
+
+There is an optional feature that allows you to name message.<br/>
+Pass *FixedString64Bytes* instance to method *PrepareMessage* to give a name to message.
+
+```csharp
+MessageBroadcaster
+    .PrepareMessage(new FixedString64Bytes("PauseGameCommand"))
+    .AliveForOneFrame()
+    .Post(ecb, new PauseGameCommand());
+```
 
 ### Examples Editor Window
 
