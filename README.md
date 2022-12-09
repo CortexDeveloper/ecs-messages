@@ -209,13 +209,13 @@ MessageBroadcaster
 
 ### Remove API
 
+Messages removing is supoused to be automated by service.<br/>
+In case you realy need to manualy delete message you can use EntityManager or EntityCommandBuffer API.<br/>
+As far as message is just an entity with bunch of components, there is no special way of removing them from World.<br/>
+
+If you need to delete messages of certain type use broadcaster API below.
+
 ```csharp
-// removes message
-MessageBroadcaster.RemoveMessage(ecb, entityManager, messageEntity);
-
-// removes message via EntityManager right now
-MessageBroadcaster.RemoveMessageImmediate(entityManager, messageEntity);
-
 // removes all messages with given T component
 MessageBroadcaster.RemoveAllMessagesWith<T>(ecb);
 ```
