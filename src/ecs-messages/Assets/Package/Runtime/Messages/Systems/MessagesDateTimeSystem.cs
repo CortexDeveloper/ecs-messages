@@ -6,7 +6,6 @@ using Unity.Entities;
 namespace CortexDeveloper.Messages.Systems
 {
     [DisableAutoCreation]
-    [AlwaysUpdateSystem]
     public partial class MessagesDateTimeSystem : SystemBase
     {
         public static readonly SharedStatic<FixedString32Bytes> TimeAsString =
