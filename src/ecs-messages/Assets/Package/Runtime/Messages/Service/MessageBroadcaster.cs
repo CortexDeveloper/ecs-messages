@@ -20,14 +20,17 @@ namespace CortexDeveloper.Messages.Service
             MessagesSystemGroup messagesSystemGroup = world.CreateSystemManaged<MessagesSystemGroup>();
             parentSystemGroup.AddSystemToUpdateList(messagesSystemGroup);
 
+#if UNITY_EDITOR
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesStatsSystem>());
-            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesDateTimeSystem>());
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesDateTimeSystem>());
+            
+            MessagesStats.StatsMap.Add(world.Name, new Stats());
+#endif
+
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesOneFrameLifetimeSystem>().Construct(ecbSystem));
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesTimeRangeLifetimeRemoveSystem>().Construct(ecbSystem));
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesTimeRangeLifetimeTimerSystem>());
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesRemoveByComponentCommandListenerSystem>().Construct(ecbSystem));
-
-            MessagesStats.StatsMap.Add(world.Name, new Stats());
         }
 
         public static void Dispose() => 
