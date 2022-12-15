@@ -1,7 +1,7 @@
-using CortexDeveloper.Messages.Components;
+using CortexDeveloper.ECSMessages.Components;
 using Unity.Entities;
 
-namespace CortexDeveloper.Tests.Components
+namespace CortexDeveloper.ECSMessages.Tests
 {
     public struct TestContentData : IComponentData, IMessageComponent
     {

@@ -1,9 +1,9 @@
-using CortexDeveloper.Messages.Service;
+using CortexDeveloper.ECSMessages.Service;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEditor;
 
-namespace CortexDeveloper.Tests
+namespace CortexDeveloper.ECSMessages.Tests
 {
     internal static class TestUtils
     {

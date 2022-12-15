@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using CortexDeveloper.Messages.Service;
+using CortexDeveloper.ECSMessages.Service;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEditor;

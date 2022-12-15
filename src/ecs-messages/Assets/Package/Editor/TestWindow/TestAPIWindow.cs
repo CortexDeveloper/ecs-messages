@@ -1,9 +1,9 @@
-using CortexDeveloper.Tests;
+using CortexDeveloper.ECSMessages.Tests;
 using UnityEditor;
 using UnityEditor.TestTools.TestRunner.Api;
 using UnityEngine;
 
-namespace CortexDeveloper.Messages.Editor.TestWindow
+namespace CortexDeveloper.ECSMessages.Editor.Editor.TestWindow
 {
     public class TestAPIWindow : EditorWindow
     {

@@ -1,9 +1,9 @@
-using CortexDeveloper.Messages.Components.Meta;
-using CortexDeveloper.Messages.Components.RemoveCommands;
+using CortexDeveloper.ECSMessages.Components.Meta;
+using CortexDeveloper.ECSMessages.Components.RemoveCommands;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.Systems
+namespace CortexDeveloper.ECSMessages.Systems
 {
     [UpdateBefore(typeof(MessagesOneFrameLifetimeSystem))]
     [DisableAutoCreation]

@@ -1,7 +1,7 @@
 using System;
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.Service
+namespace CortexDeveloper.ECSMessages.Service
 {
     public static class WorldsCollectionExtensions
     {

@@ -1,7 +1,7 @@
-using CortexDeveloper.Messages.Components.Meta;
+using CortexDeveloper.ECSMessages.Components.Meta;
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.Systems
+namespace CortexDeveloper.ECSMessages.Systems
 {
     [DisableAutoCreation]
     public partial class MessagesTimeRangeLifetimeRemoveSystem : MessagesBaseSystem

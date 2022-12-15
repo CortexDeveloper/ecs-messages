@@ -1,8 +1,6 @@
 using System.Collections;
-using CortexDeveloper.Messages.Components.Meta;
-using CortexDeveloper.Messages.Service;
-using CortexDeveloper.Tests;
-using CortexDeveloper.Tests.Components;
+using CortexDeveloper.ECSMessages.Components.Meta;
+using CortexDeveloper.ECSMessages.Service;
 using NUnit.Framework;
 using Unity.Entities;
 using UnityEngine;

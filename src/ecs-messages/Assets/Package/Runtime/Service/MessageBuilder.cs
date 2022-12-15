@@ -1,10 +1,10 @@
-using CortexDeveloper.Messages.Components;
-using CortexDeveloper.Messages.Components.Meta;
-using CortexDeveloper.Messages.Systems;
+using CortexDeveloper.ECSMessages.Components;
+using CortexDeveloper.ECSMessages.Components.Meta;
+using CortexDeveloper.ECSMessages.Systems;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.Service
+namespace CortexDeveloper.ECSMessages.Service
 {
     public struct MessageBuilder
     {

@@ -1,4 +1,4 @@
-namespace CortexDeveloper.Messages.Service
+namespace CortexDeveloper.ECSMessages.Service
 {
     public class Stats
     {

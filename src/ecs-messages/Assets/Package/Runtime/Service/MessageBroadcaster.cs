@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using CortexDeveloper.Messages.Components.RemoveCommands;
-using CortexDeveloper.Messages.SystemGroups;
-using CortexDeveloper.Messages.Systems;
+using CortexDeveloper.ECSMessages.Components.RemoveCommands;
+using CortexDeveloper.ECSMessages.SystemGroups;
+using CortexDeveloper.ECSMessages.Systems;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Random = Unity.Mathematics.Random;
 
-namespace CortexDeveloper.Messages.Service
+namespace CortexDeveloper.ECSMessages.Service
 {
     public static class MessageBroadcaster
     {

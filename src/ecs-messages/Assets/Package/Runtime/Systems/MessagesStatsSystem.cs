@@ -1,8 +1,8 @@
-using CortexDeveloper.Messages.Components.Meta;
-using CortexDeveloper.Messages.Service;
+using CortexDeveloper.ECSMessages.Components.Meta;
+using CortexDeveloper.ECSMessages.Service;
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.Systems
+namespace CortexDeveloper.ECSMessages.Systems
 {
     [DisableAutoCreation]
     public partial class MessagesStatsSystem : SystemBase

@@ -1,4 +1,4 @@
-﻿namespace CortexDeveloper.Messages.Components
+﻿namespace CortexDeveloper.ECSMessages.Components
 {
     public interface IMessageComponent { }
 }

@@ -1,4 +1,4 @@
-namespace CortexDeveloper.Tests
+namespace CortexDeveloper.ECSMessages.Tests
 {
     public class TestConstants
     {

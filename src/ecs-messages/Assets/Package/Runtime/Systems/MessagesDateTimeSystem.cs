@@ -3,7 +3,7 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.Systems
+namespace CortexDeveloper.ECSMessages.Systems
 {
     [DisableAutoCreation]
     public partial struct MessagesDateTimeSystem : ISystem

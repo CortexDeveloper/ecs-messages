@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.Components.RemoveCommands
+namespace CortexDeveloper.ECSMessages.Components.RemoveCommands
 {
     internal struct RemoveMessagesByComponentCommand : IComponentData, IMessageComponent
     {

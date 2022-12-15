@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.Systems
+namespace CortexDeveloper.ECSMessages.Systems
 {
     public abstract partial class MessagesBaseSystem : SystemBase
     {

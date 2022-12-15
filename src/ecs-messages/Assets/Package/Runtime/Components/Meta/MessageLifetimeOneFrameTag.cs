@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.Components.Meta
+namespace CortexDeveloper.ECSMessages.Components.Meta
 {
     public struct MessageLifetimeOneFrameTag : IComponentData { }
 }

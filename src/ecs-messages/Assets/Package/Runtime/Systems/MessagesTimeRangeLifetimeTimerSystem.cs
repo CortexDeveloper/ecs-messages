@@ -1,8 +1,8 @@
-using CortexDeveloper.Messages.Components.Meta;
+using CortexDeveloper.ECSMessages.Components.Meta;
 using Unity.Burst;
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.Systems
+namespace CortexDeveloper.ECSMessages.Systems
 {
     [DisableAutoCreation]
     [BurstCompile]

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace CortexDeveloper.Messages.Service
+namespace CortexDeveloper.ECSMessages.Service
 {
     public static class MessagesStats
     {

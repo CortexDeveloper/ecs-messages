@@ -1,4 +1,4 @@
-using CortexDeveloper.Messages.Service;
+using CortexDeveloper.ECSMessages.Service;
 using Unity.Entities;
 using UnityEngine;
 

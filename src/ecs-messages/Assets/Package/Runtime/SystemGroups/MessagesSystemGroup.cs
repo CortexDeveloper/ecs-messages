@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace CortexDeveloper.Messages.SystemGroups
+namespace CortexDeveloper.ECSMessages.SystemGroups
 {
     [DisableAutoCreation]
     public class MessagesSystemGroup : ComponentSystemGroup { }

@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using CortexDeveloper.Messages.Components.Meta;
-using CortexDeveloper.Messages.Service;
+using CortexDeveloper.ECSMessages.Components.Meta;
+using CortexDeveloper.ECSMessages.Service;
 using Unity.Entities;
 using UnityEditor;
 using UnityEngine;
 
-namespace CortexDeveloper.Messages.Editor
+namespace CortexDeveloper.ECSMessages.Editor.Editor.StatsWindow
 {
     public class MessagesStatsWindow : EditorWindow
     {

@@ -1,1 +1,4 @@
-internal abstract class RandomKey { }
+namespace CortexDeveloper.ECSMessages.Service
+{
+    internal abstract class RandomKey { }
+}
