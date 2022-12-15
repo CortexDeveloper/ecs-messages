@@ -62,26 +62,30 @@ namespace CortexDeveloper.Messages.Service
         public Entity PostImmediate<T>(EntityManager entityManager, T component) where T : unmanaged, IComponentData, IMessageComponent
         {
             Entity messageEntity = entityManager.CreateEntity();
-
+            EntityCommandBuffer ecb = new();
+            
 #if UNITY_EDITOR
-            entityManager.SetName(messageEntity, Name);
-            entityManager.AddComponentData(messageEntity, new MessageEditorData
+            ecb.SetName(messageEntity, Name);
+            ecb.AddComponent(messageEntity, new MessageEditorData
             {
                 Id = MessageBroadcaster.RandomGen.Data.NextInt(0, int.MaxValue),
                 CreationTime = MessagesDateTimeSystem.TimeAsString.Data
             });
 #endif
             
-            entityManager.AddComponentData(messageEntity, new MessageTag());
+            ecb.AddComponent(messageEntity, new MessageTag());
             
             if (Lifetime == MessageLifetime.OneFrame)
-                entityManager.AddComponentData(messageEntity, new MessageLifetimeOneFrameTag());
+                ecb.AddComponent(messageEntity, new MessageLifetimeOneFrameTag());
             else if (Lifetime == MessageLifetime.TimeRange)
-                entityManager.AddComponentData(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = LifetimeSeconds });
+                ecb.AddComponent(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = LifetimeSeconds });
             else if (Lifetime == MessageLifetime.Unlimited)
-                entityManager.AddComponentData(messageEntity, new MessageLifetimeUnlimitedTag());
+                ecb.AddComponent(messageEntity, new MessageLifetimeUnlimitedTag());
 
-            entityManager.AddComponentData(messageEntity, component);
+            ecb.AddComponent(messageEntity, component);
+            
+            ecb.Playback(entityManager);
+            ecb.Dispose();
 
             return messageEntity;
         }
