@@ -1,13 +1,13 @@
 using System.Collections;
 using CortexDeveloper.Messages.Components.Meta;
 using CortexDeveloper.Messages.Service;
+using CortexDeveloper.Tests;
 using CortexDeveloper.Tests.Components;
 using NUnit.Framework;
 using Unity.Entities;
-using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace CortexDeveloper.Tests
+namespace CortexDeveloper.ECSMessages.Tests
 {
     public class OneFrameMessagesTests
     {

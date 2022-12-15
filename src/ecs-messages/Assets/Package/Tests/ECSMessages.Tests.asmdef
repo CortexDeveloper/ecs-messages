@@ -1,6 +1,6 @@
 {
     "name": "ECSMessages.Tests",
-    "rootNamespace": "CortexDeveloper.Messages.Tests",
+    "rootNamespace": "CortexDeveloper.ECSMessages.Tests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
