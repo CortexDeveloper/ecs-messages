@@ -1,13 +1,13 @@
 {
     "name": "ECSMessages.Tests",
-    "rootNamespace": "CortexDeveloper",
+    "rootNamespace": "CortexDeveloper.Messages.Tests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Unity.Entities",
         "Unity.Collections",
         "Unity.Burst",
-        "CortexDeveloper.Messages"
+        "ECSMessages"
     ],
     "includePlatforms": [],
     "excludePlatforms": [
@@ -18,7 +18,6 @@
         "iOS",
         "LinuxStandalone64",
         "CloudRendering",
-        "Lumin",
         "macOSStandalone",
         "PS4",
         "PS5",
