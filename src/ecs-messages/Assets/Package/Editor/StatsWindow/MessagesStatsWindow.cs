@@ -6,7 +6,7 @@ using Unity.Entities;
 using UnityEditor;
 using UnityEngine;
 
-namespace CortexDeveloper.ECSMessages.Editor.Editor.StatsWindow
+namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
 {
     public class MessagesStatsWindow : EditorWindow
     {

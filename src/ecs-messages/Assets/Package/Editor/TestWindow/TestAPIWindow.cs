@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEditor.TestTools.TestRunner.Api;
 using UnityEngine;
 
-namespace CortexDeveloper.ECSMessages.Editor.Editor.TestWindow
+namespace CortexDeveloper.ECSMessages.Editor.TestWindow
 {
     public class TestAPIWindow : EditorWindow
     {
