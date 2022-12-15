@@ -1,5 +1,5 @@
 {
-    "name": "CortexDeveloper.Editor.Messages",
+    "name": "ECSMessages.Editor",
     "rootNamespace": "CortexDeveloper.Messages.Editor",
     "references": [
         "GUID:734d92eba21c94caba915361bd5ac177",
