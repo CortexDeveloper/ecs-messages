@@ -62,7 +62,7 @@ namespace CortexDeveloper.Messages.Service
         public Entity PostImmediate<T>(EntityManager entityManager, T component) where T : unmanaged, IComponentData, IMessageComponent
         {
             Entity messageEntity = entityManager.CreateEntity();
-            EntityCommandBuffer ecb = new();
+            EntityCommandBuffer ecb = new(Allocator.Temp);
             
 #if UNITY_EDITOR
             ecb.SetName(messageEntity, Name);

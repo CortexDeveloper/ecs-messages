@@ -4,28 +4,33 @@ using CortexDeveloper.Messages.Service;
 using CortexDeveloper.Tests.Components;
 using NUnit.Framework;
 using Unity.Entities;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace CortexDeveloper.Tests
 {
     public class OneFrameMessagesTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp() => 
+            TestUtils.InitializeTestWorld();
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown() => 
+            MessageBroadcaster.DisposeFromWorld(TestUtils.GetTestWorld());
+
         [UnitySetUp]
         public IEnumerator SetUp()
         {
             yield return new EnterPlayMode();
-            
-            TestUtils.InitializeTestWorld();
         }
         
         [UnityTearDown]
         public IEnumerator TearDown()
         {
-            MessageBroadcaster.Dispose(TestUtils.GetTestWorld());
-            
             yield return new ExitPlayMode();
         }
-        
+
         [UnityTest]
         public IEnumerator Post_WaitOneFrame_CheckForExisting_WaitOneFrame_CheckForAutoRemove()
         {
