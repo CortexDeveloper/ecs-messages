@@ -22,7 +22,7 @@ namespace CortexDeveloper.Tests
         [UnityTearDown]
         public IEnumerator TearDown()
         {            
-            MessageBroadcaster.Dispose();
+            MessageBroadcaster.Dispose(TestUtils.GetTestWorld());
 
             yield return new ExitPlayMode();
         }
@@ -75,6 +75,8 @@ namespace CortexDeveloper.Tests
             bool wasAutoRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
             
             Assert.IsTrue(wasPosted && wasAutoRemoved);
+            
+            Debug.Break();
         }
         
         [UnityTest]

@@ -12,10 +12,10 @@ namespace CortexDeveloper.Messages.Service
     {
         internal static readonly SharedStatic<Random> RandomGen = SharedStatic<Random>.GetOrCreate<RandomKey, Random>();
 
-        public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup, EntityCommandBufferSystem ecbSystem)
+        public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup, EntityCommandBufferSystem ecbSystem, uint randomSeed = 1)
         {
             if (RandomGen.Data.state == 0)
-                RandomGen.Data.InitState(1);
+                RandomGen.Data.InitState(randomSeed);
 
             MessagesSystemGroup messagesSystemGroup = world.CreateSystemManaged<MessagesSystemGroup>();
             parentSystemGroup.AddSystemToUpdateList(messagesSystemGroup);
@@ -33,8 +33,14 @@ namespace CortexDeveloper.Messages.Service
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesRemoveByComponentCommandListenerSystem>().Construct(ecbSystem));
         }
 
-        public static void Dispose() => 
-            MessagesStats.StatsMap.Clear();
+        public static void Dispose(World world)
+        {
+#if UNITY_EDITOR
+            MessagesStats.StatsMap.Remove(world.Name);
+#endif
+
+            world.DestroySystemManaged(world.GetExistingSystemManaged<MessagesSystemGroup>());
+        }
 
         public static MessageBuilder PrepareMessage(FixedString64Bytes messageEntityName = default) => 
             new() { Name = messageEntityName };

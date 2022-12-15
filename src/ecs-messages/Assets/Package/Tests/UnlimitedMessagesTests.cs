@@ -22,7 +22,7 @@ namespace CortexDeveloper.Tests
         [UnityTearDown]
         public IEnumerator TearDown()
         {
-            MessageBroadcaster.Dispose();
+            MessageBroadcaster.Dispose(TestUtils.GetTestWorld());
 
             yield return new ExitPlayMode();
         }
