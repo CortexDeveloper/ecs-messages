@@ -11,19 +11,23 @@ namespace CortexDeveloper.Tests
 {
     public class TimeRangeMessagesTests
     {
+        [OneTimeSetUp]
+        public void OneTimeSetUp() => 
+            TestUtils.InitializeTestWorld();
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown() => 
+            MessageBroadcaster.DisposeFromWorld(TestUtils.GetTestWorld());
+        
         [UnitySetUp]
         public IEnumerator SetUp()
         {
             yield return new EnterPlayMode();
-            
-            TestUtils.InitializeTestWorld();
         }
         
         [UnityTearDown]
         public IEnumerator TearDown()
-        {            
-            MessageBroadcaster.Dispose();
-
+        {
             yield return new ExitPlayMode();
         }
         
@@ -46,7 +50,7 @@ namespace CortexDeveloper.Tests
                                    TestUtils.FirstEntityHasComponent<MessageLifetimeTimeRange>(query) &&
                                    component.Value == 123;
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.01f);
 
             bool wasAutoRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
             
@@ -70,7 +74,7 @@ namespace CortexDeveloper.Tests
                              TestUtils.FirstEntityHasComponent<MessageLifetimeTimeRange>(query) &&
                              component.Value == 123;
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.01f);
 
             bool wasAutoRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
             
@@ -96,11 +100,11 @@ namespace CortexDeveloper.Tests
                              TestUtils.FirstEntityHasComponent<MessageLifetimeTimeRange>(query) &&
                              component.Value == 123;
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.01f);
             
             bool existedAfterOneSecondPassed = TestUtils.GetQuery<TestContentData>().CalculateEntityCount() == 1;
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.01f);
 
             bool wasAutoRemoved = !TestUtils.IsEntityWithComponentExist<TestContentData>();
             

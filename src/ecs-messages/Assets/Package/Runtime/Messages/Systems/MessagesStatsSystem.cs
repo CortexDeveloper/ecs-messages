@@ -5,7 +5,6 @@ using Unity.Entities;
 namespace CortexDeveloper.Messages.Systems
 {
     [DisableAutoCreation]
-    [AlwaysUpdateSystem]
     public partial class MessagesStatsSystem : SystemBase
     {
         protected override void OnUpdate()

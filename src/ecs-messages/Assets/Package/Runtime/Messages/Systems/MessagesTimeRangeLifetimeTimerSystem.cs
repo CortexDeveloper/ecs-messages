@@ -1,22 +1,37 @@
 using CortexDeveloper.Messages.Components.Meta;
+using Unity.Burst;
 using Unity.Entities;
 
 namespace CortexDeveloper.Messages.Systems
 {
     [DisableAutoCreation]
-    public partial class MessagesTimeRangeLifetimeTimerSystem : SystemBase
+    [BurstCompile]
+    public partial struct MessagesTimeRangeLifetimeTimerSystem : ISystem
     {
-        protected override void OnUpdate()
-        {
-            float deltaTime = Time.DeltaTime;
+        [BurstCompile]
+        public void OnCreate(ref SystemState state) { }
 
-            Entities
-                .ForEach((Entity entity, ref MessageLifetimeTimeRange timeRange, in MessageTag messageTag) =>
-                {
-                    timeRange.LifetimeLeft -= deltaTime;
-                }).ScheduleParallel();
-            
-            Dependency.Complete();
+        [BurstCompile]
+        public void OnDestroy(ref SystemState state) { }
+
+        [BurstCompile]
+        public void OnUpdate(ref SystemState state)
+        {
+            float deltaTime = SystemAPI.Time.DeltaTime;
+
+            new UpdateLifetimeLeftJob
+            {
+                DeltaTime = deltaTime
+            }.ScheduleParallel();
         }
+    }
+
+    [BurstCompile]
+    public partial struct UpdateLifetimeLeftJob : IJobEntity
+    {
+        public float DeltaTime;
+        
+        public void Execute(ref MessageLifetimeTimeRange timeRange, in MessageTag messageTag) => 
+            timeRange.LifetimeLeft -= DeltaTime;
     }
 }

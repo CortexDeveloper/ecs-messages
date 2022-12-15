@@ -6,16 +6,17 @@ using Unity.Entities;
 namespace CortexDeveloper.Messages.Systems
 {
     [DisableAutoCreation]
-    [AlwaysUpdateSystem]
-    public partial class MessagesDateTimeSystem : SystemBase
+    public partial struct MessagesDateTimeSystem : ISystem
     {
         public static readonly SharedStatic<FixedString32Bytes> TimeAsString =
             SharedStatic<FixedString32Bytes>.GetOrCreate<MessagesDateTimeSystem, FixedString32Bytes>();
 
-        protected override void OnCreate() => 
+        public void OnCreate(ref SystemState state) => 
             TimeAsString.Data = DateTime.Now.ToString("hh:mm:ss");
 
-        protected override void OnUpdate() => 
+        public void OnDestroy(ref SystemState state) { }
+
+        public void OnUpdate(ref SystemState state) => 
             TimeAsString.Data = DateTime.Now.ToString("hh:mm:ss");
     }
 }
