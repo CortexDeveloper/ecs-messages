@@ -27,7 +27,7 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
             MessagesStatsWindow statsWindow = (MessagesStatsWindow)GetWindow(
                 typeof(MessagesStatsWindow), 
                 false, 
-                "Message Broadcaster");
+                "Message Broadcaster Stats");
             
             statsWindow.Show();
         }
