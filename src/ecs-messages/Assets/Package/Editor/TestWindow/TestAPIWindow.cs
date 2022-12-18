@@ -1,4 +1,3 @@
-using CortexDeveloper.ECSMessages.Tests;
 using UnityEditor;
 using UnityEditor.TestTools.TestRunner.Api;
 using UnityEngine;
@@ -7,6 +6,8 @@ namespace CortexDeveloper.ECSMessages.Editor.TestWindow
 {
     public class TestAPIWindow : EditorWindow
     {
+        private const string ECS_MESSAGES_TESTS_WORLD_KEY = "ECS_MESSAGES_TESTS_WORLD_KEY";
+        
         private string _worldName = "Default World";
         
         [MenuItem("DOTS/ECSMessages/Tests")]
@@ -30,25 +31,12 @@ namespace CortexDeveloper.ECSMessages.Editor.TestWindow
         {
             _worldName = EditorGUILayout.TextField("World to run tests in: ", _worldName);
             
-            EditorGUILayout.LabelField($"Saved world: {EditorPrefs.GetString(TestConstants.TESTS_WORLD_KEY, "Default World")}");
+            EditorGUILayout.LabelField($"Saved world: {EditorPrefs.GetString(ECS_MESSAGES_TESTS_WORLD_KEY, "Default World")}");
 
             if (GUILayout.Button("Save chosen world for tests"))
             {
-                EditorPrefs.SetString(TestConstants.TESTS_WORLD_KEY, _worldName);
+                EditorPrefs.SetString(ECS_MESSAGES_TESTS_WORLD_KEY, _worldName);
             }
-
-            if (GUILayout.Button($"Run all tests in {_worldName}"))
-            {
-                EditorPrefs.SetString(TestConstants.TESTS_WORLD_KEY, _worldName);
-                RunAll();
-            }
-        }
-
-        private void RunAll()
-        {
-            TestRunnerApi testRunnerApi = CreateInstance<TestRunnerApi>();
-            Filter filter = new() { testMode = TestMode.PlayMode };
-            testRunnerApi.Execute(new ExecutionSettings(filter));
         }
     }
 }
