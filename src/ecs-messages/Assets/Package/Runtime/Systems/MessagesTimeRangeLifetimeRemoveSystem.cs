@@ -1,4 +1,5 @@
 using CortexDeveloper.ECSMessages.Components.Meta;
+using Unity.Burst;
 using Unity.Entities;
 
 namespace CortexDeveloper.ECSMessages.Systems
@@ -8,16 +9,26 @@ namespace CortexDeveloper.ECSMessages.Systems
     {
         protected override void OnUpdate()
         {
-            EntityCommandBuffer.ParallelWriter ecb = MessagesEcb.AsParallelWriter();
-
-            Entities
-                .ForEach((Entity entity, int entityInQueryIndex, in MessageTag messageTag, in MessageLifetimeTimeRange timeRange) =>
-                {
-                    if (timeRange.LifetimeLeft <= 0)
-                        ecb.DestroyEntity(entityInQueryIndex, entity);
-                }).ScheduleParallel();
+            EntityCommandBuffer ecb = MessagesEcb;
+            
+            new DestroyTimeRangeMessagesJob
+            {
+                Ecb = ecb
+            }.Schedule();
             
             Dependency.Complete();
+        }
+    }
+    
+    [BurstCompile]
+    internal partial struct DestroyTimeRangeMessagesJob : IJobEntity
+    {
+        public EntityCommandBuffer Ecb;
+
+        public void Execute(Entity entity, in MessageTag messageTag, in MessageLifetimeTimeRange timeRange)
+        {
+            if (timeRange.LifetimeLeft <= 0)
+                Ecb.DestroyEntity(entity);
         }
     }
 }
