@@ -1,33 +1,39 @@
 using CortexDeveloper.ECSMessages.Components.Meta;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 
 namespace CortexDeveloper.ECSMessages.Systems
 {
     [DisableAutoCreation]
-    public partial class MessagesOneFrameLifetimeSystem : MessagesBaseSystem
+    [BurstCompile]
+    public partial struct MessagesOneFrameLifetimeSystem : ISystem
     {
-        protected override void OnUpdate()
+        [BurstCompile]
+        public void OnUpdate(ref SystemState state)
         {
-            EntityCommandBuffer ecb = MessagesEcb;
+            EntityCommandBuffer ecb = new(Allocator.TempJob);
             
             new DestroyOneFrameMessagesJob
             {
-                Ecb = ecb
+                ECB = ecb
             }.Schedule();
             
-            Dependency.Complete();
+            state.Dependency.Complete();
+            
+            ecb.Playback(state.EntityManager);
+            ecb.Dispose();
         }
     }
     
     [BurstCompile]
     internal partial struct DestroyOneFrameMessagesJob : IJobEntity
     {
-        public EntityCommandBuffer Ecb;
+        public EntityCommandBuffer ECB;
 
         public void Execute(Entity entity, in MessageTag messageTag, in MessageLifetimeOneFrameTag oneFrameTag)
         {
-            Ecb.DestroyEntity(entity);
+            ECB.DestroyEntity(entity);
         }
     }
 }

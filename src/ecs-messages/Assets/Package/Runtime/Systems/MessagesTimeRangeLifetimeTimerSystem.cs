@@ -21,7 +21,7 @@ namespace CortexDeveloper.ECSMessages.Systems
     }
 
     [BurstCompile]
-    public partial struct UpdateLifetimeLeftJob : IJobEntity
+    internal partial struct UpdateLifetimeLeftJob : IJobEntity
     {
         public float DeltaTime;
         

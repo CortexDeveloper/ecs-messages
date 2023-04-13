@@ -29,7 +29,7 @@ namespace CortexDeveloper.ECSMessages.Service
             MessagesSystemGroup messagesSystemGroup = world.CreateSystemManaged<MessagesSystemGroup>();
             parentSystemGroup.AddSystemToUpdateList(messagesSystemGroup);
 
-            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesOneFrameLifetimeSystem>().Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesOneFrameLifetimeSystem>());
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesTimeRangeLifetimeRemoveSystem>().Construct(ecbSystem));
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesTimeRangeLifetimeTimerSystem>());
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesRemoveByComponentCommandListenerSystem>().Construct(ecbSystem));
