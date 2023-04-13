@@ -32,7 +32,7 @@ namespace CortexDeveloper.ECSMessages.Service
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesOneFrameLifetimeSystem>());
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesTimeRangeLifetimeRemoveSystem>());
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesTimeRangeLifetimeTimerSystem>());
-            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesRemoveByComponentCommandListenerSystem>().Construct(ecbSystem));
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesRemoveByComponentCommandListenerSystem>());
             
 #if UNITY_EDITOR
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesStatsSystem>());

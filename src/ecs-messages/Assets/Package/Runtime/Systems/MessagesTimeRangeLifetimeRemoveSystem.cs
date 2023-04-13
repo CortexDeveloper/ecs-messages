@@ -9,6 +9,7 @@ namespace CortexDeveloper.ECSMessages.Systems
     [BurstCompile]
     public partial struct MessagesTimeRangeLifetimeRemoveSystem : ISystem
     {
+        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             EntityCommandBuffer ecb = new(Allocator.TempJob);
