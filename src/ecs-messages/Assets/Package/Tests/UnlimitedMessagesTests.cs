@@ -17,19 +17,7 @@ namespace CortexDeveloper.ECSMessages.Tests
         [OneTimeTearDown]
         public void OneTimeTearDown() => 
             MessageBroadcaster.DisposeFromWorld(TestUtils.GetTestWorld());
-        
-        [UnitySetUp]
-        public IEnumerator SetUp()
-        {
-            yield return new EnterPlayMode();
-        }
-        
-        [UnityTearDown]
-        public IEnumerator TearDown()
-        {
-            yield return new ExitPlayMode();
-        }
-        
+
         [UnityTest]
         public IEnumerator Post_AliveForUnlimitedTime_WaitOneFrame_CheckForExisting_ManuallyRemoveAllUnlimited_WaitOneFrames_CheckForRemove()
         {
