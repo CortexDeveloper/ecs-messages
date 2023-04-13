@@ -11,12 +11,22 @@ namespace CortexDeveloper.ECSMessages.Systems
     [BurstCompile]
     public partial struct MessagesRemoveByComponentCommandListenerSystem : ISystem
     {
+        private EntityQuery _removeByComponentCommandQuery;
+
+        [BurstCompile]
+        public void OnCreate(ref SystemState state)
+        {
+            _removeByComponentCommandQuery = state.GetEntityQuery(
+                ComponentType.ReadOnly<MessageTag>(),
+                ComponentType.ReadOnly<RemoveMessagesByComponentCommand>());
+        }
+
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             EntityCommandBuffer ecb = new(Allocator.Temp);
-            EntityQuery query = state.GetEntityQuery(ComponentType.ReadOnly<MessageTag>(), ComponentType.ReadOnly<RemoveMessagesByComponentCommand>());
-            NativeArray<RemoveMessagesByComponentCommand> commands = query.ToComponentDataArray<RemoveMessagesByComponentCommand>(Allocator.Temp);
+            NativeArray<RemoveMessagesByComponentCommand> commands = 
+                _removeByComponentCommandQuery.ToComponentDataArray<RemoveMessagesByComponentCommand>(Allocator.Temp);
 
             foreach (RemoveMessagesByComponentCommand command in commands)
             {
