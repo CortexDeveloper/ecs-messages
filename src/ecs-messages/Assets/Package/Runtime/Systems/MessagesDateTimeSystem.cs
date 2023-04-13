@@ -11,11 +11,6 @@ namespace CortexDeveloper.ECSMessages.Systems
         public static readonly SharedStatic<FixedString32Bytes> TimeAsString =
             SharedStatic<FixedString32Bytes>.GetOrCreate<MessagesDateTimeSystem, FixedString32Bytes>();
 
-        public void OnCreate(ref SystemState state) => 
-            TimeAsString.Data = DateTime.Now.ToString("hh:mm:ss");
-
-        public void OnDestroy(ref SystemState state) { }
-
         public void OnUpdate(ref SystemState state) => 
             TimeAsString.Data = DateTime.Now.ToString("hh:mm:ss");
     }

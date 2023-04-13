@@ -9,12 +9,6 @@ namespace CortexDeveloper.ECSMessages.Systems
     public partial struct MessagesTimeRangeLifetimeTimerSystem : ISystem
     {
         [BurstCompile]
-        public void OnCreate(ref SystemState state) { }
-
-        [BurstCompile]
-        public void OnDestroy(ref SystemState state) { }
-
-        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             float deltaTime = SystemAPI.Time.DeltaTime;
