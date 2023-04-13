@@ -9,6 +9,7 @@ namespace CortexDeveloper.ECSMessages.Systems
         internal EntityCommandBuffer MessagesEcb =>
             EcbSystem.CreateCommandBuffer();
 
+        // TODO remove after converting all lifetime systems to ISystem
         internal MessagesBaseSystem Construct(EntityCommandBufferSystem ecbSystem)
         {
             EcbSystem = ecbSystem;
