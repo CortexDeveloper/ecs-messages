@@ -69,8 +69,6 @@ namespace CortexDeveloper.ECSMessages.Tests
 
             // Assert
             EntityQuery query = TestUtils.GetQuery<TestContentData>();
-            NativeArray<Entity> queryEntities = query.ToEntityArray(Allocator.Temp);
-            queryEntities.Dispose();
             TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                              TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
