@@ -16,7 +16,7 @@ namespace CortexDeveloper.ECSMessages.Service
 
         private static readonly Dictionary<World, ComponentSystemGroup> InitializedWorldStates = new();
 
-        public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup, EntityCommandBufferSystem ecbSystem, uint randomSeed = 1)
+        public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup, uint randomSeed = 1)
         {
             if (InitializedWorldStates.ContainsKey(world))
                 throw new Exception($"World {world.Name} has already initialized.");
@@ -35,10 +35,7 @@ namespace CortexDeveloper.ECSMessages.Service
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesRemoveByComponentCommandListenerSystem>());
             
 #if UNITY_EDITOR
-            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystemManaged<MessagesStatsSystem>());
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesDateTimeSystem>());
-            
-            MessagesStats.StatsMap.Add(world.Name, new Stats());
 #endif
         }
 
@@ -53,10 +50,6 @@ namespace CortexDeveloper.ECSMessages.Service
             world.DestroySystemManaged(messagesSystemGroup);
       
             InitializedWorldStates.Remove(world);
-
-#if UNITY_EDITOR
-            MessagesStats.StatsMap.Remove(world.Name);
-#endif
         }
 
         public static MessageBuilder PrepareMessage() =>

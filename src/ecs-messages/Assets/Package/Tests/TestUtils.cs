@@ -68,10 +68,7 @@ namespace CortexDeveloper.ECSMessages.Tests
         public static void InitializeTestWorld()
         {
             World testWorld = GetTestWorld();
-            MessageBroadcaster.InitializeInWorld(
-                testWorld,
-                testWorld.GetExistingSystemManaged<SimulationSystemGroup>(),
-                testWorld.GetExistingSystemManaged<EndSimulationEntityCommandBufferSystem>());
+            MessageBroadcaster.InitializeInWorld(testWorld, testWorld.GetExistingSystemManaged<SimulationSystemGroup>());
         }
     }
 }

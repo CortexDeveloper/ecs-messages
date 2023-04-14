@@ -1,5 +1,4 @@
 using UnityEditor;
-using UnityEditor.TestTools.TestRunner.Api;
 using UnityEngine;
 
 namespace CortexDeveloper.ECSMessages.Editor.TestWindow
@@ -10,7 +9,7 @@ namespace CortexDeveloper.ECSMessages.Editor.TestWindow
         
         private string _worldName = "Default World";
         
-        [MenuItem("DOTS/ECSMessages/Tests")]
+        [MenuItem("ECSMessages/Tests")]
         public static void Init()
         {
             TestAPIWindow window = (TestAPIWindow)GetWindow(

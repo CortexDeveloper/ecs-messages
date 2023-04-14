@@ -11,25 +11,24 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
     public class MessagesStatsWindow : EditorWindow
     {
         private int _selectedTab;
-        private bool _statsEnabled;
         
         private List<string> _worldsList = new();
         
         private int _selectedWorld;
         private World SelectedWorld => World.All.GetWorldWithName(_worldsList[_selectedWorld]);
-        
+
+        private bool _enableStats;
+
         private static EndSimulationEntityCommandBufferSystem GetEcbSystemInWorld(World world) => 
             world.GetOrCreateSystemManaged<EndSimulationEntityCommandBufferSystem>();
+        
 
-        [MenuItem("DOTS/ECSMessages/Stats")]
+        [MenuItem("ECSMessages/Stats")]
         public static void Init()
         {
-            MessagesStatsWindow statsWindow = (MessagesStatsWindow)GetWindow(
-                typeof(MessagesStatsWindow), 
-                false, 
-                "Message Broadcaster Stats");
+            MessagesStatsWindow statsWindow = (MessagesStatsWindow)GetWindow(typeof(MessagesStatsWindow), false, "Message Broadcaster Stats");
             
-            statsWindow.Show();
+            statsWindow.Show(); 
         }
 
         public void OnGUI()
@@ -41,12 +40,16 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
                 return;
             }
             
-            DrawWorldPopup();
+            DrawParams();
+
+            if (!_enableStats)
+                return;
+
             DrawStats();
             Repaint();
         }
         
-        private void DrawWorldPopup()
+        private void DrawParams()
         {
             _worldsList.Clear();
 
@@ -66,13 +69,12 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
 
             _worldsList = _worldsList.Where(w => !w.Contains("LoadingWorld")).ToList();
             _selectedWorld = EditorGUILayout.Popup("World", _selectedWorld, _worldsList.ToArray());
+
+            _enableStats = EditorGUILayout.Toggle("Enable Stats", _enableStats);
         }
 
         private void DrawStats()
         {
-            _statsEnabled = EditorGUILayout.Toggle("Stats Enabled: ", _statsEnabled);
-            MessagesStats.Enabled = _statsEnabled;
-            
             EditorGUILayout.Space(10f);
             DrawMessagesStats();
             EditorGUILayout.Space(25f);
@@ -81,17 +83,13 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
 
         private void DrawMessagesStats()
         {
-            string worldName = SelectedWorld.Name;
-            
-            if (!MessagesStats.StatsMap.ContainsKey(worldName))
-                return;
-                
-            EditorGUILayout.LabelField($"Messages: {MessagesStats.StatsMap[worldName].ActiveMessagesCount}");
+            EditorGUILayout.LabelField($"All Messages: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageTag))).CalculateEntityCount()}");
             EditorGUILayout.Space(10f);
 
-            EditorGUILayout.LabelField($"OneFrame: {MessagesStats.StatsMap[worldName].ActiveOneFrameMessagesCount}");
-            EditorGUILayout.LabelField($"TimeRange: {MessagesStats.StatsMap[worldName].ActiveTimeRangeMessagesCount}");
-            EditorGUILayout.LabelField($"Unlimited: {MessagesStats.StatsMap[worldName].ActiveUnlimitedLifetimeMessagesCount}");
+            EditorGUILayout.LabelField($"OneFrame: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeOneFrameTag))).CalculateEntityCount()}");
+            EditorGUILayout.LabelField($"TimeRange: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeTimeRange))).CalculateEntityCount()}");
+            EditorGUILayout.LabelField($"Unlimited: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeUnlimitedTag))).CalculateEntityCount()}");
+
         }
         
         private void DrawRemoveAPI()
