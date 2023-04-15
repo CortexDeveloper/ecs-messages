@@ -41,7 +41,7 @@ Key features:
 - Supports *IComponentData* as message content
 - Multiple worlds support
 
-> Tested with Unity DOTS ECS v0.51.0-preview.32 and Unity 2021.3.6f1
+> Tested with Unity DOTS ECS v1.0.0-preview.65 and Unity 2022.2.12
 
 ## Installation
 
@@ -52,8 +52,6 @@ Where "x.x.x" is version of package. Also pay attention that package code locate
 
 Or simply clone repository into your project.
 
-> Later versions will be added to OpenUPM too
-
 ## Initialization
 
 Service must be initialized for each world separetely.
@@ -61,11 +59,14 @@ For this purposes use API below in your entry point.
 
 ```csharp
 World defaultWorld = World.DefaultGameObjectInjectionWorld;
+//pass world and parent system group for messages internal systems
 MessageBroadcaster.InitializeInWorld(
     defaultWorld,
-    defaultWorld.GetOrCreateSystem<SimulationSystemGroup>(),
-    defaultWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>());
+    defaultWorld.GetOrCreateSystem<SimulationSystemGroup>());
 ```
+
+It's better to place it under parent system group close to end of your systems execution order.
+Internal systems contains ones that remove messages automaticaly, so it will give you oportunity to proccess messages before they would be deleted. 
 
 ## Use Cases
 
@@ -85,13 +86,13 @@ So, *CharacterDeathSystem* just post message that available only for **one frame
 
 ## Semantic of messages
 
-In *Data Oriented Design* we can say that commands and events are enteties with bunch of special components.<br/>
+In ECS we can say that commands and events are enteties with bunch of special components.<br/>
 So, from computer point of view they looks almost identicaly but not for developer.<br/>
 Both are messages but with different semantic.<br/>
 The difference between them in reasons why they were sent to world.<br/>
 Event notifies that owner of this event **changed its own state**.<br/>
 Command, despite they also just an entity with some components, **have intention to change someones state**.<br/>
-In classic OOP paradigm command is a peace of logic that have form of object. But in Data Driven Design we can operate only with data.
+In classic OOP paradigm command is a peace of logic that have form of object. But in ECS we can operate only with data.
 
 ![Everything is message](documentation/images/data_driven_message.png)
 
@@ -107,7 +108,7 @@ Message can be one of three types:
 *OneFrame* - message will live only one frame and then would be deleted.<br/> 
 Removing handled by service.
 
-*TimeRange* - message will live amount of time that was configured on message creation.<br/> 
+*TimeInterval* - message will live amount of time that was configured on message creation.<br/> 
 Messages with limited lifetime bound to real time.<br/>
 Auto deleting still managed by service.<br/>
 
