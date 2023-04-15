@@ -1,1 +1,0 @@
-internal abstract class RandomKey { }

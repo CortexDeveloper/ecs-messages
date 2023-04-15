@@ -1,13 +1,11 @@
 using System.Collections;
-using CortexDeveloper.Messages.Components.Meta;
-using CortexDeveloper.Messages.Service;
-using CortexDeveloper.Tests.Components;
+using CortexDeveloper.ECSMessages.Components.Meta;
+using CortexDeveloper.ECSMessages.Service;
 using NUnit.Framework;
 using Unity.Entities;
-using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace CortexDeveloper.Tests
+namespace CortexDeveloper.ECSMessages.Tests
 {
     public class OneFrameMessagesTests
     {
@@ -18,18 +16,6 @@ namespace CortexDeveloper.Tests
         [OneTimeTearDown]
         public void OneTimeTearDown() => 
             MessageBroadcaster.DisposeFromWorld(TestUtils.GetTestWorld());
-
-        [UnitySetUp]
-        public IEnumerator SetUp()
-        {
-            yield return new EnterPlayMode();
-        }
-        
-        [UnityTearDown]
-        public IEnumerator TearDown()
-        {
-            yield return new ExitPlayMode();
-        }
 
         [UnityTest]
         public IEnumerator Post_WaitOneFrame_CheckForExisting_WaitOneFrame_CheckForAutoRemove()

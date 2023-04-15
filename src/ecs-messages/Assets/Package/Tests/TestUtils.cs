@@ -1,12 +1,14 @@
-using CortexDeveloper.Messages.Service;
+using CortexDeveloper.ECSMessages.Service;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEditor;
 
-namespace CortexDeveloper.Tests
+namespace CortexDeveloper.ECSMessages.Tests
 {
     internal static class TestUtils
     {
+        private const string ECS_MESSAGES_TESTS_WORLD_KEY = "ECS_MESSAGES_TESTS_WORLD_KEY";
+        
         internal static EntityQuery GetQuery<T>() where T : struct, IComponentData
         {
             NativeList<ComponentType> queryComponents = new(Allocator.Temp);
@@ -58,7 +60,7 @@ namespace CortexDeveloper.Tests
 
         public static World GetTestWorld()
         {
-            string worldName = EditorPrefs.GetString(TestConstants.TESTS_WORLD_KEY, "Default World");
+            string worldName = EditorPrefs.GetString(ECS_MESSAGES_TESTS_WORLD_KEY, "Default World");
 
             return World.All.GetWorldWithName(worldName);
         }
@@ -66,10 +68,7 @@ namespace CortexDeveloper.Tests
         public static void InitializeTestWorld()
         {
             World testWorld = GetTestWorld();
-            MessageBroadcaster.InitializeInWorld(
-                testWorld,
-                testWorld.GetExistingSystemManaged<SimulationSystemGroup>(),
-                testWorld.GetExistingSystemManaged<EndSimulationEntityCommandBufferSystem>());
+            MessageBroadcaster.InitializeInWorld(testWorld, testWorld.GetExistingSystemManaged<SimulationSystemGroup>());
         }
     }
 }

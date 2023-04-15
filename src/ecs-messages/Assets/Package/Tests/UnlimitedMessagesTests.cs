@@ -1,14 +1,12 @@
 using System.Collections;
-using CortexDeveloper.Messages.Components.Meta;
-using CortexDeveloper.Messages.Service;
-using CortexDeveloper.Tests.Components;
+using CortexDeveloper.ECSMessages.Components.Meta;
+using CortexDeveloper.ECSMessages.Service;
 using NUnit.Framework;
 using Unity.Collections;
 using Unity.Entities;
-using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace CortexDeveloper.Tests
+namespace CortexDeveloper.ECSMessages.Tests
 {
     public class UnlimitedMessagesTests
     {
@@ -19,19 +17,7 @@ namespace CortexDeveloper.Tests
         [OneTimeTearDown]
         public void OneTimeTearDown() => 
             MessageBroadcaster.DisposeFromWorld(TestUtils.GetTestWorld());
-        
-        [UnitySetUp]
-        public IEnumerator SetUp()
-        {
-            yield return new EnterPlayMode();
-        }
-        
-        [UnityTearDown]
-        public IEnumerator TearDown()
-        {
-            yield return new ExitPlayMode();
-        }
-        
+
         [UnityTest]
         public IEnumerator Post_AliveForUnlimitedTime_WaitOneFrame_CheckForExisting_ManuallyRemoveAllUnlimited_WaitOneFrames_CheckForRemove()
         {
@@ -71,8 +57,6 @@ namespace CortexDeveloper.Tests
 
             // Assert
             EntityQuery query = TestUtils.GetQuery<TestContentData>();
-            NativeArray<Entity> queryEntities = query.ToEntityArray(Allocator.Temp);
-            queryEntities.Dispose();
             TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                              TestUtils.FirstEntityHasComponent<MessageTag>(query) &&

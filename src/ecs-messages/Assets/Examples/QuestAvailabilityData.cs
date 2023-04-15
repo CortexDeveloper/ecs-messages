@@ -1,5 +1,5 @@
 using System;
-using CortexDeveloper.Messages.Components;
+using CortexDeveloper.ECSMessages.Components;
 using Unity.Entities;
 
 namespace CortexDeveloper.Examples
