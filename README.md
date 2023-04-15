@@ -3,7 +3,7 @@
 ecs-messages
 ============
 
-![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.2.0-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen)
+![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.3.0-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen)
 
 
 Simple way of communication between MonoBehaviours and ECS world.<br/>
