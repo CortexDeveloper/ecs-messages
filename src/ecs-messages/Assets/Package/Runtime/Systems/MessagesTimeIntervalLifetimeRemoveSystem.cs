@@ -7,14 +7,14 @@ namespace CortexDeveloper.ECSMessages.Systems
 {
     [DisableAutoCreation]
     [BurstCompile]
-    public partial struct MessagesTimeRangeLifetimeRemoveSystem : ISystem
+    public partial struct MessagesTimeIntervalLifetimeRemoveSystem : ISystem
     {
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             EntityCommandBuffer ecb = new(Allocator.TempJob);
 
-            new DestroyTimeRangeMessagesJob
+            new DestroyTimeIntervalMessagesJob
             {
                 ECB = ecb
             }.Schedule();
@@ -27,13 +27,13 @@ namespace CortexDeveloper.ECSMessages.Systems
     }
     
     [BurstCompile]
-    internal partial struct DestroyTimeRangeMessagesJob : IJobEntity
+    internal partial struct DestroyTimeIntervalMessagesJob : IJobEntity
     {
         public EntityCommandBuffer ECB;
 
-        public void Execute(Entity entity, in MessageTag messageTag, in MessageLifetimeTimeRange timeRange)
+        public void Execute(Entity entity, in MessageTag messageTag, in MessageLifetimeTimeInterval timeInterval)
         {
-            if (timeRange.LifetimeLeft <= 0)
+            if (timeInterval.LifetimeLeft <= 0)
                 ECB.DestroyEntity(entity);
         }
     }

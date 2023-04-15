@@ -87,7 +87,7 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
             EditorGUILayout.Space(10f);
 
             EditorGUILayout.LabelField($"OneFrame: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeOneFrameTag))).CalculateEntityCount()}");
-            EditorGUILayout.LabelField($"TimeRange: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeTimeRange))).CalculateEntityCount()}");
+            EditorGUILayout.LabelField($"TimeInterval: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeTimeInterval))).CalculateEntityCount()}");
             EditorGUILayout.LabelField($"Unlimited: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeUnlimitedTag))).CalculateEntityCount()}");
 
         }

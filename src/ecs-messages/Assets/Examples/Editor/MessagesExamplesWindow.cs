@@ -53,7 +53,7 @@ namespace CortexDeveloper.Examples.Editor
                     DrawOneFrameExamples();
                     break;
                 case 1:
-                    DrawTimeRangeExamples();
+                    DrawTimeIntervalExamples();
                     break;
                 case 2:
                     DrawUnlimitedLifetimeExamples();
@@ -112,11 +112,11 @@ namespace CortexDeveloper.Examples.Editor
             }
         }
 
-        private void DrawTimeRangeExamples()
+        private void DrawTimeIntervalExamples()
         {
             // Case 1
             EditorGUILayout.LabelField("Case: Informing that quest available only for N seconds.", EditorStyles.helpBox);
-            EditorGUILayout.LabelField("In this case we need to post message-event with TimeRange Lifetime type.\n" +
+            EditorGUILayout.LabelField("In this case we need to post message-event with TimeInterval Lifetime type.\n" +
                                        "Message will be alive for N seconds and then would be deleted.", EditorStyles.textArea);
             
             _availableQuest = (Quests)EditorGUILayout.EnumPopup("Quest: ", _availableQuest);

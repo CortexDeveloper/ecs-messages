@@ -29,9 +29,9 @@ namespace CortexDeveloper.ECSMessages.Service
             MessagesSystemGroup messagesSystemGroup = world.CreateSystemManaged<MessagesSystemGroup>();
             parentSystemGroup.AddSystemToUpdateList(messagesSystemGroup);
 
-            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesOneFrameLifetimeSystem>());
-            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesTimeRangeLifetimeRemoveSystem>());
-            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesTimeRangeLifetimeTimerSystem>());
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesOneFrameLifetimeRemoveSystem>());
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesTimeIntervalLifetimeRemoveSystem>());
+            messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesTimeIntervalLifetimeTimerSystem>());
             messagesSystemGroup.AddSystemToUpdateList(world.CreateSystem<MessagesRemoveByComponentCommandListenerSystem>());
             
 #if UNITY_EDITOR

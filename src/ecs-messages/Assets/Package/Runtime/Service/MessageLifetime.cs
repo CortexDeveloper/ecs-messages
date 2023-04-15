@@ -4,6 +4,6 @@ namespace CortexDeveloper.ECSMessages.Service
     {
         Unlimited,
         OneFrame,
-        TimeRange
+        TimeInterval
     }
 }

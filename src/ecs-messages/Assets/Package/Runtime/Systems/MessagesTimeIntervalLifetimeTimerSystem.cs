@@ -6,7 +6,7 @@ namespace CortexDeveloper.ECSMessages.Systems
 {
     [DisableAutoCreation]
     [BurstCompile]
-    public partial struct MessagesTimeRangeLifetimeTimerSystem : ISystem
+    public partial struct MessagesTimeIntervalLifetimeTimerSystem : ISystem
     {
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
@@ -25,7 +25,7 @@ namespace CortexDeveloper.ECSMessages.Systems
     {
         public float DeltaTime;
         
-        public void Execute(ref MessageLifetimeTimeRange timeRange, in MessageTag messageTag) => 
-            timeRange.LifetimeLeft -= DeltaTime;
+        public void Execute(ref MessageLifetimeTimeInterval timeInterval, in MessageTag messageTag) => 
+            timeInterval.LifetimeLeft -= DeltaTime;
     }
 }
