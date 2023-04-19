@@ -226,17 +226,13 @@ MessageBroadcaster.RemoveAllMessagesWith<T>(ecb);
 ## Editor Features
 
 ### Stats Window 
-Stats window located here *DOTS/ECSMessages/Stats*.<br/>
+Stats window located here *ECSMessages/Stats*.<br/>
 It shows count of active messages in chosen world and provide API to remove all messages via editor.<br/>
-
-![Stats Window](documentation/images/editor_stats_window.png)
 
 ### Message Entity
 
 There is an example of components on message entity.<br/>
 They might be useful for debug purposes. Each message have unique ID and stores creation time.
-
-![Source Code Examples](documentation/images/editor_message_components.png)
 
 ### Message Entity Editor Name
 
@@ -253,8 +249,6 @@ MessageBroadcaster
 ### Examples Editor Window
 
 You can also explore examples *Tools/Messages Examples* if you download package source code.<br/>
-
-![Source Code Examples](documentation/images/editor_source_code_examples_window.png)
 
 ## Contacts
 
