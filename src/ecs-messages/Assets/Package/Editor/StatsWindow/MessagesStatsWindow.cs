@@ -94,8 +94,17 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
         
         private void DrawRemoveAPI()
         {
-            if (GUILayout.Button("Remove All")) 
+            if (GUILayout.Button("Remove All Messages")) 
                 MessageBroadcaster.RemoveAllMessagesWith<MessageTag>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
+            
+            if (GUILayout.Button("Remove OneFrame Messages")) 
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeOneFrameTag>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
+            
+            if (GUILayout.Button("Remove TimeInterval Messages")) 
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeTimeInterval>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
+            
+            if (GUILayout.Button("Remove Unlimited Messages")) 
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
         }
     }
 }
