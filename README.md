@@ -60,9 +60,7 @@ For this purposes use API below in your entry point.
 ```csharp
 World defaultWorld = World.DefaultGameObjectInjectionWorld;
 //pass world and parent system group for messages internal systems
-MessageBroadcaster.InitializeInWorld(
-    defaultWorld,
-    defaultWorld.GetOrCreateSystem<SimulationSystemGroup>());
+MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystem<SimulationSystemGroup>());
 ```
 
 It's better to place it under parent system group close to end of your systems execution order.
@@ -167,7 +165,7 @@ public struct StartMatchCommand : IComponentData, IMessageComponent
 }
 ```
 
-#### Time Range Messages
+#### Time Interval Messages
 
 ##### Case: Informing that quest available only for 600 seconds(10 minutes)
 
