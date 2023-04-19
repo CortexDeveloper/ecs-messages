@@ -87,15 +87,24 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
             EditorGUILayout.Space(10f);
 
             EditorGUILayout.LabelField($"OneFrame: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeOneFrameTag))).CalculateEntityCount()}");
-            EditorGUILayout.LabelField($"TimeRange: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeTimeRange))).CalculateEntityCount()}");
+            EditorGUILayout.LabelField($"TimeInterval: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeTimeInterval))).CalculateEntityCount()}");
             EditorGUILayout.LabelField($"Unlimited: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeUnlimitedTag))).CalculateEntityCount()}");
 
         }
         
         private void DrawRemoveAPI()
         {
-            if (GUILayout.Button("Remove All")) 
+            if (GUILayout.Button("Remove All Messages")) 
                 MessageBroadcaster.RemoveAllMessagesWith<MessageTag>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
+            
+            if (GUILayout.Button("Remove OneFrame Messages")) 
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeOneFrameTag>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
+            
+            if (GUILayout.Button("Remove TimeInterval Messages")) 
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeTimeInterval>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
+            
+            if (GUILayout.Button("Remove Unlimited Messages")) 
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
         }
     }
 }

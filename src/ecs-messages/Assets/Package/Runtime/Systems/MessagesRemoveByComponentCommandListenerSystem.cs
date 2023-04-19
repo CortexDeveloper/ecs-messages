@@ -5,7 +5,7 @@ using Unity.Entities;
 
 namespace CortexDeveloper.ECSMessages.Systems
 {
-    [UpdateBefore(typeof(MessagesOneFrameLifetimeSystem))]
+    [UpdateBefore(typeof(MessagesOneFrameLifetimeRemoveSystem))]
     [DisableAutoCreation]
     public partial struct MessagesRemoveByComponentCommandListenerSystem : ISystem
     {

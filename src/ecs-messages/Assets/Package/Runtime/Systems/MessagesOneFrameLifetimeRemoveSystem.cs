@@ -7,7 +7,7 @@ namespace CortexDeveloper.ECSMessages.Systems
 {
     [DisableAutoCreation]
     [BurstCompile]
-    public partial struct MessagesOneFrameLifetimeSystem : ISystem
+    public partial struct MessagesOneFrameLifetimeRemoveSystem : ISystem
     {
         [BurstCompile]
         public void OnUpdate(ref SystemState state)

@@ -21,7 +21,7 @@ namespace CortexDeveloper.ECSMessages.Service
         
         public MessageBuilder AliveForSeconds(float seconds)
         {
-            Lifetime = MessageLifetime.TimeRange;
+            Lifetime = MessageLifetime.TimeInterval;
             LifetimeSeconds = seconds;
 
             return this;
@@ -51,8 +51,8 @@ namespace CortexDeveloper.ECSMessages.Service
 
             if (Lifetime == MessageLifetime.OneFrame)
                 ecb.AddComponent(messageEntity, new MessageLifetimeOneFrameTag());
-            else if (Lifetime == MessageLifetime.TimeRange)
-                ecb.AddComponent(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = LifetimeSeconds });
+            else if (Lifetime == MessageLifetime.TimeInterval)
+                ecb.AddComponent(messageEntity, new MessageLifetimeTimeInterval { LifetimeLeft = LifetimeSeconds });
             else if (Lifetime == MessageLifetime.Unlimited)
                 ecb.AddComponent(messageEntity, new MessageLifetimeUnlimitedTag());
             
@@ -77,8 +77,8 @@ namespace CortexDeveloper.ECSMessages.Service
             
             if (Lifetime == MessageLifetime.OneFrame)
                 ecb.AddComponent(messageEntity, new MessageLifetimeOneFrameTag());
-            else if (Lifetime == MessageLifetime.TimeRange)
-                ecb.AddComponent(messageEntity, new MessageLifetimeTimeRange { LifetimeLeft = LifetimeSeconds });
+            else if (Lifetime == MessageLifetime.TimeInterval)
+                ecb.AddComponent(messageEntity, new MessageLifetimeTimeInterval { LifetimeLeft = LifetimeSeconds });
             else if (Lifetime == MessageLifetime.Unlimited)
                 ecb.AddComponent(messageEntity, new MessageLifetimeUnlimitedTag());
 

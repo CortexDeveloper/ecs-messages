@@ -8,7 +8,7 @@ using UnityEngine.TestTools;
 
 namespace CortexDeveloper.ECSMessages.Tests
 {
-    public class TimeRangeMessagesTests
+    public class TimeIntervalMessagesTests
     {
         [OneTimeSetUp]
         public void OneTimeSetUp() => 
@@ -34,7 +34,7 @@ namespace CortexDeveloper.ECSMessages.Tests
             TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                                    TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                                   TestUtils.FirstEntityHasComponent<MessageLifetimeTimeRange>(query) &&
+                                   TestUtils.FirstEntityHasComponent<MessageLifetimeTimeInterval>(query) &&
                                    component.Value == 123;
 
             yield return new WaitForSeconds(1.01f);
@@ -58,7 +58,7 @@ namespace CortexDeveloper.ECSMessages.Tests
             TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                              TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                             TestUtils.FirstEntityHasComponent<MessageLifetimeTimeRange>(query) &&
+                             TestUtils.FirstEntityHasComponent<MessageLifetimeTimeInterval>(query) &&
                              component.Value == 123;
 
             yield return new WaitForSeconds(1.01f);
@@ -84,7 +84,7 @@ namespace CortexDeveloper.ECSMessages.Tests
             TestContentData component = TestUtils.GetComponentFromFirstEntity<TestContentData>(query);
             bool wasPosted = query.CalculateEntityCount() == 1 &&
                              TestUtils.FirstEntityHasComponent<MessageTag>(query) &&
-                             TestUtils.FirstEntityHasComponent<MessageLifetimeTimeRange>(query) &&
+                             TestUtils.FirstEntityHasComponent<MessageLifetimeTimeInterval>(query) &&
                              component.Value == 123;
 
             yield return new WaitForSeconds(1.01f);
