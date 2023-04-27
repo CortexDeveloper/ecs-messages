@@ -3,10 +3,14 @@
     "version": "0.3.0",
     "displayName": "ECS Messages",
     "author": {
-         "name": "cortexdeveloper", 
-         "url": "https://github.com/CortexDeveloper/ecs-messages"
+        "name": "cortexdeveloper",
+        "email": "cortexdeveloper@gmail.com",
+        "url": "https://github.com/CortexDeveloper/"
     },
     "unity": "2022.2",
+    "documentationUrl": "https://github.com/CortexDeveloper/ecs-messages",
+    "changelogUrl": "https://github.com/CortexDeveloper/ecs-messages/releases",
+    "licensesUrl": "https://github.com/CortexDeveloper/ecs-messages/blob/main/LICENSE",
     "description": "ECS implementation of messaging system.",
     "keywords": [
         "Messages",
@@ -15,5 +19,12 @@
         "Game Tools"
     ],
     "license": "MIT",
-    "dependencies": {}
+    "dependencies": {},
+    "samples": [
+        {
+            "displayName": "Samples Template",
+            "description": "Samples Description",
+            "path": "Samples~/SamplesTemplate"
+        }
+    ]
 }
