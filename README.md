@@ -9,6 +9,7 @@ ecs-messages
   - [Overview](#overview)
   - [Installation](#installation)
   - [Initialization](#initialization)
+  - [Disposing](#disposing)
   - [Use Cases](#use-cases)
     - [UI and ECS](#ui-and-ecs)
     - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
@@ -71,6 +72,15 @@ World defaultWorld = World.DefaultGameObjectInjectionWorld;
 //pass world and parent system group for messages internal systems
 MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystem<SimulationSystemGroup>());
 ```
+## Disposing
+
+Service also have API to dispose from world.
+
+```csharp
+World defaultWorld = World.DefaultGameObjectInjectionWorld;
+
+MessageBroadcaster.DisposeFromWorld(defaultWorld);
+```
 
 It's better to place it under parent system group close to end of your systems execution order.
 Internal systems contains ones that remove messages automaticaly, so it will give you oportunity to proccess messages before they would be deleted. 
@@ -112,14 +122,14 @@ In classic OOP paradigm command is a peace of logic that have form of object. Bu
 
 Message can be one of three types:
 
-**OneFrame** - message will live only one frame and then would be deleted.<br/> 
+***OneFrame*** - message will live only one frame and then would be deleted.<br/> 
 Removing handled by service.
 
-**TimeInterval** - message will live amount of time that was configured on message creation.<br/> 
+***TimeInterval*** - message will live amount of time that was configured on message creation.<br/> 
 Messages with limited lifetime bound to real time.<br/>
 Auto deleting still managed by service.<br/>
 
-**Unlimited** - unmanaged by service type.<br/> 
+***Unlimited*** - unmanaged by service type.<br/> 
 Special messages that might be useful for cases when you don't know exactly the lifetime.<br/>
 In this case you should manually deal with it and delete message after usage.<br/>
 
