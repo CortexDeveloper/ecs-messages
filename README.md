@@ -54,7 +54,8 @@ Add package via Package Manager -> Add package from git URL.<br/>
 Package path in "manifest.json" should looks like:<br/> 
 https://github.com/CortexDeveloper/ecs-messages.git?path=src/ecs-messages/Assets/Package#x.x.x"<br/>
 
-Where "x.x.x" is version of package. Also pay attention that package code located in "src/ecs-messages/Assets/Package".<br/>
+Where "x.x.x" is version of package.<br/> 
+Also pay attention that package code located in "src/ecs-messages/Assets/Package".<br/>
 
 ![Everything is message](documentation/images/manifest_example.png)
 
@@ -111,20 +112,20 @@ In classic OOP paradigm command is a peace of logic that have form of object. Bu
 
 Message can be one of three types:
 
-*OneFrame* - message will live only one frame and then would be deleted.<br/> 
+**OneFrame** - message will live only one frame and then would be deleted.<br/> 
 Removing handled by service.
 
-*TimeInterval* - message will live amount of time that was configured on message creation.<br/> 
+**TimeInterval** - message will live amount of time that was configured on message creation.<br/> 
 Messages with limited lifetime bound to real time.<br/>
 Auto deleting still managed by service.<br/>
 
-*Unlimited* - unmanaged by service type.<br/> 
-Special messages that might be useful for cases when you don't know exactly the lifetime.<bt/>
+**Unlimited** - unmanaged by service type.<br/> 
+Special messages that might be useful for cases when you don't know exactly the lifetime.<br/>
 In this case you should manually deal with it and delete message after usage.<br/>
 
 ### Multiple Worlds
 
-Messages can be posted via EntityCommandBuffer or EntityManager. Both of them belong to some world. 
+Messages can be posted via EntityCommandBuffer or EntityManager. Both of them belong to some world.<br/> 
 So, if you want to post message in certain world just use ECB or EM from proper one.
 
 ## Code Examples
@@ -141,6 +142,7 @@ That helps to quickly catch the intention of this message.
 
 ```csharp
 var ecb = yourEntityCommandBufferSystem.CreateCommandBuffer();
+
 // It will be automatically deleted after one frame
 MessageBroadcaster
     .PrepareMessage()
@@ -155,6 +157,7 @@ public struct PauseGameCommand : IComponentData, IMessageComponent { }
 
 ```csharp                
 var ecb = yourEntityCommandBufferSystem.CreateCommandBuffer();
+
 MessageBroadcaster
     .PrepareMessage()
     .AliveForOneFrame()
@@ -209,6 +212,7 @@ Here is alternative way how to post message.
 // The only difference here is last method to post message
 // It needs EntityManager instead of ECB
 var entityManager = yourWorld.EntityManager;
+
 Entity messageEntity = MessageBroadcaster
     .PrepareMessage()
     .AliveForOneFrame()
