@@ -70,7 +70,7 @@ For this purposes use API below in your entry point.
 ```csharp
 World defaultWorld = World.DefaultGameObjectInjectionWorld;
 //pass world and parent system group for messages internal systems
-MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystem<SimulationSystemGroup>());
+MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystemManaged<SimulationSystemGroup>());
 ```
 ## Disposing
 
