@@ -1,35 +1,34 @@
 using System.Collections.Generic;
 using System.Linq;
-using CortexDeveloper.Messages.Components.Meta;
-using CortexDeveloper.Messages.Service;
+using CortexDeveloper.ECSMessages.Components.Meta;
+using CortexDeveloper.ECSMessages.Service;
 using Unity.Entities;
 using UnityEditor;
 using UnityEngine;
 
-namespace CortexDeveloper.Messages.Editor
+namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
 {
     public class MessagesStatsWindow : EditorWindow
     {
         private int _selectedTab;
-        private bool _statsEnabled;
         
         private List<string> _worldsList = new();
         
         private int _selectedWorld;
         private World SelectedWorld => World.All.GetWorldWithName(_worldsList[_selectedWorld]);
-        
-        private static EndSimulationEntityCommandBufferSystem GetEcbSystemInWorld(World world) => 
-            world.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
 
-        [MenuItem("DOTS/ECSMessages/Stats")]
+        private bool _enableStats;
+
+        private static EndSimulationEntityCommandBufferSystem GetEcbSystemInWorld(World world) => 
+            world.GetOrCreateSystemManaged<EndSimulationEntityCommandBufferSystem>();
+        
+
+        [MenuItem("ECSMessages/Stats")]
         public static void Init()
         {
-            MessagesStatsWindow statsWindow = (MessagesStatsWindow)GetWindow(
-                typeof(MessagesStatsWindow), 
-                false, 
-                "Message Broadcaster");
+            MessagesStatsWindow statsWindow = (MessagesStatsWindow)GetWindow(typeof(MessagesStatsWindow), false, "Message Broadcaster Stats");
             
-            statsWindow.Show();
+            statsWindow.Show(); 
         }
 
         public void OnGUI()
@@ -41,12 +40,16 @@ namespace CortexDeveloper.Messages.Editor
                 return;
             }
             
-            DrawWorldPopup();
+            DrawParams();
+
+            if (!_enableStats)
+                return;
+
             DrawStats();
             Repaint();
         }
         
-        private void DrawWorldPopup()
+        private void DrawParams()
         {
             _worldsList.Clear();
 
@@ -66,13 +69,12 @@ namespace CortexDeveloper.Messages.Editor
 
             _worldsList = _worldsList.Where(w => !w.Contains("LoadingWorld")).ToList();
             _selectedWorld = EditorGUILayout.Popup("World", _selectedWorld, _worldsList.ToArray());
+
+            _enableStats = EditorGUILayout.Toggle("Enable Stats", _enableStats);
         }
 
         private void DrawStats()
         {
-            _statsEnabled = EditorGUILayout.Toggle("Stats Enabled: ", _statsEnabled);
-            MessagesStats.Enabled = _statsEnabled;
-            
             EditorGUILayout.Space(10f);
             DrawMessagesStats();
             EditorGUILayout.Space(25f);
@@ -81,23 +83,28 @@ namespace CortexDeveloper.Messages.Editor
 
         private void DrawMessagesStats()
         {
-            string worldName = SelectedWorld.Name;
-            
-            if (!MessagesStats.StatsMap.ContainsKey(worldName))
-                return;
-                
-            EditorGUILayout.LabelField($"Messages: {MessagesStats.StatsMap[worldName].ActiveMessagesCount}");
+            EditorGUILayout.LabelField($"All Messages: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageTag))).CalculateEntityCount()}");
             EditorGUILayout.Space(10f);
 
-            EditorGUILayout.LabelField($"OneFrame: {MessagesStats.StatsMap[worldName].ActiveOneFrameMessagesCount}");
-            EditorGUILayout.LabelField($"TimeRange: {MessagesStats.StatsMap[worldName].ActiveTimeRangeMessagesCount}");
-            EditorGUILayout.LabelField($"Unlimited: {MessagesStats.StatsMap[worldName].ActiveUnlimitedLifetimeMessagesCount}");
+            EditorGUILayout.LabelField($"OneFrame: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeOneFrameTag))).CalculateEntityCount()}");
+            EditorGUILayout.LabelField($"TimeInterval: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeTimeInterval))).CalculateEntityCount()}");
+            EditorGUILayout.LabelField($"Unlimited: {SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeUnlimitedTag))).CalculateEntityCount()}");
+
         }
         
         private void DrawRemoveAPI()
         {
-            if (GUILayout.Button("Remove All")) 
+            if (GUILayout.Button("Remove All Messages")) 
                 MessageBroadcaster.RemoveAllMessagesWith<MessageTag>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
+            
+            if (GUILayout.Button("Remove OneFrame Messages")) 
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeOneFrameTag>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
+            
+            if (GUILayout.Button("Remove TimeInterval Messages")) 
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeTimeInterval>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
+            
+            if (GUILayout.Button("Remove Unlimited Messages")) 
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(GetEcbSystemInWorld(SelectedWorld).EntityManager);
         }
     }
 }

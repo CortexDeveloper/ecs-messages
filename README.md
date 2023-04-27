@@ -3,32 +3,38 @@
 ecs-messages
 ============
 
-![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.2.0-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen)
+![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.3.0-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen)
 
-
-Simple way of communication between MonoBehaviours and ECS world.<br/>
-...and a little bit of other cool features :D
-
-- [Overview](#overview)
-- [Installation](#installation)
-- [Initialization](#initialization)
-- [Use Cases](#use-cases)
-  - [UI and ECS](#ui-and-ecs)
-  - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
-- [Semantic of messages](#semantic-of-messages)
-- [Features](#features)
-  - [Lifetime Types](#lifetime-types)
-  - [Multiple Worlds](#multiple-worlds)
-- [Code Examples](#code-examples)
-  - [Post API](#post-api)
-  - [Immediate Post API](#immediate-post-api)
-  - [Remove API](#remove-api)
-- [Editor Features](#editor-features)
-  - [Stats Window](#stats-window)
-  - [Message Entity](#message-entity)
-  - [Message Entity Editor Name](#message-entity-editor-name)
-  - [Examples Editor Window](#examples-editor-window)
-- [Contacts](#contacts)
+- [ecs-messages](#ecs-messages)
+  - [Overview](#overview)
+  - [Installation](#installation)
+  - [Initialization](#initialization)
+  - [Disposing](#disposing)
+  - [Use Cases](#use-cases)
+    - [UI and ECS](#ui-and-ecs)
+    - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
+  - [Semantic of messages](#semantic-of-messages)
+  - [Features](#features)
+    - [Lifetime Types](#lifetime-types)
+    - [Multiple Worlds](#multiple-worlds)
+  - [Code Examples](#code-examples)
+    - [Post API](#post-api)
+      - [One Frame Messages](#one-frame-messages)
+        - [Case: Pause game](#case-pause-game)
+        - [Case: Start game by clicking Start button](#case-start-game-by-clicking-start-button)
+      - [Time Interval Messages](#time-interval-messages)
+        - [Case: Informing that quest available only for 600 seconds(10 minutes)](#case-informing-that-quest-available-only-for-600-seconds10-minutes)
+      - [Unlimited Lifetime Messages](#unlimited-lifetime-messages)
+        - [Case: Notify that quest is completed](#case-notify-that-quest-is-completed)
+    - [Immediate Post API](#immediate-post-api)
+        - [Case: Post pause message immediately](#case-post-pause-message-immediately)
+    - [Remove API](#remove-api)
+  - [Editor Features](#editor-features)
+    - [Stats Window](#stats-window)
+    - [Message Entity](#message-entity)
+    - [Message Entity Editor Name](#message-entity-editor-name)
+    - [Examples Editor Window](#examples-editor-window)
+  - [Contacts](#contacts)
 
 ## Overview
 
@@ -41,18 +47,20 @@ Key features:
 - Supports *IComponentData* as message content
 - Multiple worlds support
 
-> Tested with Unity DOTS ECS v0.51.0-preview.32 and Unity 2021.3.6f1
+> Tested with Unity DOTS ECS v1.0.0-preview.65 and Unity 2022.2.12
 
 ## Installation
 
 Add package via Package Manager -> Add package from git URL.<br/>
 Package path in "manifest.json" should looks like:<br/> 
 https://github.com/CortexDeveloper/ecs-messages.git?path=src/ecs-messages/Assets/Package#x.x.x"<br/>
-Where "x.x.x" is version of package. Also pay attention that package code located in "src/ecs-messages/Assets/Package".<br/>
+
+Where "x.x.x" is version of package.<br/> 
+Also pay attention that package code located in "src/ecs-messages/Assets/Package".<br/>
+
+![Everything is message](documentation/images/manifest_example.png)
 
 Or simply clone repository into your project.
-
-> Later versions will be added to OpenUPM too
 
 ## Initialization
 
@@ -61,11 +69,21 @@ For this purposes use API below in your entry point.
 
 ```csharp
 World defaultWorld = World.DefaultGameObjectInjectionWorld;
-MessageBroadcaster.InitializeInWorld(
-    defaultWorld,
-    defaultWorld.GetOrCreateSystem<SimulationSystemGroup>(),
-    defaultWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>());
+//pass world and parent system group for messages internal systems
+MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystem<SimulationSystemGroup>());
 ```
+## Disposing
+
+Service also have API to dispose from world.
+
+```csharp
+World defaultWorld = World.DefaultGameObjectInjectionWorld;
+
+MessageBroadcaster.DisposeFromWorld(defaultWorld);
+```
+
+It's better to place it under parent system group close to end of your systems execution order.
+Internal systems contains ones that remove messages automaticaly, so it will give you oportunity to proccess messages before they would be deleted. 
 
 ## Use Cases
 
@@ -85,13 +103,13 @@ So, *CharacterDeathSystem* just post message that available only for **one frame
 
 ## Semantic of messages
 
-In *Data Oriented Design* we can say that commands and events are enteties with bunch of special components.<br/>
+In ECS we can say that commands and events are enteties with bunch of special components.<br/>
 So, from computer point of view they looks almost identicaly but not for developer.<br/>
 Both are messages but with different semantic.<br/>
 The difference between them in reasons why they were sent to world.<br/>
 Event notifies that owner of this event **changed its own state**.<br/>
 Command, despite they also just an entity with some components, **have intention to change someones state**.<br/>
-In classic OOP paradigm command is a peace of logic that have form of object. But in Data Driven Design we can operate only with data.
+In classic OOP paradigm command is a peace of logic that have form of object. But in ECS we can operate only with data.
 
 ![Everything is message](documentation/images/data_driven_message.png)
 
@@ -104,20 +122,20 @@ In classic OOP paradigm command is a peace of logic that have form of object. Bu
 
 Message can be one of three types:
 
-*OneFrame* - message will live only one frame and then would be deleted.<br/> 
+***OneFrame*** - message will live only one frame and then would be deleted.<br/> 
 Removing handled by service.
 
-*TimeRange* - message will live amount of time that was configured on message creation.<br/> 
+***TimeInterval*** - message will live amount of time that was configured on message creation.<br/> 
 Messages with limited lifetime bound to real time.<br/>
 Auto deleting still managed by service.<br/>
 
-*Unlimited* - unmanaged by service type.<br/> 
-Special messages that might be useful for cases when you don't know exactly the lifetime.<bt/>
+***Unlimited*** - unmanaged by service type.<br/> 
+Special messages that might be useful for cases when you don't know exactly the lifetime.<br/>
 In this case you should manually deal with it and delete message after usage.<br/>
 
 ### Multiple Worlds
 
-Messages can be posted via EntityCommandBuffer or EntityManager. Both of them belong to some world. 
+Messages can be posted via EntityCommandBuffer or EntityManager. Both of them belong to some world.<br/> 
 So, if you want to post message in certain world just use ECB or EM from proper one.
 
 ## Code Examples
@@ -134,6 +152,7 @@ That helps to quickly catch the intention of this message.
 
 ```csharp
 var ecb = yourEntityCommandBufferSystem.CreateCommandBuffer();
+
 // It will be automatically deleted after one frame
 MessageBroadcaster
     .PrepareMessage()
@@ -148,6 +167,7 @@ public struct PauseGameCommand : IComponentData, IMessageComponent { }
 
 ```csharp                
 var ecb = yourEntityCommandBufferSystem.CreateCommandBuffer();
+
 MessageBroadcaster
     .PrepareMessage()
     .AliveForOneFrame()
@@ -166,7 +186,7 @@ public struct StartMatchCommand : IComponentData, IMessageComponent
 }
 ```
 
-#### Time Range Messages
+#### Time Interval Messages
 
 ##### Case: Informing that quest available only for 600 seconds(10 minutes)
 
@@ -202,6 +222,7 @@ Here is alternative way how to post message.
 // The only difference here is last method to post message
 // It needs EntityManager instead of ECB
 var entityManager = yourWorld.EntityManager;
+
 Entity messageEntity = MessageBroadcaster
     .PrepareMessage()
     .AliveForOneFrame()
@@ -227,17 +248,12 @@ MessageBroadcaster.RemoveAllMessagesWith<T>(ecb);
 ## Editor Features
 
 ### Stats Window 
-Stats window located here *DOTS/ECSMessages/Stats*.<br/>
-It shows count of active messages in chosen world and provide API to remove all messages via editor.<br/>
-
-![Stats Window](documentation/images/editor_stats_window.png)
+Stats window located here *ECSMessages/Stats*.<br/>
 
 ### Message Entity
 
 There is an example of components on message entity.<br/>
 They might be useful for debug purposes. Each message have unique ID and stores creation time.
-
-![Source Code Examples](documentation/images/editor_message_components.png)
 
 ### Message Entity Editor Name
 
@@ -254,8 +270,6 @@ MessageBroadcaster
 ### Examples Editor Window
 
 You can also explore examples *Tools/Messages Examples* if you download package source code.<br/>
-
-![Source Code Examples](documentation/images/editor_source_code_examples_window.png)
 
 ## Contacts
 

@@ -1,12 +1,12 @@
 {
     "name": "com.cortexdeveloper.ecs.messages",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "displayName": "ECS Messages",
     "author": {
          "name": "cortexdeveloper", 
-         "url": "https://github.com/CortexDeveloper/"
+         "url": "https://github.com/CortexDeveloper/ecs-messages"
     },
-    "unity": "2021.3",
+    "unity": "2022.2",
     "description": "ECS implementation of messaging system.",
     "keywords": [
         "Messages",

@@ -1,27 +1,31 @@
-using CortexDeveloper.Messages.Service;
+using CortexDeveloper.ECSMessages.Service;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEditor;
 
-namespace CortexDeveloper.Tests
+namespace CortexDeveloper.ECSMessages.Tests
 {
     internal static class TestUtils
     {
+        private const string ECS_MESSAGES_TESTS_WORLD_KEY = "ECS_MESSAGES_TESTS_WORLD_KEY";
+        
         internal static EntityQuery GetQuery<T>() where T : struct, IComponentData
         {
-            EntityQueryDescBuilder descBuilder = new(Allocator.Temp);
-            descBuilder.AddAny(new ComponentType(typeof(T)));
-            descBuilder.FinalizeQuery();
+            NativeList<ComponentType> queryComponents = new(Allocator.Temp);
+            queryComponents.Add(new ComponentType(typeof(T)));
 
-            EntityManager entityManager = GetTestWorld().EntityManager;
-            EntityQuery query = entityManager.CreateEntityQuery(descBuilder);
+            EntityQueryBuilder descBuilder = new(Allocator.Temp);
+            EntityQuery query = descBuilder
+                .WithAny(ref queryComponents)
+                .Build(GetTestWorld().EntityManager);
 
             descBuilder.Dispose();
+            queryComponents.Dispose();
 
             return query;
         }
         
-        internal static T GetComponentFromFirstEntity<T>(EntityQuery query) where T : struct, IComponentData
+        internal static T GetComponentFromFirstEntity<T>(EntityQuery query) where T : unmanaged, IComponentData
         {
             EntityManager entityManager = GetTestWorld().EntityManager;
             Entity entity = GetFirstEntity(query);
@@ -52,11 +56,11 @@ namespace CortexDeveloper.Tests
         }
 
         internal static EntityCommandBufferSystem GetEcbSystem() => 
-            GetTestWorld().GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+            GetTestWorld().GetExistingSystemManaged<EndSimulationEntityCommandBufferSystem>();
 
         public static World GetTestWorld()
         {
-            string worldName = EditorPrefs.GetString(TestConstants.TESTS_WORLD_KEY, "Default World");
+            string worldName = EditorPrefs.GetString(ECS_MESSAGES_TESTS_WORLD_KEY, "Default World");
 
             return World.All.GetWorldWithName(worldName);
         }
@@ -64,10 +68,7 @@ namespace CortexDeveloper.Tests
         public static void InitializeTestWorld()
         {
             World testWorld = GetTestWorld();
-            MessageBroadcaster.InitializeInWorld(
-                testWorld,
-                testWorld.GetOrCreateSystem<SimulationSystemGroup>(),
-                testWorld.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>());
+            MessageBroadcaster.InitializeInWorld(testWorld, testWorld.GetExistingSystemManaged<SimulationSystemGroup>());
         }
     }
 }
