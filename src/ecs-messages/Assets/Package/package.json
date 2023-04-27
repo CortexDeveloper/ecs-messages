@@ -4,7 +4,7 @@
     "displayName": "ECS Messages",
     "author": {
          "name": "cortexdeveloper", 
-         "url": "https://github.com/CortexDeveloper/"
+         "url": "https://github.com/CortexDeveloper/ecs-messages"
     },
     "unity": "2022.2",
     "description": "ECS implementation of messaging system.",

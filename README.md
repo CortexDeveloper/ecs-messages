@@ -5,30 +5,35 @@ ecs-messages
 
 ![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.3.0-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen)
 
-
-Simple way of communication between MonoBehaviours and ECS world.<br/>
-...and a little bit of other cool features :D
-
-- [Overview](#overview)
-- [Installation](#installation)
-- [Initialization](#initialization)
-- [Use Cases](#use-cases)
-  - [UI and ECS](#ui-and-ecs)
-  - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
-- [Semantic of messages](#semantic-of-messages)
-- [Features](#features)
-  - [Lifetime Types](#lifetime-types)
-  - [Multiple Worlds](#multiple-worlds)
-- [Code Examples](#code-examples)
-  - [Post API](#post-api)
-  - [Immediate Post API](#immediate-post-api)
-  - [Remove API](#remove-api)
-- [Editor Features](#editor-features)
-  - [Stats Window](#stats-window)
-  - [Message Entity](#message-entity)
-  - [Message Entity Editor Name](#message-entity-editor-name)
-  - [Examples Editor Window](#examples-editor-window)
-- [Contacts](#contacts)
+- [ecs-messages](#ecs-messages)
+  - [Overview](#overview)
+  - [Installation](#installation)
+  - [Initialization](#initialization)
+  - [Use Cases](#use-cases)
+    - [UI and ECS](#ui-and-ecs)
+    - [Gameplay and Non-Gameplay/Meta Game](#gameplay-and-non-gameplaymeta-game)
+  - [Semantic of messages](#semantic-of-messages)
+  - [Features](#features)
+    - [Lifetime Types](#lifetime-types)
+    - [Multiple Worlds](#multiple-worlds)
+  - [Code Examples](#code-examples)
+    - [Post API](#post-api)
+      - [One Frame Messages](#one-frame-messages)
+        - [Case: Pause game](#case-pause-game)
+        - [Case: Start game by clicking Start button](#case-start-game-by-clicking-start-button)
+      - [Time Interval Messages](#time-interval-messages)
+        - [Case: Informing that quest available only for 600 seconds(10 minutes)](#case-informing-that-quest-available-only-for-600-seconds10-minutes)
+      - [Unlimited Lifetime Messages](#unlimited-lifetime-messages)
+        - [Case: Notify that quest is completed](#case-notify-that-quest-is-completed)
+    - [Immediate Post API](#immediate-post-api)
+        - [Case: Post pause message immediately](#case-post-pause-message-immediately)
+    - [Remove API](#remove-api)
+  - [Editor Features](#editor-features)
+    - [Stats Window](#stats-window)
+    - [Message Entity](#message-entity)
+    - [Message Entity Editor Name](#message-entity-editor-name)
+    - [Examples Editor Window](#examples-editor-window)
+  - [Contacts](#contacts)
 
 ## Overview
 
@@ -227,7 +232,6 @@ MessageBroadcaster.RemoveAllMessagesWith<T>(ecb);
 
 ### Stats Window 
 Stats window located here *ECSMessages/Stats*.<br/>
-It shows count of active messages in chosen world and provide API to remove all messages via editor.<br/>
 
 ### Message Entity
 
