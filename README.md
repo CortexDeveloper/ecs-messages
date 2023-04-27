@@ -53,7 +53,10 @@ Key features:
 Add package via Package Manager -> Add package from git URL.<br/>
 Package path in "manifest.json" should looks like:<br/> 
 https://github.com/CortexDeveloper/ecs-messages.git?path=src/ecs-messages/Assets/Package#x.x.x"<br/>
+
 Where "x.x.x" is version of package. Also pay attention that package code located in "src/ecs-messages/Assets/Package".<br/>
+
+![Everything is message](documentation/images/manifest_example.png)
 
 Or simply clone repository into your project.
 
