@@ -26,8 +26,8 @@ namespace Samples.SystemToSystemExample
 
         private void CreateExampleSystems()
         {
-            _systemGroup.AddSystemToUpdateList(_world.CreateSystem<StartGameSystem>());
-            _systemGroup.AddSystemToUpdateList(_world.CreateSystem<PauseGameSystem>());
+            _systemGroup.AddSystemToUpdateList(_world.CreateSystem<CountdownSystem>());
+            _systemGroup.AddSystemToUpdateList(_world.CreateSystem<CountdownAnalyticsTrackingSystem>());
         }
     }
 }
