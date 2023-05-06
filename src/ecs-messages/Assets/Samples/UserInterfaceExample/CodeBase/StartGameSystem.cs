@@ -1,7 +1,7 @@
 ﻿using Unity.Entities;
 using UnityEngine;
 
-namespace Samples.UserInterfaceExample.CodeBase
+namespace Samples.UserInterfaceExample
 { 
     [DisableAutoCreation]
     public partial struct StartGameSystem : ISystem

@@ -1,10 +1,11 @@
 ﻿using CortexDeveloper.ECSMessages.Service;
+using Samples.UserInterfaceExample;
 using Unity.Entities;
 using UnityEngine;
 
-namespace Samples.UserInterfaceExample
+namespace Samples.SystemToSystemExample
 {
-    public class UIExampleBootstrap : MonoBehaviour
+    public class SystemsExampleBootstrap : MonoBehaviour
     {
         private static World _world;
         private SimulationSystemGroup _systemGroup;

@@ -1,7 +1,7 @@
 ﻿using CortexDeveloper.ECSMessages.Components;
 using Unity.Entities;
 
-namespace Samples.UserInterfaceExample.CodeBase
+namespace Samples.UserInterfaceExample
 {
     public struct StartGameCommand : IComponentData, IMessageComponent
     {

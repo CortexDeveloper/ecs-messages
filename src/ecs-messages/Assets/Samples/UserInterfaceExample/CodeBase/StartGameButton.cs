@@ -4,7 +4,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Samples.UserInterfaceExample.CodeBase
+namespace Samples.UserInterfaceExample
 {
     [RequireComponent(typeof(Button))]
     public class StartGameButton : MonoBehaviour
