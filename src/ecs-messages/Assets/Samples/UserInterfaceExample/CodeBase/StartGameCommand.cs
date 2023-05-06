@@ -5,7 +5,7 @@ namespace Samples.UserInterfaceExample.CodeBase
 {
     public struct StartGameCommand : IComponentData, IMessageComponent
     {
-        public int Enemies;
         public float Duration;
+        public int Enemies;
     }
 }

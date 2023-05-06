@@ -72,6 +72,10 @@ World defaultWorld = World.DefaultGameObjectInjectionWorld;
 //pass world and parent system group for messages internal systems
 MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystemManaged<SimulationSystemGroup>());
 ```
+
+It's better to place it under parent system group close to end of your systems execution order.
+Internal systems contains ones that remove messages automaticaly, so it will give you oportunity to proccess messages before they would be deleted. 
+
 ## Disposing
 
 Service also have API to dispose from world.
@@ -81,9 +85,6 @@ World defaultWorld = World.DefaultGameObjectInjectionWorld;
 
 MessageBroadcaster.DisposeFromWorld(defaultWorld);
 ```
-
-It's better to place it under parent system group close to end of your systems execution order.
-Internal systems contains ones that remove messages automaticaly, so it will give you oportunity to proccess messages before they would be deleted. 
 
 ## Use Cases
 
@@ -266,10 +267,6 @@ MessageBroadcaster
     .AliveForOneFrame()
     .Post(ecb, new PauseGameCommand());
 ```
-
-### Examples Editor Window
-
-You can also explore examples *Tools/Messages Examples* if you download package source code.<br/>
 
 ## Contacts
 

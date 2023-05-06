@@ -1,4 +1,5 @@
 using CortexDeveloper.ECSMessages.Service;
+using TMPro;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,9 @@ namespace Samples.UserInterfaceExample.CodeBase
     [RequireComponent(typeof(Button))]
     public class StartGameButton : MonoBehaviour
     {
+        public TMP_InputField MatchDurationInputField;
+        public TMP_InputField EnemiesCountInputField;
+        
         private Button _button;
     
         private void Awake()
@@ -23,18 +27,19 @@ namespace Samples.UserInterfaceExample.CodeBase
 
         private void StartGame()
         {
-            World world = World.DefaultGameObjectInjectionWorld;
-            EntityCommandBufferSystem ecbSystem = world.GetOrCreateSystemManaged<EndSimulationEntityCommandBufferSystem>();
-            EntityCommandBuffer ecb = ecbSystem.CreateCommandBuffer();
+            EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
+            float.TryParse(MatchDurationInputField.text, out float duration);
+            int.TryParse(EnemiesCountInputField.text, out int enemies);
+            
             MessageBroadcaster
                 .PrepareMessage()
                 .AliveForOneFrame()
-                .Post(ecb,
+                .PostImmediate(entityManager,
                     new StartGameCommand
                     {
-                        Enemies = 999,
-                        Duration = 600f
+                        Duration = duration,
+                        Enemies = enemies,
                     });
         }
     }

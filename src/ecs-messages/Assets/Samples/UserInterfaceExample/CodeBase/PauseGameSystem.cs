@@ -14,8 +14,6 @@ namespace Samples.UserInterfaceExample.CodeBase
         public void OnUpdate(ref SystemState state)
         {
             Debug.Log("Game paused");
-            
-            state.Enabled = false;
         }
     }
 }

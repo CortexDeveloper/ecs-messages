@@ -23,7 +23,7 @@ namespace Samples.UserInterfaceExample.CodeBase
     {
         public void Execute(in StartGameCommand command)
         {
-            Debug.Log($"Game started. Enemies: {command.Enemies}. Duration: {command.Duration}");
+            Debug.Log($"Game started. Duration: {command.Duration}, Enemies: {command.Enemies}.");
         }
     }
 }
