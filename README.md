@@ -3,7 +3,7 @@
 ecs-messages
 ============
 
-![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.3.1-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen)
+![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.3.1-blue) ![Unity](https://img.shields.io/badge/unity-2022.2.12%2B-blue) ![Entities](https://img.shields.io/badge/entities-1.0.0--pre.65-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen) 
 
 - [ecs-messages](#ecs-messages)
   - [Overview](#overview)
