@@ -1,4 +1,4 @@
-using Unity.Entities;
+﻿using Unity.Entities;
 
 namespace CortexDeveloper.Examples
 {
@@ -20,7 +20,6 @@ namespace CortexDeveloper.Examples
         private void CreateInitializationGroup(World world)
         {
             InitializationSystemGroup initGroup = world.GetOrCreateSystemManaged<InitializationSystemGroup>();
-
             UpdateWorldTimeSystem updateWorldTimeSystem = world.GetOrCreateSystemManaged<UpdateWorldTimeSystem>();
             
             initGroup.AddSystemToUpdateList(updateWorldTimeSystem);

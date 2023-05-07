@@ -1,9 +1,9 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace CortexDeveloper.ECSMessages.Editor.TestWindow
+namespace CortexDeveloper.ECSMessages.Editor.WorldsTestEnvironment
 {
-    public class TestAPIWindow : EditorWindow
+    public class WorldsTestEnvironmentWindow : EditorWindow
     {
         private const string ECS_MESSAGES_TESTS_WORLD_KEY = "ECS_MESSAGES_TESTS_WORLD_KEY";
         
@@ -12,8 +12,8 @@ namespace CortexDeveloper.ECSMessages.Editor.TestWindow
         [MenuItem("ECSMessages/Tests")]
         public static void Init()
         {
-            TestAPIWindow window = (TestAPIWindow)GetWindow(
-                typeof(TestAPIWindow), 
+            WorldsTestEnvironmentWindow window = (WorldsTestEnvironmentWindow)GetWindow(
+                typeof(WorldsTestEnvironmentWindow), 
                 false, 
                 "ECS Messages Test API");
             
