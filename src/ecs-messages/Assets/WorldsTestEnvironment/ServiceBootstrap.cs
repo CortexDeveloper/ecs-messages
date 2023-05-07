@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CortexDeveloper.Examples
 {
-    public class Bootstrap : MonoBehaviour
+    public class ServiceBootstrap : MonoBehaviour
     {
         private void Awake()
         {
