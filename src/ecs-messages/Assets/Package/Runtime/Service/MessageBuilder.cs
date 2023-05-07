@@ -59,6 +59,13 @@ namespace CortexDeveloper.ECSMessages.Service
             ecb.AddComponent(messageEntity, component);
         }
         
+        /// <summary>
+        /// Immediately creates entity-message.
+        /// </summary>
+        /// <param name="entityManager">EntityManger from needed world.</param>
+        /// <param name="component">Message content.</param>
+        /// <typeparam name="T">Component must implement IMessageComponent interface.</typeparam>
+        /// <returns></returns>
         public Entity PostImmediate<T>(EntityManager entityManager, T component) where T : unmanaged, IComponentData, IMessageComponent
         {
             Entity messageEntity = entityManager.CreateEntity();
