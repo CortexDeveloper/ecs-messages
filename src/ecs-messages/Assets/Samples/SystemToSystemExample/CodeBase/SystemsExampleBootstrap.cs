@@ -1,4 +1,5 @@
-﻿using CortexDeveloper.ECSMessages.Service;
+﻿using System;
+using CortexDeveloper.ECSMessages.Service;
 using Samples.UserInterfaceExample;
 using Unity.Entities;
 using UnityEngine;
@@ -14,6 +15,11 @@ namespace Samples.SystemToSystemExample
         {
             InitializeMessageBroadcaster();
             CreateExampleSystems();
+        }
+
+        private void OnDestroy()
+        {
+            MessageBroadcaster.DisposeFromWorld(_world);
         }
 
         private void InitializeMessageBroadcaster()

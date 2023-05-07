@@ -15,6 +15,11 @@ namespace Samples.UserInterfaceExample
             CreateExampleSystems();
         }
 
+        private void OnDestroy()
+        {
+            MessageBroadcaster.DisposeFromWorld(_world);
+        }
+        
         private void InitializeMessageBroadcaster()
         {
             _world = World.DefaultGameObjectInjectionWorld;

@@ -1,12 +1,15 @@
 ﻿using CortexDeveloper.ECSMessages.Service;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 
 namespace Samples.SystemToSystemExample
 {
     [DisableAutoCreation]
+    [BurstCompile]
     public partial struct CountdownSystem : ISystem
     {
+        [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
             float startValue = 5;
@@ -19,11 +22,12 @@ namespace Samples.SystemToSystemExample
                 });
         }
         
+        [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             EntityManager entityManager = state.EntityManager;
             EntityCommandBuffer ecb = new(Allocator.TempJob);
-            float deltaTime = state.World.Time.DeltaTime;
+            float deltaTime = SystemAPI.Time.DeltaTime;
             
             UpdateCountdownJob job = new()
             {
@@ -39,6 +43,7 @@ namespace Samples.SystemToSystemExample
         }
     }
     
+    [BurstCompile]
     public partial struct UpdateCountdownJob : IJobEntity
     {
         public EntityCommandBuffer ECB;
