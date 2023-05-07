@@ -34,6 +34,13 @@ namespace CortexDeveloper.ECSMessages.Service
             return this;
         }
         
+        /// <summary>
+        /// Creates entity-message by scheduling it to ECB. Burst is supported.
+        /// </summary>
+        /// <param name="ecb">ECB from needed world.</param>
+        /// <param name="component">Message content.</param>
+        /// <typeparam name="T">Component must implement IMessageComponent interface.</typeparam>
+        /// <returns></returns>
         public void Post<T>(EntityCommandBuffer ecb, T component) where T : unmanaged, IComponentData, IMessageComponent
         {
             Entity messageEntity = ecb.CreateEntity();
@@ -59,6 +66,13 @@ namespace CortexDeveloper.ECSMessages.Service
             ecb.AddComponent(messageEntity, component);
         }
         
+        /// <summary>
+        /// Immediately creates entity-message. Burst not supported.
+        /// </summary>
+        /// <param name="entityManager">EntityManger from needed world.</param>
+        /// <param name="component">Message content.</param>
+        /// <typeparam name="T">Component must implement IMessageComponent interface.</typeparam>
+        /// <returns></returns>
         public Entity PostImmediate<T>(EntityManager entityManager, T component) where T : unmanaged, IComponentData, IMessageComponent
         {
             Entity messageEntity = entityManager.CreateEntity();

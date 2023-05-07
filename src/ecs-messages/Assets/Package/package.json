@@ -22,9 +22,14 @@
     "dependencies": {},
     "samples": [
         {
-            "displayName": "Samples Template",
-            "description": "Samples Description",
-            "path": "Samples~/SamplesTemplate"
+            "displayName": "UI and ECS interaction",
+            "description": "This example shows how you can link ECS world with UI",
+            "path": "Samples~/UserInterfaceExample"
+        },
+        {
+            "displayName": "Interaction between ECS systems",
+            "description": "Bursted example of communication between systems.",
+            "path": "Samples~/SystemToSystemExample"
         }
     ]
 }
