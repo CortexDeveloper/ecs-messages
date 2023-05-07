@@ -7,7 +7,8 @@ namespace Samples.UserInterfaceExample
     public class UIExampleBootstrap : MonoBehaviour
     {
         private static World _world;
-        private SimulationSystemGroup _systemGroup;
+        private SimulationSystemGroup _simulationSystemGroup;
+        private LateSimulationSystemGroup _lateSimulationSystemGroup;
 
         private void Awake()
         {
@@ -15,23 +16,19 @@ namespace Samples.UserInterfaceExample
             CreateExampleSystems();
         }
 
-        private void OnDestroy()
-        {
-            MessageBroadcaster.DisposeFromWorld(_world);
-        }
-        
         private void InitializeMessageBroadcaster()
         {
             _world = World.DefaultGameObjectInjectionWorld;
-            _systemGroup = _world.GetOrCreateSystemManaged<SimulationSystemGroup>();
+            _simulationSystemGroup = _world.GetOrCreateSystemManaged<SimulationSystemGroup>();
+            _lateSimulationSystemGroup = _world.GetOrCreateSystemManaged<LateSimulationSystemGroup>();
 
-            MessageBroadcaster.InitializeInWorld(_world, _systemGroup);
+            MessageBroadcaster.InitializeInWorld(_world, _lateSimulationSystemGroup);
         }
 
         private void CreateExampleSystems()
         {
-            _systemGroup.AddSystemToUpdateList(_world.CreateSystem<StartGameSystem>());
-            _systemGroup.AddSystemToUpdateList(_world.CreateSystem<PauseGameSystem>());
+            _simulationSystemGroup.AddSystemToUpdateList(_world.CreateSystem<StartGameSystem>());
+            _simulationSystemGroup.AddSystemToUpdateList(_world.CreateSystem<PauseGameSystem>());
         }
     }
 }

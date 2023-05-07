@@ -16,7 +16,7 @@ namespace CortexDeveloper.ECSMessages.Service
         public static void InitializeInWorld(World world, ComponentSystemGroup parentSystemGroup, uint randomSeed = 1)
         {
             if (MessageBroadcasterWorldsMap.InitializedWorldStates.ContainsKey(world))
-                throw new Exception($"World {world.Name} has already initialized.");
+                throw new Exception($"World {world.Name} has already been initialized.");
             
             MessageBroadcasterWorldsMap.InitializedWorldStates.Add(world, parentSystemGroup);
             
