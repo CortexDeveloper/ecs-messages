@@ -12,6 +12,10 @@ namespace CortexDeveloper.ECSMessages.Service
         internal MessageLifetime Lifetime;
         internal float LifetimeSeconds;
 
+        /// <summary>
+        /// Sets lifetime to OneFrame type.
+        /// </summary>
+        /// <returns>Special struct which stores message settings and provides API to build calls chain.</returns>
         public MessageBuilder AliveForOneFrame()
         {
             Lifetime = MessageLifetime.OneFrame;
@@ -19,6 +23,11 @@ namespace CortexDeveloper.ECSMessages.Service
             return this;
         }
         
+        /// <summary>
+        /// Sets lifetime to TimeInterval type.
+        /// </summary>
+        /// <param name="seconds"></param>
+        /// <returns>Special struct which stores message settings and provides API to build calls chain.</returns>
         public MessageBuilder AliveForSeconds(float seconds)
         {
             Lifetime = MessageLifetime.TimeInterval;
