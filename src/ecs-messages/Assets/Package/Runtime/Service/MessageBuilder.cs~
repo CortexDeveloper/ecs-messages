@@ -26,7 +26,7 @@ namespace CortexDeveloper.ECSMessages.Service
         /// <summary>
         /// Sets lifetime to TimeInterval type.
         /// </summary>
-        /// <param name="seconds">Amount of message lifetime in seconds.</param>
+        /// <param name="seconds"></param>
         /// <returns>Special struct which stores message settings and provides API to build calls chain.</returns>
         public MessageBuilder AliveForSeconds(float seconds)
         {
