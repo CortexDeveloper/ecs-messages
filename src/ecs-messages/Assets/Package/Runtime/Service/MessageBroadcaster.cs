@@ -62,15 +62,25 @@ namespace CortexDeveloper.ECSMessages.Service
         }
 
         /// <summary>
-        /// Start point to begin a chain of builder calls.
+        /// Start point for service calls chain.
         /// </summary>
         /// <returns>Special struct which stores message settings and provides API to build calls chain.</returns>
         public static MessageBuilder PrepareMessage() =>
             new();
 
+        /// <summary>
+        /// Start point for service calls chain.
+        /// </summary>
+        /// <param name="messageEntityName">Name for entity-message in editor.</param>
+        /// <returns></returns>
         public static MessageBuilder PrepareMessage(FixedString64Bytes messageEntityName) => 
             new() { Name = messageEntityName };
 
+        /// <summary>
+        /// Removes all messages with T component.
+        /// </summary>
+        /// <param name="entityManager">EntityManager from needed world.</param>
+        /// <typeparam name="T">Component must implement IMessageComponent interface.</typeparam>
         public static void RemoveAllMessagesWith<T>(EntityManager entityManager) where T : struct, IComponentData => 
             PrepareMessage().AliveForOneFrame().PostImmediate(entityManager, new RemoveMessagesByComponentCommand { ComponentType = new ComponentType(typeof(T)) });
     }
