@@ -1,4 +1,5 @@
-﻿using CortexDeveloper.ECSMessages.Service;
+﻿using System;
+using CortexDeveloper.ECSMessages.Service;
 using Unity.Entities;
 using UnityEngine;
 
@@ -16,6 +17,15 @@ namespace Samples.UserInterfaceExample
             CreateExampleSystems();
         }
 
+        private void OnDestroy()
+        {
+            if (!_world.IsCreated)
+                return;
+
+            DisposeMessageBroadcaster();
+            RemoveExampleSystem();
+        }
+
         private void InitializeMessageBroadcaster()
         {
             _world = World.DefaultGameObjectInjectionWorld;
@@ -24,11 +34,22 @@ namespace Samples.UserInterfaceExample
 
             MessageBroadcaster.InitializeInWorld(_world, _lateSimulationSystemGroup);
         }
+        
+        private void DisposeMessageBroadcaster()
+        {
+            MessageBroadcaster.DisposeFromWorld(_world);    
+        }
 
         private void CreateExampleSystems()
         {
             _simulationSystemGroup.AddSystemToUpdateList(_world.CreateSystem<StartGameSystem>());
             _simulationSystemGroup.AddSystemToUpdateList(_world.CreateSystem<PauseGameSystem>());
+        }
+        
+        private void RemoveExampleSystem()
+        {
+            _simulationSystemGroup.RemoveSystemFromUpdateList(_world.GetExistingSystem<StartGameSystem>());
+            _simulationSystemGroup.RemoveSystemFromUpdateList(_world.GetExistingSystem<PauseGameSystem>());
         }
     }
 }

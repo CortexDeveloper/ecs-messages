@@ -1,6 +1,5 @@
 ﻿using System;
 using CortexDeveloper.ECSMessages.Service;
-using Samples.UserInterfaceExample;
 using Unity.Entities;
 using UnityEngine;
 
@@ -18,6 +17,15 @@ namespace Samples.SystemToSystemExample
             CreateExampleSystems();
         }
 
+        private void OnDestroy()
+        {
+            if (!_world.IsCreated)
+                return;
+            
+            DisposeMessageBroadcaster();
+            RemoveExampleSystem();
+        }
+
         private void InitializeMessageBroadcaster()
         {
             _world = World.DefaultGameObjectInjectionWorld;
@@ -27,10 +35,21 @@ namespace Samples.SystemToSystemExample
             MessageBroadcaster.InitializeInWorld(_world, _lateSimulationSystemGroup);
         }
 
+        private void DisposeMessageBroadcaster()
+        {
+            MessageBroadcaster.DisposeFromWorld(_world);    
+        }
+
         private void CreateExampleSystems()
         {
             _simulationSystemGroup.AddSystemToUpdateList(_world.CreateSystem<CountdownSystem>());
             _simulationSystemGroup.AddSystemToUpdateList(_world.CreateSystem<CountdownAnalyticsTrackingSystem>());
+        }
+
+        private void RemoveExampleSystem()
+        {
+            _simulationSystemGroup.RemoveSystemFromUpdateList(_world.GetExistingSystem<CountdownSystem>());
+            _simulationSystemGroup.RemoveSystemFromUpdateList(_world.GetExistingSystem<CountdownAnalyticsTrackingSystem>());
         }
     }
 }
