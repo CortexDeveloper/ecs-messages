@@ -73,8 +73,8 @@ World defaultWorld = World.DefaultGameObjectInjectionWorld;
 MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystemManaged<SimulationSystemGroup>());
 ```
 
-It's better to place it under parent system group close to end of your systems execution order.<br/>
-Internal systems contains ones that remove messages automaticaly, so it will give you oportunity to proccess messages before they would be deleted.<br/>
+Internal systems contains ones that remove messages automaticaly.<br/>
+So, it's better to place it under parent system group close to end of your systems execution order.<br/>
 
 Let's look on quick example.
 
@@ -279,6 +279,10 @@ MessageBroadcaster
     .AliveForOneFrame()
     .Post(ecb, new PauseGameCommand());
 ```
+
+## Samples
+
+Check package samples to explore more examples.
 
 ## Contacts
 
