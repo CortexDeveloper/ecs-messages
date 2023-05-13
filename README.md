@@ -268,6 +268,8 @@ Stats window located here *ECSMessages/Stats*.<br/>
 There is an example of components on message entity.<br/>
 They might be useful for debug purposes. Each message have unique ID and stores creation time.
 
+![Message Entity](documentation/images/message_entity.png)
+
 ### Message Entity Editor Name
 
 There is an optional feature that allows you to name message.<br/>
