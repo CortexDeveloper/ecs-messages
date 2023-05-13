@@ -263,6 +263,8 @@ MessageBroadcaster.RemoveAllMessagesWith<T>(ecb);
 ### Stats Window 
 Stats window located here *ECSMessages/Stats*.<br/>
 
+![Editor Stats](documentation/images/editor_stats.png)
+
 ### Message Entity
 
 There is an example of components on message entity.<br/>
