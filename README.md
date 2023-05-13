@@ -33,7 +33,7 @@ ecs-messages
     - [Stats Window](#stats-window)
     - [Message Entity](#message-entity)
     - [Message Entity Editor Name](#message-entity-editor-name)
-    - [Examples Editor Window](#examples-editor-window)
+  - [Samples](#samples)
   - [Contacts](#contacts)
 
 ## Overview
@@ -73,8 +73,20 @@ World defaultWorld = World.DefaultGameObjectInjectionWorld;
 MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystemManaged<SimulationSystemGroup>());
 ```
 
-It's better to place it under parent system group close to end of your systems execution order.
-Internal systems contains ones that remove messages automaticaly, so it will give you oportunity to proccess messages before they would be deleted. 
+Internal systems contains ones that remove messages automaticaly.<br/>
+So, it's better to place it under parent system group close to end of your systems execution order.<br/>
+
+Let's look on quick example.
+
+If you post OneFrame message and expect it to processed in **SystemGroupC** - that's fine.<br/>
+Because ECSMessages internal systems was initialized in **SystemGroupD** after **SystemGroupC**.<br/>
+
+But if you post OneFrame message and trying to process it in **SystemGroupE** - that's not ok.<br/>
+Because message would be deleted inside internal system before it reach **SystemGroupD**.<br/>
+
+![Systems execution order](documentation/images/systems_execution_order.png)
+
+So, that's the reason why ECSMessages systems should be placed after systems that depends on it.
 
 ## Disposing
 
@@ -204,7 +216,7 @@ MessageBroadcaster
 ##### Case: Notify that quest is completed
 
 ```csharp
-// It would be posted as usual message but should be deleted manualy
+// It would be posted as usual message but should be deleted manually
 // There is no special system for this type that handling deleting automaticaly
 MessageBroadcaster
     .PrepareMessage()
@@ -236,7 +248,7 @@ Thats give you an oportunity to do whatever you want with message and control it
 ### Remove API
 
 Messages removing is supoused to be automated by service.<br/>
-In case you realy need to manualy delete message you can use EntityManager or EntityCommandBuffer API.<br/>
+In case you realy need to manually delete message you can use EntityManager or EntityCommandBuffer API.<br/>
 As far as message is just an entity with bunch of components, there is no special way of removing them from World.<br/>
 
 If you need to delete messages of certain type use broadcaster API below.
@@ -267,6 +279,10 @@ MessageBroadcaster
     .AliveForOneFrame()
     .Post(ecb, new PauseGameCommand());
 ```
+
+## Samples
+
+Check package samples to explore more examples.
 
 ## Contacts
 
