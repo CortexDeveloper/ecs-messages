@@ -3,7 +3,7 @@
 ecs-messages
 ============
 
-![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.3.0-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen)
+![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.3.1-blue) ![Unity](https://img.shields.io/badge/unity-2022.2.12%2B-blue) ![Entities](https://img.shields.io/badge/entities-1.0.0--pre.65-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen) 
 
 - [ecs-messages](#ecs-messages)
   - [Overview](#overview)
@@ -33,7 +33,7 @@ ecs-messages
     - [Stats Window](#stats-window)
     - [Message Entity](#message-entity)
     - [Message Entity Editor Name](#message-entity-editor-name)
-    - [Examples Editor Window](#examples-editor-window)
+  - [Samples](#samples)
   - [Contacts](#contacts)
 
 ## Overview
@@ -70,8 +70,24 @@ For this purposes use API below in your entry point.
 ```csharp
 World defaultWorld = World.DefaultGameObjectInjectionWorld;
 //pass world and parent system group for messages internal systems
-MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystem<SimulationSystemGroup>());
+MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystemManaged<SimulationSystemGroup>());
 ```
+
+Internal systems contains ones that remove messages automaticaly.<br/>
+So, it's better to place it under parent system group close to end of your systems execution order.<br/>
+
+Let's look on quick example.
+
+If you post OneFrame message and expect it to processed in **SystemGroupC** - that's fine.<br/>
+Because ECSMessages internal systems was initialized in **SystemGroupD** after **SystemGroupC**.<br/>
+
+But if you post OneFrame message and trying to process it in **SystemGroupE** - that's not ok.<br/>
+Because message would be deleted inside internal system before it reach **SystemGroupD**.<br/>
+
+![Systems execution order](documentation/images/systems_execution_order.png)
+
+So, that's the reason why ECSMessages systems should be placed after systems that depends on it.
+
 ## Disposing
 
 Service also have API to dispose from world.
@@ -81,9 +97,6 @@ World defaultWorld = World.DefaultGameObjectInjectionWorld;
 
 MessageBroadcaster.DisposeFromWorld(defaultWorld);
 ```
-
-It's better to place it under parent system group close to end of your systems execution order.
-Internal systems contains ones that remove messages automaticaly, so it will give you oportunity to proccess messages before they would be deleted. 
 
 ## Use Cases
 
@@ -203,7 +216,7 @@ MessageBroadcaster
 ##### Case: Notify that quest is completed
 
 ```csharp
-// It would be posted as usual message but should be deleted manualy
+// It would be posted as usual message but should be deleted manually
 // There is no special system for this type that handling deleting automaticaly
 MessageBroadcaster
     .PrepareMessage()
@@ -235,7 +248,7 @@ Thats give you an oportunity to do whatever you want with message and control it
 ### Remove API
 
 Messages removing is supoused to be automated by service.<br/>
-In case you realy need to manualy delete message you can use EntityManager or EntityCommandBuffer API.<br/>
+In case you realy need to manually delete message you can use EntityManager or EntityCommandBuffer API.<br/>
 As far as message is just an entity with bunch of components, there is no special way of removing them from World.<br/>
 
 If you need to delete messages of certain type use broadcaster API below.
@@ -250,10 +263,14 @@ MessageBroadcaster.RemoveAllMessagesWith<T>(ecb);
 ### Stats Window 
 Stats window located here *ECSMessages/Stats*.<br/>
 
+![Editor Stats](documentation/images/editor_stats.png)
+
 ### Message Entity
 
 There is an example of components on message entity.<br/>
 They might be useful for debug purposes. Each message have unique ID and stores creation time.
+
+![Message Entity](documentation/images/message_entity.png)
 
 ### Message Entity Editor Name
 
@@ -267,9 +284,9 @@ MessageBroadcaster
     .Post(ecb, new PauseGameCommand());
 ```
 
-### Examples Editor Window
+## Samples
 
-You can also explore examples *Tools/Messages Examples* if you download package source code.<br/>
+Check package samples to explore more examples.
 
 ## Contacts
 

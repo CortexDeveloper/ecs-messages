@@ -1,12 +1,16 @@
 {
     "name": "com.cortexdeveloper.ecs.messages",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "displayName": "ECS Messages",
     "author": {
-         "name": "cortexdeveloper", 
-         "url": "https://github.com/CortexDeveloper/ecs-messages"
+        "name": "cortexdeveloper",
+        "email": "cortexdeveloper@gmail.com",
+        "url": "https://github.com/CortexDeveloper/"
     },
     "unity": "2022.2",
+    "documentationUrl": "https://github.com/CortexDeveloper/ecs-messages",
+    "changelogUrl": "https://github.com/CortexDeveloper/ecs-messages/releases",
+    "licensesUrl": "https://github.com/CortexDeveloper/ecs-messages/blob/main/LICENSE",
     "description": "ECS implementation of messaging system.",
     "keywords": [
         "Messages",
@@ -15,5 +19,17 @@
         "Game Tools"
     ],
     "license": "MIT",
-    "dependencies": {}
+    "dependencies": {},
+    "samples": [
+        {
+            "displayName": "UI and ECS interaction",
+            "description": "This example shows how you can link ECS world with UI",
+            "path": "Samples~/UserInterfaceExample"
+        },
+        {
+            "displayName": "Interaction between ECS systems",
+            "description": "Bursted example of communication between systems.",
+            "path": "Samples~/SystemToSystemExample"
+        }
+    ]
 }
