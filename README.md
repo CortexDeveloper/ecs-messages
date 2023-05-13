@@ -33,7 +33,7 @@ ecs-messages
     - [Stats Window](#stats-window)
     - [Message Entity](#message-entity)
     - [Message Entity Editor Name](#message-entity-editor-name)
-    - [Examples Editor Window](#examples-editor-window)
+  - [Samples](#samples)
   - [Contacts](#contacts)
 
 ## Overview
@@ -216,7 +216,7 @@ MessageBroadcaster
 ##### Case: Notify that quest is completed
 
 ```csharp
-// It would be posted as usual message but should be deleted manualy
+// It would be posted as usual message but should be deleted manually
 // There is no special system for this type that handling deleting automaticaly
 MessageBroadcaster
     .PrepareMessage()
@@ -248,7 +248,7 @@ Thats give you an oportunity to do whatever you want with message and control it
 ### Remove API
 
 Messages removing is supoused to be automated by service.<br/>
-In case you realy need to manualy delete message you can use EntityManager or EntityCommandBuffer API.<br/>
+In case you realy need to manually delete message you can use EntityManager or EntityCommandBuffer API.<br/>
 As far as message is just an entity with bunch of components, there is no special way of removing them from World.<br/>
 
 If you need to delete messages of certain type use broadcaster API below.
