@@ -73,8 +73,8 @@ World defaultWorld = World.DefaultGameObjectInjectionWorld;
 MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystemManaged<SimulationSystemGroup>());
 ```
 
-Internal systems contains ones that remove messages automaticaly.<br/>
-So, it's better to place it under parent system group close to end of your systems execution order.<br/>
+Internal systems contains ones that remove messages automatically.<br/>
+So, it's better to place it under parent system group close to the end of your systems execution order.<br/>
 
 Let's look on quick example.
 
@@ -116,7 +116,7 @@ So, *CharacterDeathSystem* just post message that available only for **one frame
 
 ## Semantic of messages
 
-In ECS we can say that commands and events are enteties with bunch of special components.<br/>
+In ECS we can say that commands and events are entities with bunch of special components.<br/>
 So, from computer point of view they looks almost identicaly but not for developer.<br/>
 Both are messages but with different semantic.<br/>
 The difference between them in reasons why they were sent to world.<br/>
