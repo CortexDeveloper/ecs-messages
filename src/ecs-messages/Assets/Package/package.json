@@ -1,6 +1,6 @@
 {
     "name": "com.cortexdeveloper.ecs.messages",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "displayName": "ECS Messages",
     "author": {
         "name": "cortexdeveloper",

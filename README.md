@@ -3,7 +3,7 @@
 ecs-messages
 ============
 
-![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.3.1-blue) ![Unity](https://img.shields.io/badge/unity-2022.2.12%2B-blue) ![Entities](https://img.shields.io/badge/entities-1.0.0--pre.65-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen) 
+![License bage](https://img.shields.io/badge/license-MIT-green) ![Version](https://img.shields.io/badge/version-0.3.2-blue) ![Unity](https://img.shields.io/badge/unity-2022.3.0%20LTS-blue) ![Entities](https://img.shields.io/badge/entities-1.0.10-blue) ![Tests](https://img.shields.io/badge/tests-passed-brightgreen) 
 
 - [ecs-messages](#ecs-messages)
   - [Overview](#overview)
@@ -47,7 +47,7 @@ Key features:
 - Supports *IComponentData* as message content
 - Multiple worlds support
 
-> Tested with Unity DOTS ECS v1.0.0-preview.65 and Unity 2022.2.12
+> Tested with Unity DOTS ECS v1.0.10 and Unity 2022.3.0 LTS
 
 ## Installation
 
@@ -73,8 +73,8 @@ World defaultWorld = World.DefaultGameObjectInjectionWorld;
 MessageBroadcaster.InitializeInWorld(defaultWorld, defaultWorld.GetOrCreateSystemManaged<SimulationSystemGroup>());
 ```
 
-Internal systems contains ones that remove messages automaticaly.<br/>
-So, it's better to place it under parent system group close to end of your systems execution order.<br/>
+Internal systems contains ones that remove messages automatically.<br/>
+So, it's better to place it under parent system group close to the end of your systems execution order.<br/>
 
 Let's look on quick example.
 
@@ -116,7 +116,7 @@ So, *CharacterDeathSystem* just post message that available only for **one frame
 
 ## Semantic of messages
 
-In ECS we can say that commands and events are enteties with bunch of special components.<br/>
+In ECS we can say that commands and events are entities with bunch of special components.<br/>
 So, from computer point of view they looks almost identicaly but not for developer.<br/>
 Both are messages but with different semantic.<br/>
 The difference between them in reasons why they were sent to world.<br/>
