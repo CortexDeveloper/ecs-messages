@@ -82,7 +82,7 @@ If you post OneFrame message and expect it to processed in **SystemGroupC** - th
 Because ECSMessages internal systems was initialized in **SystemGroupD** after **SystemGroupC**.<br/>
 
 But if you post OneFrame message and trying to process it in **SystemGroupE** - that's not ok.<br/>
-Because message would be deleted inside internal system before it reach **SystemGroupD**.<br/>
+Because message will be deleted inside internal system in **SystemGroupD** before it reach **SystemGroupE**.<br/>
 
 ![Systems execution order](documentation/images/systems_execution_order.png)
 
