@@ -33,12 +33,12 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
 
         public void OnGUI()
         {
-            if (!Application.isPlaying)
-            {
-                EditorGUILayout.HelpBox("Works only in Play Mode. Enter Play Mode to access broadcaster API.", MessageType.Warning);
-                
-                return;
-            }
+            // if (!Application.isPlaying)
+            // {
+            //     EditorGUILayout.HelpBox("Works only in Play Mode. Enter Play Mode to access broadcaster API.", MessageType.Warning);
+            //     
+            //     return;
+            // }
             
             DrawParams();
 
