@@ -2,29 +2,27 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class MessageBroadcasterStatsWindow : EditorWindow
+namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
 {
-    [SerializeField]
-    private VisualTreeAsset m_VisualTreeAsset = default;
-
-    [MenuItem("Window/UI Toolkit/MessageBroadcasterStatsWindow")]
-    public static void ShowExample()
+    public class MessageBroadcasterStatsWindow : EditorWindow
     {
-        MessageBroadcasterStatsWindow wnd = GetWindow<MessageBroadcasterStatsWindow>();
-        wnd.titleContent = new GUIContent("MessageBroadcasterStatsWindow");
-    }
+        private const string UxmlPath = "Assets/Package/Editor/StatsWindow/MessageBroadcasterStatsWindow.uxml";
 
-    public void CreateGUI()
-    {
-        // Each editor window contains a root VisualElement object
-        VisualElement root = rootVisualElement;
+        [MenuItem("ECSMessages/MessageBroadcasterStatsWindow")]
+        public static void ShowExample()
+        {
+            MessageBroadcasterStatsWindow wnd = GetWindow<MessageBroadcasterStatsWindow>();
+            wnd.titleContent = new GUIContent("MessageBroadcasterStatsWindow");
+        }
 
-        // VisualElements objects can contain other VisualElement following a tree hierarchy.
-        VisualElement label = new Label("Hello World! From C#");
-        root.Add(label);
+        public void CreateGUI()
+        {
+            VisualElement root = rootVisualElement;
 
-        // Instantiate UXML
-        VisualElement labelFromUXML = m_VisualTreeAsset.Instantiate();
-        root.Add(labelFromUXML);
+            VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UxmlPath);
+            VisualElement buildTree = visualTree.Instantiate();
+        
+            root.Add(buildTree);
+        }
     }
 }

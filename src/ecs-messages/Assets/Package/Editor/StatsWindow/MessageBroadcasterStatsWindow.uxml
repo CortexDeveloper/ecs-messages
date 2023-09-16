@@ -5,10 +5,10 @@
         <ui:Toggle label="Enable  Stats" name="EnableStats" style="align-items: auto; justify-content: flex-start; align-self: stretch; flex-direction: row;" />
     </ui:GroupBox>
     <ui:GroupBox name="StatsGroupBox">
-        <ui:IntegerField label="All Messages:" value="42" name="All" />
-        <ui:IntegerField label="OneFrame:" value="42" name="OneFrame" />
-        <ui:IntegerField label="TimeInterval:" value="42" name="TimeInterval" />
-        <ui:IntegerField label="Unlimited:" value="42" name="Unlimited" />
+        <ui:IntegerField label="All Messages:" value="0" name="All" />
+        <ui:IntegerField label="OneFrame:" value="0" name="OneFrame" />
+        <ui:IntegerField label="TimeInterval:" value="0" name="TimeInterval" />
+        <ui:IntegerField label="Unlimited:" value="0" name="Unlimited" />
     </ui:GroupBox>
     <ui:GroupBox name="ButtonsGroupBox">
         <ui:Button text="Remove All Messages" parse-escape-sequences="true" display-tooltip-when-elided="true" name="RemoveAllButton" />
