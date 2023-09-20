@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using CortexDeveloper.ECSMessages.Components.Meta;
 using CortexDeveloper.ECSMessages.Service;
 using Unity.Entities;
 using UnityEditor;
@@ -11,14 +12,23 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
     public class MessageBroadcasterStatsWindow : EditorWindow
     {
         private const string UxmlPath = "Assets/Package/Editor/StatsWindow/MessageBroadcasterStatsWindow.uxml";
-        private const string WorldDropdown = "WorldDropdown";
+        private const string WorldDropdownName = "WorldDropdown";
+        private const string EnableStatsToggleName = "EnableStatsToggle";
+        private const string AllMessagesIntField = "AllMessagesIntField";
 
         private List<string> _worldsList = new();
-        private int _selectedWorld;
-        private World SelectedWorld => World.All.GetWorldWithName(_worldsList[_selectedWorld]);
-
         private DropdownField _worldDropdown;
-        
+
+        private Toggle _enableStatsToggle;
+
+        private GroupBox _statsGroupBox;
+        private IntegerField _allMessagesIntField;
+
+        private bool StatsEnabled => _enableStatsToggle.value;
+        private World SelectedWorld => World.All.GetWorldWithName(_worldDropdown.value);
+        private bool AnyWorldSelected => _worldDropdown.value != null;
+        private bool ReadyToShowStats => Application.isPlaying && StatsEnabled && AnyWorldSelected;
+
         [MenuItem("ECSMessages/MessageBroadcasterStatsWindow")]
         public static void ShowExample()
         {
@@ -35,13 +45,20 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
         
             root.Add(buildTree);
             
-            _worldDropdown = rootVisualElement.Q<DropdownField>(WorldDropdown);
+            _worldDropdown = rootVisualElement.Q<DropdownField>(WorldDropdownName);
             _worldDropdown.RegisterValueChangedCallback(evt => Debug.Log(evt.newValue));
+            
+            _enableStatsToggle = rootVisualElement.Q<Toggle>(EnableStatsToggleName);
+            
+            _statsGroupBox = rootVisualElement.Q<GroupBox>("StatsGroupBox");
+
+            _allMessagesIntField = rootVisualElement.Q<IntegerField>(AllMessagesIntField);
         }
 
         private void OnInspectorUpdate()
         {
             UpdateWorldDropdownList();
+            UpdateMessagesCount();
         }
 
         private void UpdateWorldDropdownList()
@@ -65,6 +82,16 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
             _worldsList = _worldsList.Where(w => !w.Contains("LoadingWorld")).ToList();
 
             _worldDropdown.choices = _worldsList;
+        }
+
+        private void UpdateMessagesCount()
+        {
+            _statsGroupBox.style.display = StatsEnabled ? DisplayStyle.Flex : DisplayStyle.None;
+
+            if (ReadyToShowStats)
+            {
+                _allMessagesIntField.value = SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageTag))).CalculateEntityCount();
+            }
         }
     }
 }
