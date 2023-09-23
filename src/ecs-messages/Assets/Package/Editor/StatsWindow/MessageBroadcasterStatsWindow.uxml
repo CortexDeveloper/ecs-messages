@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/Package/Editor/StatsWindow/MessageBroadcasterStatsWindow.uss?fileID=7433441132597879392&amp;guid=928c17da7688e7c43a1dda9298e649a0&amp;type=3#MessageBroadcasterStatsWindow" />
     <ui:GroupBox name="GeneralGroupBox">
         <ui:DropdownField label="World" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="WorldDropdown" />
-        <ui:Toggle label="Enable  Stats" name="EnableStats" style="align-items: auto; justify-content: flex-start; align-self: stretch; flex-direction: row;" />
+        <ui:Toggle label="Enable  Stats" name="EnableStatsToggle" style="align-items: auto; justify-content: flex-start; align-self: stretch; flex-direction: row;" />
     </ui:GroupBox>
     <ui:GroupBox name="StatsGroupBox">
         <ui:IntegerField label="All Messages:" value="0" name="All" />
