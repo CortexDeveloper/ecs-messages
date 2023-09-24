@@ -15,6 +15,9 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
         private const string WorldDropdownName = "WorldDropdown";
         private const string EnableStatsToggleName = "EnableStatsToggle";
         private const string AllMessagesIntField = "AllMessagesIntField";
+        private const string OneFrameMessagesIntField = "OneFrameMessagesIntField";
+        private const string TimeIntervalMessagesIntField = "TimeIntervalMessagesIntField";
+        private const string UnlimitedMessagesIntField = "UnlimitedMessagesIntField";
 
         private List<string> _worldsList = new();
         private DropdownField _worldDropdown;
@@ -23,6 +26,9 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
 
         private GroupBox _statsGroupBox;
         private IntegerField _allMessagesIntField;
+        private IntegerField _oneFrameMessagesIntField;
+        private IntegerField _timeIntervalMessagesIntField;
+        private IntegerField _unlimitedMessagesIntField;
 
         private bool StatsEnabled => _enableStatsToggle.value;
         private World SelectedWorld => World.All.GetWorldWithName(_worldDropdown.value);
@@ -53,6 +59,9 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
             _statsGroupBox = rootVisualElement.Q<GroupBox>("StatsGroupBox");
 
             _allMessagesIntField = rootVisualElement.Q<IntegerField>(AllMessagesIntField);
+            _oneFrameMessagesIntField = rootVisualElement.Q<IntegerField>(OneFrameMessagesIntField);
+            _timeIntervalMessagesIntField = rootVisualElement.Q<IntegerField>(TimeIntervalMessagesIntField);
+            _unlimitedMessagesIntField = rootVisualElement.Q<IntegerField>(UnlimitedMessagesIntField);
         }
 
         private void OnInspectorUpdate()
@@ -91,6 +100,9 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
             if (ReadyToShowStats)
             {
                 _allMessagesIntField.value = SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageTag))).CalculateEntityCount();
+                _oneFrameMessagesIntField.value = SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeOneFrameTag))).CalculateEntityCount();
+                _timeIntervalMessagesIntField.value = SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeTimeInterval))).CalculateEntityCount();
+                _unlimitedMessagesIntField.value = SelectedWorld.EntityManager.CreateEntityQuery(new ComponentType(typeof(MessageLifetimeUnlimitedTag))).CalculateEntityCount();
             }
         }
     }
