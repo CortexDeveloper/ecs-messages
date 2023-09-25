@@ -16,4 +16,8 @@
         <ui:Button text="Remove TimeInterval Messages" parse-escape-sequences="true" display-tooltip-when-elided="true" name="RemoveTimeIntervalButton" />
         <ui:Button text="Remove Unlimited Messages" parse-escape-sequences="true" display-tooltip-when-elided="true" name="RemoveUnlimitedButton" />
     </ui:GroupBox>
+    <ui:GroupBox name="WarningsGroupBox">
+        <ui:Label tabindex="-1" text="Enter play mode to access stats and debug API." parse-escape-sequences="true" display-tooltip-when-elided="true" name="PlaymodeLabel" style="color: rgb(236, 201, 23);" />
+        <ui:Label tabindex="-1" text="Select world from dropdown list." parse-escape-sequences="true" display-tooltip-when-elided="true" name="SelectWorldLabel" style="color: rgb(236, 201, 23);" />
+    </ui:GroupBox>
 </ui:UXML>

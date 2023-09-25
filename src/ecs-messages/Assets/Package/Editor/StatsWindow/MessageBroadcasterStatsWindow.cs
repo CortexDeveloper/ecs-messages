@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CortexDeveloper.ECSMessages.Components.Meta;
@@ -27,6 +28,10 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
         private const string RemoveOneFrameButton = "RemoveOneFrameButton";
         private const string RemoveTimeIntervalButton = "RemoveTimeIntervalButton";
         private const string RemoveUnlimitedButton = "RemoveUnlimitedButton";
+        
+        private const string WarningsGroupBox = "WarningsGroupBox";
+        private const string PlaymodeLabel = "PlaymodeLabel";
+        private const string SelectWorldLabel = "SelectWorldLabel";
 
         private List<string> _worldsList = new();
         private DropdownField _worldDropdown;
@@ -44,7 +49,11 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
         private Button _removeOneFrameMessagesButton;
         private Button _removeTimeIntervalMessagesButton;
         private Button _removeUnlimitedMessagesButton;
-
+        
+        private GroupBox _warningsGroupBox;
+        private Label _playmodeLabel;
+        private Label _selectWorldLabel;
+        
         private bool StatsEnabled => _enableStatsToggle.value;
         private World SelectedWorld => World.All.GetWorldWithName(_worldDropdown.value);
         private bool AnyWorldSelected => _worldDropdown.value != null;
@@ -54,7 +63,7 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
         public static void ShowExample()
         {
             MessageBroadcasterStatsWindow wnd = GetWindow<MessageBroadcasterStatsWindow>();
-            wnd.titleContent = new GUIContent("MessageBroadcasterStatsWindow");
+            wnd.titleContent = new GUIContent(nameof(MessageBroadcasterStatsWindow));
         }
 
         public void CreateGUI()
@@ -84,17 +93,21 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
             _removeOneFrameMessagesButton = rootVisualElement.Q<Button>(RemoveOneFrameButton);
             _removeTimeIntervalMessagesButton = rootVisualElement.Q<Button>(RemoveTimeIntervalButton);
             _removeUnlimitedMessagesButton = rootVisualElement.Q<Button>(RemoveUnlimitedButton);
-
+            
             _removeAllMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageTag>(SelectedWorld.EntityManager));
             _removeOneFrameMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeOneFrameTag>(SelectedWorld.EntityManager));
             _removeTimeIntervalMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeTimeInterval>(SelectedWorld.EntityManager));
             _removeUnlimitedMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(SelectedWorld.EntityManager));
+            
+            _warningsGroupBox = rootVisualElement.Q<GroupBox>(WarningsGroupBox);
+            _playmodeLabel = rootVisualElement.Q<Label>(PlaymodeLabel);
+            _selectWorldLabel = rootVisualElement.Q<Label>(SelectWorldLabel);
         }
 
         private void OnInspectorUpdate()
         {
             UpdateWorldDropdownList();
-            UpdateMessagesCount();
+            UpdateContent();
         }
 
         private void UpdateWorldDropdownList()
@@ -120,10 +133,12 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
             _worldDropdown.choices = _worldsList;
         }
 
-        private void UpdateMessagesCount()
+        private void UpdateContent()
         {
-            _statsGroupBox.style.display = StatsEnabled ? DisplayStyle.Flex : DisplayStyle.None;
-            _buttonsGroupBox.style.display = StatsEnabled ? DisplayStyle.Flex : DisplayStyle.None;
+            _statsGroupBox.style.display = ReadyToShowStats ? DisplayStyle.Flex : DisplayStyle.None;
+            _buttonsGroupBox.style.display = ReadyToShowStats ? DisplayStyle.Flex : DisplayStyle.None;
+            _playmodeLabel.style.display = Application.isPlaying ? DisplayStyle.None : DisplayStyle.Flex;
+            _selectWorldLabel.style.display = _worldDropdown.value == null ? DisplayStyle.Flex : DisplayStyle.None;
 
             if (ReadyToShowStats)
             {
