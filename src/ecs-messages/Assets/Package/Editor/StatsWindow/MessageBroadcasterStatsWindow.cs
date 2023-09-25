@@ -12,12 +12,21 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
     public class MessageBroadcasterStatsWindow : EditorWindow
     {
         private const string UxmlPath = "Assets/Package/Editor/StatsWindow/MessageBroadcasterStatsWindow.uxml";
+        
         private const string WorldDropdownName = "WorldDropdown";
         private const string EnableStatsToggleName = "EnableStatsToggle";
+        
+        private const string StatsGroupBox = "StatsGroupBox";
         private const string AllMessagesIntField = "AllMessagesIntField";
         private const string OneFrameMessagesIntField = "OneFrameMessagesIntField";
         private const string TimeIntervalMessagesIntField = "TimeIntervalMessagesIntField";
         private const string UnlimitedMessagesIntField = "UnlimitedMessagesIntField";
+        
+        private const string ButtonsGroupBox = "ButtonsGroupBox";
+        private const string RemoveAllButton = "RemoveAllButton";
+        private const string RemoveOneFrameButton = "RemoveOneFrameButton";
+        private const string RemoveTimeIntervalButton = "RemoveTimeIntervalButton";
+        private const string RemoveUnlimitedButton = "RemoveUnlimitedButton";
 
         private List<string> _worldsList = new();
         private DropdownField _worldDropdown;
@@ -29,6 +38,12 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
         private IntegerField _oneFrameMessagesIntField;
         private IntegerField _timeIntervalMessagesIntField;
         private IntegerField _unlimitedMessagesIntField;
+        
+        private GroupBox _buttonsGroupBox;
+        private Button _removeAllMessagesButton;
+        private Button _removeOneFrameMessagesButton;
+        private Button _removeTimeIntervalMessagesButton;
+        private Button _removeUnlimitedMessagesButton;
 
         private bool StatsEnabled => _enableStatsToggle.value;
         private World SelectedWorld => World.All.GetWorldWithName(_worldDropdown.value);
@@ -56,12 +71,24 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
             
             _enableStatsToggle = rootVisualElement.Q<Toggle>(EnableStatsToggleName);
             
-            _statsGroupBox = rootVisualElement.Q<GroupBox>("StatsGroupBox");
+            _statsGroupBox = rootVisualElement.Q<GroupBox>(StatsGroupBox);
 
             _allMessagesIntField = rootVisualElement.Q<IntegerField>(AllMessagesIntField);
             _oneFrameMessagesIntField = rootVisualElement.Q<IntegerField>(OneFrameMessagesIntField);
             _timeIntervalMessagesIntField = rootVisualElement.Q<IntegerField>(TimeIntervalMessagesIntField);
             _unlimitedMessagesIntField = rootVisualElement.Q<IntegerField>(UnlimitedMessagesIntField);
+
+            _buttonsGroupBox = rootVisualElement.Q<GroupBox>(ButtonsGroupBox);
+            
+            _removeAllMessagesButton = rootVisualElement.Q<Button>(RemoveAllButton);
+            _removeOneFrameMessagesButton = rootVisualElement.Q<Button>(RemoveOneFrameButton);
+            _removeTimeIntervalMessagesButton = rootVisualElement.Q<Button>(RemoveTimeIntervalButton);
+            _removeUnlimitedMessagesButton = rootVisualElement.Q<Button>(RemoveUnlimitedButton);
+
+            _removeAllMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageTag>(SelectedWorld.EntityManager));
+            _removeOneFrameMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeOneFrameTag>(SelectedWorld.EntityManager));
+            _removeTimeIntervalMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeTimeInterval>(SelectedWorld.EntityManager));
+            _removeUnlimitedMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(SelectedWorld.EntityManager));
         }
 
         private void OnInspectorUpdate()
@@ -96,6 +123,7 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
         private void UpdateMessagesCount()
         {
             _statsGroupBox.style.display = StatsEnabled ? DisplayStyle.Flex : DisplayStyle.None;
+            _buttonsGroupBox.style.display = StatsEnabled ? DisplayStyle.Flex : DisplayStyle.None;
 
             if (ReadyToShowStats)
             {
