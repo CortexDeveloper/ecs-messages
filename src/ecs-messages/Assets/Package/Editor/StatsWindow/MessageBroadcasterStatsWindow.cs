@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using CortexDeveloper.ECSMessages.Components.Meta;
@@ -29,13 +28,12 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
         private const string RemoveTimeIntervalButton = "RemoveTimeIntervalButton";
         private const string RemoveUnlimitedButton = "RemoveUnlimitedButton";
         
-        private const string WarningsGroupBox = "WarningsGroupBox";
         private const string PlaymodeLabel = "PlaymodeLabel";
         private const string SelectWorldLabel = "SelectWorldLabel";
 
         private List<string> _worldsList = new();
         private DropdownField _worldDropdown;
-
+        
         private Toggle _enableStatsToggle;
 
         private GroupBox _statsGroupBox;
@@ -50,7 +48,6 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
         private Button _removeTimeIntervalMessagesButton;
         private Button _removeUnlimitedMessagesButton;
         
-        private GroupBox _warningsGroupBox;
         private Label _playmodeLabel;
         private Label _selectWorldLabel;
         
@@ -68,46 +65,69 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
 
         public void CreateGUI()
         {
-            VisualElement root = rootVisualElement;
-
-            VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UxmlPath);
-            VisualElement buildTree = visualTree.Instantiate();
-        
-            root.Add(buildTree);
+            BuildRootTree();
             
-            _worldDropdown = rootVisualElement.Q<DropdownField>(WorldDropdownName);
-            _worldDropdown.RegisterValueChangedCallback(evt => Debug.Log(evt.newValue));
-            
-            _enableStatsToggle = rootVisualElement.Q<Toggle>(EnableStatsToggleName);
-            
-            _statsGroupBox = rootVisualElement.Q<GroupBox>(StatsGroupBox);
-
-            _allMessagesIntField = rootVisualElement.Q<IntegerField>(AllMessagesIntField);
-            _oneFrameMessagesIntField = rootVisualElement.Q<IntegerField>(OneFrameMessagesIntField);
-            _timeIntervalMessagesIntField = rootVisualElement.Q<IntegerField>(TimeIntervalMessagesIntField);
-            _unlimitedMessagesIntField = rootVisualElement.Q<IntegerField>(UnlimitedMessagesIntField);
-
-            _buttonsGroupBox = rootVisualElement.Q<GroupBox>(ButtonsGroupBox);
-            
-            _removeAllMessagesButton = rootVisualElement.Q<Button>(RemoveAllButton);
-            _removeOneFrameMessagesButton = rootVisualElement.Q<Button>(RemoveOneFrameButton);
-            _removeTimeIntervalMessagesButton = rootVisualElement.Q<Button>(RemoveTimeIntervalButton);
-            _removeUnlimitedMessagesButton = rootVisualElement.Q<Button>(RemoveUnlimitedButton);
-            
-            _removeAllMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageTag>(SelectedWorld.EntityManager));
-            _removeOneFrameMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeOneFrameTag>(SelectedWorld.EntityManager));
-            _removeTimeIntervalMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeTimeInterval>(SelectedWorld.EntityManager));
-            _removeUnlimitedMessagesButton.RegisterCallback<ClickEvent>(_ => MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(SelectedWorld.EntityManager));
-            
-            _warningsGroupBox = rootVisualElement.Q<GroupBox>(WarningsGroupBox);
-            _playmodeLabel = rootVisualElement.Q<Label>(PlaymodeLabel);
-            _selectWorldLabel = rootVisualElement.Q<Label>(SelectWorldLabel);
+            InitGeneralGroup();
+            InitStatsGroup();
+            InitButtonsGroup();
+            InitWarningsGroup();
         }
 
         private void OnInspectorUpdate()
         {
             UpdateWorldDropdownList();
             UpdateContent();
+        }
+
+        private void BuildRootTree()
+        {
+            VisualElement root = rootVisualElement;
+
+            VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UxmlPath);
+            VisualElement buildTree = visualTree.Instantiate();
+
+            root.Add(buildTree);
+        }
+
+        private void InitGeneralGroup()
+        {
+            _worldDropdown = rootVisualElement.Q<DropdownField>(WorldDropdownName);
+            _enableStatsToggle = rootVisualElement.Q<Toggle>(EnableStatsToggleName);
+        }
+
+        private void InitStatsGroup()
+        {
+            _statsGroupBox = rootVisualElement.Q<GroupBox>(StatsGroupBox);
+
+            _allMessagesIntField = rootVisualElement.Q<IntegerField>(AllMessagesIntField);
+            _oneFrameMessagesIntField = rootVisualElement.Q<IntegerField>(OneFrameMessagesIntField);
+            _timeIntervalMessagesIntField = rootVisualElement.Q<IntegerField>(TimeIntervalMessagesIntField);
+            _unlimitedMessagesIntField = rootVisualElement.Q<IntegerField>(UnlimitedMessagesIntField);
+        }
+
+        private void InitButtonsGroup()
+        {
+            _buttonsGroupBox = rootVisualElement.Q<GroupBox>(ButtonsGroupBox);
+
+            _removeAllMessagesButton = rootVisualElement.Q<Button>(RemoveAllButton);
+            _removeOneFrameMessagesButton = rootVisualElement.Q<Button>(RemoveOneFrameButton);
+            _removeTimeIntervalMessagesButton = rootVisualElement.Q<Button>(RemoveTimeIntervalButton);
+            _removeUnlimitedMessagesButton = rootVisualElement.Q<Button>(RemoveUnlimitedButton);
+
+            _removeAllMessagesButton.RegisterCallback<ClickEvent>(_ =>
+                MessageBroadcaster.RemoveAllMessagesWith<MessageTag>(SelectedWorld.EntityManager));
+            _removeOneFrameMessagesButton.RegisterCallback<ClickEvent>(_ =>
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeOneFrameTag>(SelectedWorld.EntityManager));
+            _removeTimeIntervalMessagesButton.RegisterCallback<ClickEvent>(_ =>
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeTimeInterval>(SelectedWorld.EntityManager));
+            _removeUnlimitedMessagesButton.RegisterCallback<ClickEvent>(_ =>
+                MessageBroadcaster.RemoveAllMessagesWith<MessageLifetimeUnlimitedTag>(SelectedWorld.EntityManager));
+        }
+
+        private void InitWarningsGroup()
+        {
+            _playmodeLabel = rootVisualElement.Q<Label>(PlaymodeLabel);
+            _selectWorldLabel = rootVisualElement.Q<Label>(SelectWorldLabel);
         }
 
         private void UpdateWorldDropdownList()
@@ -138,7 +158,7 @@ namespace CortexDeveloper.ECSMessages.Editor.StatsWindow
             _statsGroupBox.style.display = ReadyToShowStats ? DisplayStyle.Flex : DisplayStyle.None;
             _buttonsGroupBox.style.display = ReadyToShowStats ? DisplayStyle.Flex : DisplayStyle.None;
             _playmodeLabel.style.display = Application.isPlaying ? DisplayStyle.None : DisplayStyle.Flex;
-            _selectWorldLabel.style.display = _worldDropdown.value == null ? DisplayStyle.Flex : DisplayStyle.None;
+            _selectWorldLabel.style.display = AnyWorldSelected ? DisplayStyle.None : DisplayStyle.Flex;
 
             if (ReadyToShowStats)
             {
